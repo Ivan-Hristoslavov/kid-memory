@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrderStatus {
+  CREATED
+  GENERATING
+  PREVIEW_READY
+  CONFIRMED
+  PRINTING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum ProductType {
+  DIGITAL
+  POSTER_A4
+  POSTER_A3
+  PREMIUM
+}
+
+enum Courier {
+  ECONT
+  SPEEDY
+}
+
+enum DeliveryMethod {
+  OFFICE
+  ADDRESS
+  LOCKER
+}
+
+enum Gender {
+  BOY
+  GIRL
+}
+
+enum PaymentMethod {
+  COD
+  STRIPE
+  REVOLUT
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber Int         @unique @default(autoincrement())
+  status      OrderStatus @default(CREATED)
+
+  // Child / poster input
+  childName   String // combined label for title/emails (e.g. "Мила и Борис")
+  childAge    Float // first child's age (legacy/display; allows halves e.g. 2.5)
+  childGender Gender // first child's gender (legacy/display)
+  // Structured per-child data: [{ name, age, gender, words: [{word, saidAs}] }]
+  children    Json     @default("[]")
+  photoKey    String? // private storage key of uploaded photo
+  words       Json // flattened [{ word, saidAs }] across all children
+  animals     String[]
+  style       String
+
+  // Product & payment
+  productType   ProductType?
+  addons        String[] // selected add-on ids (FRAME, PHOTO_PAPER, GIFT_WRAP)
+  priceEUR      Decimal?      @db.Decimal(10, 2) // total incl. add-ons
+  paymentMethod PaymentMethod @default(COD)
+  paymentStatus PaymentStatus @default(PENDING)
+
+  /// Captured before generation so an abandoned poster can be recovered.
+  leadEmail    String?
+
+  /// Set once the recovery email for an abandoned poster has gone out.
+  recoveryEmailAt DateTime?
+
+  /// One-click confirmation from the order email. Nothing goes to print until
+  /// `confirmedAt` is set — an unclaimed personalised parcel is a total loss.
+  confirmToken String?   @unique
+  confirmedAt  DateTime?
+
+  /// What the AI generations for this order actually cost us, so margin is
+  /// visible per order instead of only as a monthly API bill.
+  aiCostEUR   Decimal? @db.Decimal(10, 4)
+  /// Number of generations, including regenerations and failed attempts.
+  aiRuns      Int      @default(0)
+
+  // Customer (guest checkout — filled at /order)
+  customerName String?
+  phone        String?
+  email        String?
+  city         String?
+  address      String?
+
+  // Delivery
+  courier        Courier?
+  deliveryMethod DeliveryMethod?
+  courierOffice  String?
+  trackingNumber String?
+
+  // Generated assets (private storage keys, never public URLs)
+  previewImage String?
+  finalImage   String?
+  finalPdf     String?
+
+  emailsSent Json @default("[]")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email])
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+/// Customer review — submitted publicly, shown on the site only once approved.
+model Review {
+  id          String       @id @default(cuid())
+  authorName  String
+  city        String?
+  rating      Int // 1..5
+  text        String
+  status      ReviewStatus @default(PENDING)
+  orderNumber Int? // optional link to a real order, for verification
+  featured    Boolean      @default(false)
+  adminNote   String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([status, createdAt])
+}
+
+/// Phone numbers that refused a cash-on-delivery parcel. A personalised poster
+/// that comes back cannot be resold, so a repeat offender must be flagged at
+/// checkout rather than quietly costing us a second parcel.
+model BlockedPhone {
+  /// Digits only, no country prefix — matching is done on the last 8.
+  phone     String   @id
+  reason    String?
+  orderRef  Int?
+  createdAt DateTime @default(now())
+}
+
+/// Audit trail for admin actions on an order.
+model AdminLog {
+  id        String   @id @default(cuid())
+  orderId   String?
+  action    String
+  detail    String?
+  actor     String?
+  createdAt DateTime @default(now())
+
+  @@index([orderId, createdAt])
+  @@index([createdAt])
+}
+
+/// Durable rate-limit counters.
+///
+/// The in-memory limiter only protects a single Node process. On serverless
+/// every invocation can be a fresh instance with an empty map, so the effective
+/// limit became "N per instance" — useless against someone refreshing to burn
+/// AI credit. This table is shared by all instances.
+model RateLimit {
+  /// e.g. "generate:<ipHash>:2026-07-29" — never a raw IP.
+  key       String   @id
+  count     Int      @default(0)
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}
+
+/// Editable site settings (key/value) so copy and toggles live in the DB.
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
