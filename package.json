@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "//build": "Vercel caches node_modules, so the generated Prisma client is not guaranteed to exist at build time. Without it Prisma's types collapse to `any` and the type check fails on code that is fine locally.",
+    "build": "prisma generate && next build",
+    "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint"
   },
