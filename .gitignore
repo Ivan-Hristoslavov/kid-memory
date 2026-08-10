@@ -33,6 +33,10 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# local file storage: uploaded customer photos and generated posters.
+# Personal data — must never enter the repository.
+/.storage/
+
 # vercel
 .vercel
 
