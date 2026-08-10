@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
-import { Loader2, Save, Sparkles } from "lucide-react";
+import { Loader2, PauseCircle, Save, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -150,6 +150,59 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
               className="h-12 rounded-2xl border-2"
             />
           </div>
+        </div>
+      </section>
+
+      {/* Lets the owner stop taking orders with an explanation, instead of the
+          only alternative being to take the whole site down. */}
+      <section className="glass space-y-5 rounded-3xl p-7">
+        <div>
+          <h2 className="flex items-center gap-2 font-heading text-lg font-bold">
+            <PauseCircle className="size-5 text-primary" />
+            Пауза и крайни срокове
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            За отпуска, болест или когато не смогваш с поръчките.
+          </p>
+        </div>
+
+        <label className="flex cursor-pointer items-start gap-3 rounded-2xl bg-card/70 p-4">
+          <input
+            type="checkbox"
+            name="shopPaused"
+            defaultChecked={settings.shopPaused}
+            className="mt-0.5 size-4 shrink-0 accent-[var(--primary)]"
+          />
+          <span>
+            <span className="block font-semibold">Спри новите поръчки</span>
+            <span className="block text-sm text-muted-foreground">
+              Сайтът остава видим, но чекаутът показва съобщението отдолу.
+            </span>
+          </span>
+        </label>
+
+        <div className="space-y-2">
+          <Label htmlFor="shopPausedMessage">Съобщение при пауза</Label>
+          <Input
+            id="shopPausedMessage"
+            name="shopPausedMessage"
+            defaultValue={settings.shopPausedMessage}
+            className="h-12 rounded-2xl border-2"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="orderCutoffNote">
+            Бележка за краен срок{" "}
+            <span className="font-normal text-muted-foreground">(празно = скрита)</span>
+          </Label>
+          <Input
+            id="orderCutoffNote"
+            name="orderCutoffNote"
+            placeholder="напр. Поръчай до 15 декември за доставка преди Коледа"
+            defaultValue={settings.orderCutoffNote}
+            className="h-12 rounded-2xl border-2"
+          />
         </div>
       </section>
 

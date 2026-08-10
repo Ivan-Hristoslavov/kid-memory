@@ -46,7 +46,7 @@ export function CookieConsent() {
           role="dialog"
           aria-label="Съгласие за бисквитки"
         >
-          <div className="glass rounded-3xl p-6 shadow-2xl shadow-plum/20">
+          <div className="glass rounded-2xl p-6 shadow-2xl shadow-plum/20">
             <div className="flex items-start gap-3">
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary text-secondary-foreground">
                 <Cookie className="size-5" />

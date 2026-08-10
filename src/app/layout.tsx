@@ -1,26 +1,30 @@
 import type { Metadata } from "next";
-import { Baloo_2, Inter, Nunito } from "next/font/google";
+import { Manrope, PT_Serif } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { BRAND } from "@/lib/brand";
 import { CookieConsent } from "@/components/site/cookie-consent";
 import { Analytics } from "@/components/site/analytics";
 import { HashScroll } from "@/components/site/hash-link";
 import "./globals.css";
 
-const nunito = Nunito({
+/**
+ * A serif drawn for Cyrillic over a geometric grotesk. Baloo — a rounded face
+ * made for children's material — was what made every page read as a nursery no
+ * matter what the copy said, and it has no Cyrillic subset at all.
+ *
+ * PT Serif ships 400/700 only, so headings styled `font-extrabold` resolve to
+ * 700 rather than being synthetically emboldened.
+ */
+const ptSerif = PT_Serif({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-nunito",
+  weight: ["400", "700"],
+  variable: "--font-pt-serif",
   display: "swap",
 });
 
-const baloo = Baloo_2({
-  subsets: ["latin"],
-  variable: "--font-baloo",
-  display: "swap",
-});
-
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
-  variable: "--font-inter",
+  variable: "--font-manrope",
   display: "swap",
 });
 
@@ -29,40 +33,42 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Бисерите на моето дете — персонализиран детски постер",
-    template: "%s | Бисерите на моето дете",
+    default: `${BRAND.name} — персонализирани постери по снимка`,
+    template: `%s | ${BRAND.name}`,
   },
-  description:
-    "Запази първите смешни думи на твоето дете като уникална илюстрация. Персонализиран подарък за дете — детски постер със снимка, име и най-сладките думички. Идеален подарък за рожден ден.",
+  description: BRAND.description,
+  // Kept deliberately broad across occasions: the old set was children-only,
+  // which is exactly what capped the shop to a few dates a year.
   keywords: [
-    "персонализиран подарък за дете",
-    "детски постер",
+    "персонализиран подарък",
+    "постер по снимка",
     "подарък за рожден ден",
-    "детски спомени",
-    "смешни детски думи",
+    "подарък за колега",
+    "подарък за годишнина",
+    "портрет по снимка",
+    "постер с домашен любимец",
     "персонализирана илюстрация",
   ],
   openGraph: {
     type: "website",
     locale: "bg_BG",
     url: siteUrl,
-    siteName: "Бисерите на моето дете",
-    title: "Бисерите на моето дете — запази смешните думи завинаги ❤️",
-    description:
-      "Децата растат толкова бързо. Днес чуваме техните смешни думи. Утре вече ги няма. Запази тези малки моменти завинаги.",
+    siteName: BRAND.name,
+    title: `${BRAND.name} — ${BRAND.tagline}`,
+    description: BRAND.description,
     images: [
       {
         url: "/og.jpg",
         width: 1200,
         height: 630,
-        alt: "Персонализиран детски постер с илюстрация на дете и неговите смешни думички",
+        alt: "Персонализиран илюстрован постер по снимка",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Бисерите на моето дете",
-    description: "Запази първите смешни думи на твоето дете като уникална илюстрация.",
+    title: BRAND.name,
+    description: BRAND.description,
     images: ["/og.jpg"],
   },
   robots: {
@@ -81,7 +87,7 @@ export default function RootLayout({
   return (
     <html lang="bg" className="h-full">
       <body
-        className={`${nunito.variable} ${baloo.variable} ${inter.variable} grain min-h-full flex flex-col font-sans antialiased`}
+        className={`${ptSerif.variable} ${manrope.variable} grain min-h-full flex flex-col font-sans antialiased`}
       >
         {children}
         <HashScroll />

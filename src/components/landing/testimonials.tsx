@@ -42,7 +42,7 @@ export async function Testimonials({ heading }: { heading?: string }) {
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {reviews.map((r) => (
-            <figure key={r.id} className="glass lift relative flex flex-col rounded-3xl p-7">
+            <figure key={r.id} className="glass lift relative flex flex-col rounded-2xl p-7">
               <Quote className="absolute right-6 top-6 size-8 text-primary/15" />
               <StarRating value={r.rating} className="size-4" />
               <blockquote className="mt-4 flex-1 text-pretty text-foreground/85">

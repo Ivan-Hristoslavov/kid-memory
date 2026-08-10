@@ -45,10 +45,10 @@ export function Pricing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.6, delay: i * 0.08 }}
-                className={`relative flex flex-col rounded-3xl p-7 ${
+                className={`relative flex flex-col rounded-xl p-7 ${
                   featured
-                    ? "elevate-lg bg-gradient-to-b from-primary/10 to-lavender/40 ring-2 ring-primary lg:-mt-4 lg:mb-4"
-                    : "glass lift"
+                    ? "elevate-lg bg-gradient-to-b from-primary/10 to-primary/[0.03] ring-2 ring-primary lg:-mt-4 lg:mb-4"
+                    : "lift bg-card ring-1 ring-border/70"
                 }`}
               >
                 {TAGLINE[id] && (

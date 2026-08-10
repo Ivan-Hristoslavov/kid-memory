@@ -12,6 +12,7 @@ const NAV = [
   { href: "/idei", label: "Идеи за подаръци" },
   { href: "/otzivi", label: "Отзиви" },
   { href: "/proverka", label: "Провери поръчка" },
+  { href: "/moite", label: "Моите постери" },
 ];
 
 const LEGAL = [
@@ -39,7 +40,7 @@ export async function Footer() {
               <span className="font-heading font-bold">{COMPANY.brand}</span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              Малките думички си отиват тихо. Ние ги превръщаме в спомен, който остава на
+              Малките неща си отиват тихо. Ние ги превръщаме в постер, който остава на
               стената — и в сърцето — завинаги.
             </p>
             <div className="mt-5 space-y-1.5 text-sm">

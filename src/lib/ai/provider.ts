@@ -1,33 +1,36 @@
 import "server-only";
 import sharp from "sharp";
 import { STYLES } from "@/lib/catalog";
+import { aiBakesText } from "@/lib/config";
+import {
+  DEFAULT_TEMPLATE,
+  MAX_POSTER_LINES,
+  type PosterSubject,
+  type TemplateId,
+} from "@/lib/templates";
+import { TEMPLATE_PROMPTS, formatAge } from "./template-prompt";
+
+export { formatAge };
+export { joinNames } from "@/lib/templates";
 
 /**
  * AI poster generation. With gpt-image-1 the model renders the COMPLETE poster —
- * illustration + hand-lettered title + speech bubbles — all baked in, so the
- * text and art share one cohesive style (ChatGPT-quality result).
+ * illustration + hand-lettered title + bubbles — all baked in, so the text and
+ * art share one cohesive style (ChatGPT-quality result).
+ *
+ * What differs per poster template (a child's mispronunciations vs a dog's
+ * habits vs a birth weight) lives in `template-prompt.ts`; everything below is
+ * shared, because identity lock, art direction and print safe area are the same
+ * problem whoever is in the photo.
  */
-export interface PosterChild {
-  name: string;
-  age: number;
-  gender: "BOY" | "GIRL";
-  words: { word: string; saidAs: string; visual?: string }[];
-}
-
 export interface GenerationRequest {
   photo: Buffer;
-  children: PosterChild[]; // 1–3 children (siblings/twins)
+  template: TemplateId;
+  subjects: PosterSubject[];
   animals: string[]; // animal ids from catalog
   style: string; // style id from catalog
   /** Image quality — set from admin settings; drives cost per poster. */
   quality?: "low" | "medium" | "high";
-}
-
-/** "Мила", "Мила и Борис", "Мила, Борис и Ема" */
-export function joinNames(names: string[]): string {
-  const clean = names.filter(Boolean);
-  if (clean.length <= 1) return clean[0] ?? "";
-  return `${clean.slice(0, -1).join(", ")} и ${clean.at(-1)}`;
 }
 
 export interface AIImageProvider {
@@ -65,15 +68,6 @@ const OBJECT_STYLE_PROMPTS: Record<string, string> = {
   fantasy: "painted in the same magical, softly glowing style as the scene",
 };
 
-/** "1 година", "3 години", "2 години и половина" */
-export function formatAge(age: number): string {
-  const whole = Math.floor(age);
-  const half = age - whole >= 0.5;
-  const unit = whole === 1 ? "година" : "години";
-  if (whole === 0) return "половин година";
-  return half ? `${whole} ${unit} и половина` : `${whole} ${unit}`;
-}
-
 const ANIMAL_PROMPTS: Record<string, string> = {
   dog: "an adorable playful puppy",
   cat: "a sweet fluffy kitten",
@@ -89,35 +83,66 @@ const ANIMAL_PROMPTS: Record<string, string> = {
   hamster: "a chubby cute hamster",
 };
 
+/** The template's prompt language, falling back to the original product. */
+function promptFor(template: TemplateId) {
+  return TEMPLATE_PROMPTS[template] ?? TEMPLATE_PROMPTS[DEFAULT_TEMPLATE];
+}
+
+/**
+ * The layout the illustration and the compositor both have to agree on.
+ *
+ * The compositor is blind to the picture. It can measure where detail sits
+ * (`busynessMap` in lib/poster/compose.ts) but it cannot move a face out of the
+ * way, so the free space has to be requested up front. Exported because the
+ * marketing sample script renders through the same layout — a sample drawn to
+ * different rules would advertise a poster the shop does not make.
+ */
+export function compositionContract(noun: string): string {
+  return [
+    "COMPOSITION CONTRACT — wording is added by the app afterwards, so the artwork must leave room for it:",
+    `the ${noun} occupy the central vertical third of the frame, front and centre, facing the viewer, and are never cropped;`,
+    "the top 18% of the image is calm background only — open sky, soft foliage, blurred wall — with no face, no prop and no busy pattern;",
+    "the left and right quarters of the image, from below that band down to 90% of the height, stay visually quiet: simple, low-contrast, softly blurred background with no important detail, so a caption placed there does not cover anything;",
+    "companion characters and props sit low and central, near the feet, not out at the edges;",
+    "keep a clean margin of at least 7% of the image height on all four sides.",
+  ].join(" ");
+}
+
+/**
+ * Text-free illustration prompt. The app overlays the wording afterwards, so
+ * the model is asked for a picture and nothing that resembles a letter.
+ */
 export function buildPrompt(req: GenerationRequest): string {
   const style = STYLE_PROMPTS[req.style] ?? STYLE_PROMPTS.storybook;
+  const t = promptFor(req.template);
   const animals = req.animals
     .map((a) => ANIMAL_PROMPTS[a])
     .filter(Boolean)
     .join(", ");
-  const n = req.children.length;
+  const n = req.subjects.length;
+  const noun = n === 1 ? t.noun : t.nounPlural;
 
   return [
-    `Transform the uploaded photo of ${n === 1 ? "a real, specific child" : `${n} real, specific children`} into a personalized memory poster illustration. Keep EVERY child that appears in the photo — all ${n}.`,
-    "CRITICAL — PHOTOREALISTIC IDENTITY LOCK: render each child with a faithful, high-fidelity, semi-realistic likeness — as if a master portrait artist carefully painted THIS exact child from the photo.",
-    "For every child keep the real facial structure and true proportions, real skin tone with natural shading, realistic detailed eyes (exact shape and colour), eyebrows, nose, lips and the exact smile, and the exact hairstyle, hair colour and texture. Keep any hats, clothing and distinguishing features.",
-    "Each face must look like a realistic portrait of the actual child — NOT a flat generic cartoon, NOT beautified, averaged or stylized away. A parent must instantly recognise their own children at a glance.",
-    `Render the surrounding world, background, lighting and props in this art direction, while keeping the children's faces realistic and true to the photo: ${style}.`,
-    `Keep the ${n === 1 ? "child" : "children"} as the clear main hero(es): together, front and centre, facing the viewer, natural pose.`,
+    `Transform the uploaded photo of ${n === 1 ? `a real, specific ${t.noun}` : `${n} real, specific ${t.nounPlural}`} into a personalized poster illustration. Keep EVERY ${t.noun} that appears in the photo — all ${n}.`,
+    `CRITICAL — PHOTOREALISTIC IDENTITY LOCK: render each ${t.noun} with a faithful, high-fidelity, semi-realistic likeness — as if a master portrait artist carefully painted THIS exact subject from the photo.`,
+    t.identityLock(n),
+    `Render the surrounding world, background, lighting and props in this art direction, while keeping the ${noun} true to the photo: ${style}.`,
+    `Keep the ${noun} as the clear main hero(es): together, front and centre, facing the viewer, natural pose.`,
     animals
-      ? `Add these as charming, richly detailed companion characters around the children (they must NOT replace or cover the children): ${animals}.`
+      ? `Add these as charming, richly detailed companion characters around the ${noun} (they must NOT replace or cover them): ${animals}.`
       : "",
     (() => {
-      const things = req.children
-        .flatMap((c) => c.words.map((w) => w.visual).filter(Boolean))
+      const things = req.subjects
+        .flatMap((s) => s.lines.map((l) => l.visual).filter(Boolean))
         .slice(0, 8);
       return things.length
-        ? `Also include, EXACTLY ONCE each, a small cute cartoon of: ${things.map((t) => `"${t}"`).join(", ")} — evenly spaced around the children, no duplicates.`
+        ? `Also include, EXACTLY ONCE each, a small drawing of: ${things.map((x) => `"${x}"`).join(", ")} — evenly spaced around the ${noun}, no duplicates.`
         : "";
     })(),
-    "Compose as a vertical portrait poster with a lush, detailed scene, real depth and soft cinematic lighting; leave generous empty space near the top and around the margins so wording can be overlaid later by the app.",
-    "Do NOT write or draw ANY text, letters, words, numbers, captions, signatures or watermark anywhere — in any language, and ESPECIALLY no Bulgarian / Cyrillic text. Every word is added separately by the app afterwards, so the illustration itself must be completely text-free and never attempt to spell anything.",
-    "Rich detail, natural realistic rendering of the children, harmonious colour palette, professional print quality, 4K.",
+    compositionContract(noun),
+    "Compose as a vertical portrait poster with a lush, detailed scene, real depth and soft cinematic lighting.",
+    "Do NOT write or draw ANY text, letters, words, numbers, captions, speech bubbles, banners, ribbons, labels, signatures or watermark anywhere — in any language, and ESPECIALLY no Bulgarian / Cyrillic text. Every word and every bubble is added separately by the app afterwards, so the illustration itself must be completely text-free and never attempt to spell anything.",
+    "Rich detail, natural realistic rendering, harmonious colour palette, professional print quality, 4K.",
   ]
     .filter(Boolean)
     .join(" ");
@@ -135,17 +160,11 @@ export function buildPosterPrompt(req: GenerationRequest): string {
     .filter(Boolean)
     .join(", ");
 
-  const n = req.children.length;
-  const names = joinNames(req.children.map((c) => c.name));
-  const title = `Думичките на ${names}`;
-
-  // The keepsake only works as an archive if it says WHEN. Without an age and a
-  // year it is just a picture; with them it dates a phase that lasts months.
-  const year = new Date().getFullYear();
-  const subtitle =
-    n === 1
-      ? `${req.children[0].name}, на ${formatAge(req.children[0].age)} · ${year}`
-      : `${req.children.map((c) => `${c.name} — ${formatAge(c.age)}`).join(", ")} · ${year}`;
+  const t = promptFor(req.template);
+  const n = req.subjects.length;
+  const noun = n === 1 ? t.noun : t.nounPlural;
+  const title = t.title(req.subjects);
+  const subtitle = t.subtitle(req.subjects, new Date().getFullYear());
 
   // gpt-image-1 binds words to drawings far more reliably when each pair is a
   // numbered, positioned unit rather than one long list — otherwise it swaps
@@ -159,44 +178,55 @@ export function buildPosterPrompt(req: GenerationRequest): string {
     "in the middle-right area",
   ];
 
-  const pairs = req.children.flatMap((c) =>
-    c.words.slice(0, 4).map((w) => ({ ...w, owner: c.name }))
+  // Spread the cap across subjects so one talkative child cannot eat every slot
+  // and leave their sibling with none.
+  const perSubject = Math.max(1, Math.floor(MAX_POSTER_LINES / Math.max(n, 1)));
+  const lines = req.subjects.flatMap((s) =>
+    s.lines.slice(0, perSubject).map((l) => ({ ...l, owner: s.name }))
   );
 
-  const bubbleSpec = pairs
+  // A dog does not speak and a birth weight is not a quote — the container word
+  // has to follow the template, or the model draws speech bubbles regardless.
+  const container = t.bubbleKind === "speech" ? "bubble" : "label";
+  const Container = container === "bubble" ? "Bubble" : "Label";
+
+  const bubbleSpec = lines
     .slice(0, SLOTS.length)
     .map((w, i) => {
       const who = n === 1 ? "" : ` (belongs to ${w.owner})`;
-      // The drawing sits OUTSIDE the bubble — placing it inside made the model
-      // render objects on top of the lettering.
+      // The drawing sits OUTSIDE the container — placing it inside made the
+      // model render objects on top of the lettering.
       const art = w.visual
-        ? ` Just outside this bubble, touching it but never overlapping any letter, draw exactly one small "${w.visual}", ${objectStyle}. It belongs to bubble ${i + 1} only and must not appear anywhere else in the poster.`
-        : " This bubble has no drawing beside it.";
-      return `Bubble ${i + 1}, ${SLOTS[i]}${who}: large bold Bulgarian Cyrillic reading \u201e${w.saidAs}\u201c, and directly under it on its own line, in noticeably smaller plain lettering, \u201e(${w.word})\u201c.${art}`;
+        ? ` Just outside this ${container}, touching it but never overlapping any letter, draw exactly one small "${w.visual}", ${objectStyle}. It belongs to ${container} ${i + 1} only and must not appear anywhere else in the poster.`
+        : ` This ${container} has no drawing beside it.`;
+      return `${Container} ${i + 1}, ${SLOTS[i]}${who}: ${t.bubbleText(w)}.${art}`;
     })
     .join(" ");
 
   return [
     `Create a COMPLETE, premium personalized children's memory POSTER featuring all ${n} ${n === 1 ? "child" : "children"} from the photo — a single finished artwork in a warm, richly detailed storybook / comic-book illustration style, like a beautiful children's book cover.`,
-    // Toddlers read as ambiguous in photos more often than adults, so state it.
-    `The ${n === 1 ? "child is" : "children are"}: ${req.children
-      .map((c) => `${c.name} — a ${c.gender === "GIRL" ? "girl" : "boy"} aged ${c.age}`)
+    // Toddlers and animals read as ambiguous in photos far more often than
+    // adults, so state exactly who is in the frame.
+    `The ${n === 1 ? `${t.noun} is` : `${t.nounPlural} are`}: ${req.subjects
+      .map((s) => t.describe(s))
       .join("; ")}.`,
-    `IDENTITY LOCK: use the uploaded photo as the reference and keep EACH child UNMISTAKABLY recognizable — preserve every child's exact face shape and proportions, skin tone, eye shape and colour, eyebrows, nose, mouth, smile, hairstyle and clothing. Do NOT merge, swap, drop, duplicate or genericise any child. All ${n} children are the heroes, together, front and centre, facing the viewer.`,
-    `Whole-scene art style: ${style}. Fill the frame with a lush, richly detailed world (nature, water, sky, soft depth), vibrant harmonious colours and a polished professional poster composition — not empty or sparse.`,
+    t.identityLock(n),
+    `Whole-scene art style: ${style}. Fill the frame with a lush, richly detailed world (nature, light, soft depth), harmonious colours and a polished professional poster composition — not empty or sparse.`,
     animals
-      ? `Populate the scene with these as expressive, friendly companion characters around the children, ${objectStyle}: ${animals}.`
+      ? `Populate the scene with these as expressive, friendly companion characters around the ${noun}, ${objectStyle}: ${animals}.`
       : "",
-    // Print safe area: the most common defect was the child sliced by the
+    // Print safe area: the most common defect was the subject sliced by the
     // bottom edge, which reads as a printing mistake once the poster is framed.
-    "PRINT COMPOSITION — this poster will be printed and framed, so respect a safe area: keep a clean, calm margin of at least 7% of the image height on all four sides. No letter, bubble, face or important detail may touch or cross that margin. The children must sit fully inside the frame: never crop a child at the bottom edge, and leave clear visible space between the lowest part of the children and the bottom of the poster.",
-    "Each funny word is the child's own mispronunciation of a real thing. Every bubble therefore shows TWO lines: the funny word large, and the real word small underneath in brackets. That pairing is the whole point of the poster and must never be dropped — without it nobody can tell what the child meant.",
+    `PRINT COMPOSITION — this poster will be printed and framed, so respect a safe area: keep a clean, calm margin of at least 7% of the image height on all four sides. No letter, ${container}, face or important detail may touch or cross that margin. The ${noun} must sit fully inside the frame: never crop at the bottom edge, and leave clear visible space between the lowest part of the ${noun} and the bottom of the poster.`,
+    t.bubbleRule,
     "BAKE THE TEXT INTO THE ARTWORK, hand-lettered in the same illustration style:",
-    `• A decorative TITLE banner across the top reading exactly, in correct Bulgarian Cyrillic: “${title}”.`,
-    `• Directly beneath the title, in small elegant lettering: “${subtitle}”.`,
-    `• Exactly ${Math.min(pairs.length, SLOTS.length)} comic-style speech bubbles, no more and no fewer. ${bubbleSpec}`,
-    "Every bubble MUST contain both of its lines — never leave a bubble empty, never omit the small word in brackets, never put a word beside the wrong drawing, and never repeat the same object anywhere in the poster.",
-    "Copy every Bulgarian string CHARACTER-BY-CHARACTER exactly as written above — do not translate, transliterate, autocorrect, drop or invent any letter, and do not add extra words. Never hyphenate a word or split it across two lines: if a word is long, make its bubble wider or set that text smaller so it fits on a single line.",
+    `\u2022 A decorative TITLE banner across the top reading exactly, in correct Bulgarian Cyrillic: \u201c${title}\u201d.`,
+    subtitle
+      ? `\u2022 Directly beneath the title, in small elegant lettering: \u201c${subtitle}\u201d.`
+      : "",
+    `\u2022 ${t.bubbleIntro(Math.min(lines.length, SLOTS.length))} ${bubbleSpec}`,
+    `Every ${container} MUST contain all of the lines given for it — never leave one empty, never omit a smaller second line, never put text beside the wrong drawing, and never repeat the same object anywhere in the poster.`,
+    `Copy every Bulgarian string CHARACTER-BY-CHARACTER exactly as written above — do not translate, transliterate, autocorrect, drop or invent any letter, and do not add extra words. Never hyphenate a word or split it across two lines: if a word is long, make its ${container} wider or set that text smaller so it fits on a single line.`,
     "All lettering must be clean, evenly spaced and clearly legible at print size, integrated naturally as part of the illustration.",
     "Vertical portrait poster, 2:3. No signature, no logo, no watermark. High detail, 4K, professional print quality.",
   ]
@@ -205,9 +235,12 @@ export function buildPosterPrompt(req: GenerationRequest): string {
 }
 
 /**
- * OpenAI gpt-image-1 with the child's photo as reference (images.edit).
- * Renders the complete poster with baked-in Bulgarian text — the strongest
- * model for legible in-image lettering.
+ * OpenAI gpt-image-1 with the subject's photo as reference (images.edit).
+ *
+ * The strongest illustrator of the two providers — best identity preservation
+ * and the richest scenes — which is why it stays the default even though the
+ * app, not the model, now sets the type. Whether it is asked for a finished
+ * poster or a text-free illustration is AI_TEXT_MODE's call, not the provider's.
  */
 class OpenAIProvider implements AIImageProvider {
   private static readonly MAX_ATTEMPTS = 4;
@@ -224,7 +257,7 @@ class OpenAIProvider implements AIImageProvider {
       const form = new FormData();
       form.append("model", "gpt-image-1");
       form.append("image[]", new Blob([new Uint8Array(png)], { type: "image/png" }), "child.png");
-      form.append("prompt", buildPosterPrompt(req));
+      form.append("prompt", aiBakesText() ? buildPosterPrompt(req) : buildPrompt(req));
       form.append("size", "1024x1536");
       // Quality drives cost: high ≈ 3x medium. The fallback matches the
       // DEFAULT_SETTINGS value in lib/settings.ts — keep the two in step.

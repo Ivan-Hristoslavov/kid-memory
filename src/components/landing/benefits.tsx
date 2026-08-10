@@ -6,8 +6,8 @@ import { Frame, Gift, Palette, Sparkles } from "lucide-react";
 const BENEFITS = [
   {
     icon: Sparkles,
-    title: "Уникално за твоето дете",
-    text: "Илюстрация по лицето и думите на детето — няма втора същата на света.",
+    title: "Няма втори такъв",
+    text: "Илюстрация по конкретното лице и конкретните думи — няма втора същата на света.",
     tint: "bg-blush/50",
   },
   {
@@ -19,7 +19,7 @@ const BENEFITS = [
   {
     icon: Frame,
     title: "Готово за рамка",
-    text: "Премиум печат на матова хартия, който красиви всяка детска стая.",
+    text: "Премиум печат на матова хартия, който стои добре на всяка стена.",
     tint: "bg-mint/50",
   },
   {
@@ -41,7 +41,7 @@ export function Benefits() {
           transition={{ duration: 0.7 }}
           className="text-center font-heading text-4xl font-extrabold tracking-tight sm:text-5xl"
         >
-          Защо родителите го обичат
+          Защо се харесва
         </motion.h2>
 
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -52,7 +52,7 @@ export function Benefits() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="glass rounded-3xl p-7 text-center"
+              className="glass rounded-2xl p-7 text-center"
             >
               <div
                 className={`mx-auto grid size-14 place-items-center rounded-2xl ${b.tint} text-foreground/70`}

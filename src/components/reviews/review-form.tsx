@@ -23,7 +23,7 @@ export function ReviewForm() {
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="glass rounded-3xl p-10 text-center"
+        className="glass rounded-2xl p-10 text-center"
       >
         <span className="mx-auto grid size-14 place-items-center rounded-full bg-mint/60 text-foreground/70">
           <CircleCheck className="size-7" />
@@ -37,7 +37,7 @@ export function ReviewForm() {
   }
 
   return (
-    <form action={action} className="glass space-y-6 rounded-3xl p-8">
+    <form action={action} className="glass space-y-6 rounded-2xl p-8">
       {/* rating */}
       <div className="space-y-2">
         <Label>Твоята оценка</Label>

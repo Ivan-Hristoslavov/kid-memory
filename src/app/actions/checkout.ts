@@ -51,6 +51,8 @@ export async function confirmOrder(
     courier: formData.get("courier"),
     deliveryMethod: formData.get("deliveryMethod"),
     courierOffice: formData.get("courierOffice") ?? "",
+    marketingOptIn: formData.get("marketingOptIn") === "on",
+    childBirthday: formData.get("childBirthday") ?? "",
   });
 
   if (!parsed.success) {
@@ -60,6 +62,11 @@ export async function confirmOrder(
       if (!fieldErrors[key]) fieldErrors[key] = issue.message;
     }
     return { error: "Провери отбелязаните полета.", fieldErrors };
+  }
+
+  const settings = await getSettings();
+  if (settings.shopPaused) {
+    return { error: settings.shopPausedMessage };
   }
 
   const data = parsed.data;
@@ -114,13 +121,14 @@ export async function confirmOrder(
       courier: data.productType === "DIGITAL" ? null : data.courier,
       deliveryMethod: data.productType === "DIGITAL" ? null : data.deliveryMethod,
       courierOffice: data.courierOffice || null,
+      marketingOptIn: data.marketingOptIn,
+      childBirthday: data.childBirthday,
     },
   });
 
   await payments("COD").createPayment(order.id, totalEUR);
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const settings = await getSettings();
 
   // Server-side conversion, so a consent-blocked browser still reports the sale.
   await trackServerPurchase({

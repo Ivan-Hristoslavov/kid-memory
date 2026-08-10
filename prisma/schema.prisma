@@ -40,6 +40,28 @@ enum Gender {
   GIRL
 }
 
+/// What kind of poster an order is.
+///
+/// The shop started as children-only, which capped it to a handful of dates a
+/// year. A template decides what the wizard asks for, what the AI is told to
+/// draw, and which occasions the poster is sold against — everything else
+/// (photo, styles, printing, delivery) is shared.
+///
+/// KID_WORDS is the original product and stays the default so every existing
+/// order keeps its meaning without a data migration.
+enum PosterTemplate {
+  /// Дете + бисери (грешно казани думички).
+  KID_WORDS
+  /// Всеки човек + негови реплики — колега, приятел, учител, шеф.
+  PORTRAIT_LINES
+  /// Двойка + общи реплики — годишнина, сватба, Свети Валентин.
+  COUPLE
+  /// Домашен любимец + характерни му неща.
+  PET
+  /// Новородено + данни от раждането.
+  BABY_STATS
+}
+
 enum PaymentMethod {
   COD
   STRIPE
@@ -57,14 +79,26 @@ model Order {
   orderNumber Int         @unique @default(autoincrement())
   status      OrderStatus @default(CREATED)
 
-  // Child / poster input
+  /// Which poster this is. Drives the wizard, the prompt and the emails.
+  template PosterTemplate @default(KID_WORDS)
+
+  // Poster input
   childName   String // combined label for title/emails (e.g. "Мила и Борис")
-  childAge    Float // first child's age (legacy/display; allows halves e.g. 2.5)
-  childGender Gender // first child's gender (legacy/display)
-  // Structured per-child data: [{ name, age, gender, words: [{word, saidAs}] }]
+  /// Age of the first subject. Null on templates that have no age (a colleague
+  /// is not asked how old they are, a dog's age is optional).
+  childAge    Float?
+  /// Gender of the first subject. Null wherever the template doesn't ask.
+  childGender Gender?
+  /// LEGACY, KID_WORDS only: [{ name, age, gender, words: [{word, saidAs}] }].
+  /// Read through `orderSubjects()` — never directly.
   children    Json     @default("[]")
+  /// Canonical, template-agnostic subject data:
+  /// [{ name, age?, gender?, relation?, species?, lines: [{text, sub?, visual?}] }]
+  /// Empty on orders placed before templates existed; `orderSubjects()` maps
+  /// `children` across for those.
+  subjects    Json     @default("[]")
   photoKey    String? // private storage key of uploaded photo
-  words       Json // flattened [{ word, saidAs }] across all children
+  words       Json // flattened [{ word, saidAs }] across all subjects
   animals     String[]
   style       String
 
@@ -80,6 +114,18 @@ model Order {
 
   /// Set once the recovery email for an abandoned poster has gone out.
   recoveryEmailAt DateTime?
+
+  /// Stamped when the post-delivery review request goes out, so it fires once.
+  reviewRequestAt DateTime?
+
+  /// Explicit consent for seasonal campaign emails. Separate from the
+  /// transactional mail a customer gets regardless — never assume it.
+  marketingOptIn Boolean @default(false)
+
+  /// Optional. Drives a reminder three weeks before the next birthday, which is
+  /// the only occasion spread evenly across the year.
+  childBirthday       DateTime?
+  birthdayReminderAt  DateTime?
 
   /// One-click confirmation from the order email. Nothing goes to print until
   /// `confirmedAt` is set — an unclaimed personalised parcel is a total loss.
@@ -117,6 +163,7 @@ model Order {
 
   @@index([status, createdAt])
   @@index([email])
+  @@index([template, createdAt])
 }
 
 enum ReviewStatus {
@@ -164,6 +211,67 @@ model AdminLog {
 
   @@index([orderId, createdAt])
   @@index([createdAt])
+}
+
+/// A seasonal campaign that re-skins the site for a gift occasion.
+///
+/// Windows repeat every year, so they are stored as month/day rather than full
+/// dates — 8 март is 8 март forever. A window may wrap the new year (Коледа
+/// runs 20 Nov – 24 Dec, but a "26 Dec – 6 Jan" one has to work too).
+model Campaign {
+  id       String  @id @default(cuid())
+  name     String
+  enabled  Boolean @default(true)
+
+  /// Inclusive start, 1-12 / 1-31.
+  startMonth Int
+  startDay   Int
+  /// Inclusive end. If it sorts before the start, the window wraps the year.
+  endMonth   Int
+  endDay     Int
+
+  /// When two windows overlap, the higher number wins.
+  priority Int @default(0)
+
+  /// Poster template this occasion sells. The hero CTA deep-links to the wizard
+  /// with it preselected, so a "подарък за колежка" campaign never drops the
+  /// visitor onto a form asking for a child's age. Null keeps the default pick.
+  template PosterTemplate?
+
+  /// Site copy overrides. Empty means "leave the default alone".
+  heroTitle    String?
+  heroSubtitle String?
+  heroBadge    String?
+  promoText    String?
+  promoSecondary String?
+
+  /// SEO overrides for the home page.
+  seoTitle       String?
+  seoDescription String?
+
+  /// oklch() values applied as CSS variables — see lib/campaigns.ts.
+  accentColor String?
+  auraColor   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([enabled])
+}
+
+/// Passwordless access to a customer's own past orders.
+///
+/// Checkout is guest-only on purpose — accounts cost conversion. A short-lived
+/// emailed token gives a returning customer their stored designs without ever
+/// introducing a password.
+model AccessToken {
+  token     String   @id
+  email     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([expiresAt])
 }
 
 /// Durable rate-limit counters.

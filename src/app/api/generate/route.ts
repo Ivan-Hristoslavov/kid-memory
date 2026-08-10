@@ -108,9 +108,14 @@ export async function POST(req: Request) {
   }
   const input = parsed.data;
 
-  // Combined display label + flattened words for legacy fields / overlay / emails.
-  const combinedName = joinNames(input.children.map((c) => c.name));
-  const flatWords = input.children.flatMap((c) => c.words);
+  // Combined display label + flattened lines for the legacy columns, the text
+  // overlay and the emails. `words` keeps its historic {word, saidAs} shape so
+  // every existing reader (admin, emails, compositor) keeps working.
+  const combinedName = joinNames(input.subjects.map((s) => s.name));
+  const flatWords = input.subjects.flatMap((s) =>
+    s.lines.map((l) => ({ word: l.sub ?? "", saidAs: l.text, visual: l.visual }))
+  );
+  const first = input.subjects[0];
 
   let photo: Buffer;
   try {
@@ -124,10 +129,15 @@ export async function POST(req: Request) {
     order = await prisma.order.create({
       data: {
         status: "GENERATING",
+        template: input.template,
         childName: combinedName,
-        childAge: input.children[0].age,
-        childGender: input.children[0].gender,
-        children: input.children,
+        // Legacy display columns. Null wherever the template doesn't ask —
+        // a colleague has no gender in the BOY/GIRL sense and a dog has no age
+        // we insist on.
+        childAge: typeof first.age === "number" ? first.age : null,
+        childGender:
+          first.gender === "FEMALE" ? "GIRL" : first.gender === "MALE" ? "BOY" : null,
+        subjects: input.subjects,
         photoKey: input.photoKey,
         leadEmail: input.leadEmail || null,
         words: flatWords,
@@ -146,20 +156,21 @@ export async function POST(req: Request) {
   try {
     const illustration = await aiProvider().generate({
       photo,
-      children: input.children,
+      template: input.template,
+      subjects: input.subjects,
       animals: input.animals,
       style: input.style,
       quality: settings.aiQuality,
     });
 
-    // gpt-image-1 bakes the text in → use its output as-is.
-    // Gemini (Nano Banana) / mock return text-free art → app overlays the
-    // Bulgarian title + speech bubbles so the wording is always correct.
+    // AI_TEXT_MODE=bake trusts the model's own lettering; the default draws it
+    // here from the customer's exact strings, which is the only way Bulgarian
+    // reaches the print without a chance of a malformed letter.
     const finalPoster = aiBakesText()
       ? illustration
       : await composeFinalPoster(illustration, {
-          childName: combinedName,
-          words: flatWords,
+          template: input.template,
+          subjects: input.subjects,
         });
 
     const preview = await composeProtectedPreview(finalPoster);

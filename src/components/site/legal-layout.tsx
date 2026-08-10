@@ -28,7 +28,7 @@ export function LegalLayout({
           <p className="mt-2 text-sm text-muted-foreground">Последна редакция: {updated}</p>
 
           <div
-            className="glass mt-8 space-y-5 rounded-3xl p-8 leading-relaxed
+            className="glass mt-8 space-y-5 rounded-2xl p-8 leading-relaxed
               [&_a]:font-semibold [&_a]:text-primary [&_a]:underline
               [&_h2]:mt-8 [&_h2]:font-heading [&_h2]:text-xl [&_h2]:font-bold
               [&_h2:first-child]:mt-0

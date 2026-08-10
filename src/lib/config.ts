@@ -9,11 +9,18 @@ export function isTestMode(): boolean {
 }
 
 /**
- * Whether the active AI provider renders the poster text itself.
- * gpt-image-1 bakes the Bulgarian text into the art; Gemini (Nano Banana)
- * and the mock provider return a text-free illustration, so the app draws
- * the title + speech bubbles as a crisp SVG overlay instead.
+ * Whether the image model renders the poster wording itself.
+ *
+ * This used to be derived from AI_PROVIDER, which tied two unrelated decisions
+ * together: who draws the picture, and who writes the letters. gpt-image-1 is
+ * the better illustrator and the worse speller — asked for Bulgarian it returns
+ * malformed ъ, щ and я often enough that posters shipped with typos. Splitting
+ * the flag keeps the stronger artwork and takes the lettering back into the
+ * app, where the customer's exact string is drawn as vector outlines.
+ *
+ * "bake" is retained for comparing output, and because a future model may spell
+ * Cyrillic reliably. It must not be the default while one still cannot.
  */
 export function aiBakesText(): boolean {
-  return process.env.AI_PROVIDER === "openai";
+  return process.env.AI_TEXT_MODE === "bake";
 }

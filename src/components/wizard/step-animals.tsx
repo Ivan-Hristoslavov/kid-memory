@@ -15,12 +15,12 @@ export function StepAnimals() {
   const wizard = useWizard();
   const count = wizard.animals.length;
   const childrenName =
-    wizard.children.map((c) => c.name).filter(Boolean).join(" и ") || "детето";
+    wizard.subjects.map((s) => s.name).filter(Boolean).join(" и ") || "героя";
 
   return (
-    <Card className="glass overflow-hidden rounded-[2rem] border-none">
+    <Card className="glass overflow-hidden rounded-2xl border-none">
       <CardContent className="space-y-6 p-8">
-        <div className="rounded-2xl bg-mint/40 p-4 text-center">
+        <div className="rounded-2xl bg-secondary p-4 text-center">
           <p className="flex items-center justify-center gap-2 font-heading font-bold">
             <PawPrint className="size-4 text-primary" />
             Кои животни да са до {childrenName} на илюстрацията?

@@ -3,15 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, Menu, X } from "lucide-react";
+import { Frame, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HashLink } from "./hash-link";
+import { BRAND } from "@/lib/brand";
 
-// Order matches the order the sections appear on the page (styles → how →
-// pricing), so the nav reads as a map of the page rather than a random list.
-// "Отзиви" is last because it leaves the page. "Поводи" was dropped — it sat
-// mid-page and competed with Цени for the same click.
+// Order matches the order the sections appear on the page, so the nav reads as
+// a map of the page rather than a random list. "Отзиви" is last because it
+// leaves the page. "Поводи" is back and first: it is now the entry point that
+// tells a visitor this is not only a children's shop.
 const LINKS = [
+  { href: "/#occasions", label: "Поводи" },
   { href: "/#styles", label: "Стилове" },
   { href: "/#how", label: "Как работи" },
   { href: "/#pricing", label: "Цени" },
@@ -25,15 +27,21 @@ export function Navbar() {
 
   return (
     <div className="px-4 pt-3">
-      <nav className="glass-nav mx-auto max-w-5xl rounded-3xl px-4 py-2.5 sm:rounded-full sm:px-5">
+      <nav className="glass-nav mx-auto max-w-5xl rounded-2xl px-4 py-2.5 sm:rounded-full sm:px-5">
         <div className="flex items-center justify-between gap-3">
           <Link href="/" className="flex min-w-0 items-center gap-2" onClick={() => setOpen(false)}>
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-              <Heart className="size-4 fill-current" />
+            {/* A frame, not a heart — the mark should say "printed and hung",
+                which is true of every occasion the shop now sells. */}
+            <span className="grid size-9 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
+              <Frame className="size-4" />
             </span>
-            <span className="truncate font-heading text-base font-bold tracking-tight sm:text-lg">
-              <span className="sm:hidden">Бисерите</span>
-              <span className="hidden sm:inline">Бисерите на моето дете</span>
+            <span className="min-w-0 truncate">
+              <span className="block font-heading text-lg font-bold tracking-tight leading-none">
+                {BRAND.name}
+              </span>
+              <span className="hidden text-xs text-muted-foreground sm:block">
+                {BRAND.tagline}
+              </span>
             </span>
           </Link>
 

@@ -7,9 +7,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-baloo), var(--font-nunito), ui-sans-serif, sans-serif;
-  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  /* Serif headings against a grotesk body — the pairing a print shop uses,
+     and the single biggest break from the rounded nursery lettering. */
+  --font-heading: var(--font-pt-serif), ui-serif, Georgia, serif;
+  --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -60,95 +62,97 @@
 }
 
 :root {
-  /* Warm cream canvas, soft plum ink */
-  --background: oklch(0.993 0.008 84);
-  --foreground: oklch(0.34 0.05 295);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.34 0.05 295);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.34 0.05 295);
-  /* Coral-rose heart color */
-  --primary: oklch(0.7 0.14 22);
-  --primary-foreground: oklch(0.995 0.005 84);
-  /* Pale lavender */
-  --secondary: oklch(0.94 0.035 300);
-  --secondary-foreground: oklch(0.4 0.08 300);
-  --muted: oklch(0.962 0.014 84);
-  --muted-foreground: oklch(0.55 0.035 295);
-  /* Pastel sky */
-  --accent: oklch(0.94 0.04 230);
-  --accent-foreground: oklch(0.4 0.07 245);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.91 0.02 70);
-  --input: oklch(0.91 0.02 70);
-  --ring: oklch(0.7 0.14 22);
-  --chart-1: oklch(0.7 0.14 22);
-  --chart-2: oklch(0.75 0.1 300);
-  --chart-3: oklch(0.78 0.09 230);
-  --chart-4: oklch(0.82 0.1 150);
-  --chart-5: oklch(0.85 0.11 85);
-  --radius: 1rem;
-  --sidebar: oklch(0.985 0.01 84);
-  --sidebar-foreground: oklch(0.34 0.05 295);
-  --sidebar-primary: oklch(0.7 0.14 22);
-  --sidebar-primary-foreground: oklch(0.995 0.005 84);
-  --sidebar-accent: oklch(0.94 0.035 300);
-  --sidebar-accent-foreground: oklch(0.4 0.08 300);
-  --sidebar-border: oklch(0.91 0.02 70);
-  --sidebar-ring: oklch(0.7 0.14 22);
+  /* Gallery palette. The shop sells framed prints for any occasion, so the site
+     is the wall the print hangs on, not the thing being looked at: warm paper,
+     ink, and exactly one accent. The artwork supplies the colour. */
+  --background: oklch(0.977 0.006 85);
+  --foreground: oklch(0.24 0.012 60);
+  --card: oklch(0.995 0.003 85);
+  --card-foreground: oklch(0.24 0.012 60);
+  --popover: oklch(0.995 0.003 85);
+  --popover-foreground: oklch(0.24 0.012 60);
+  /* Terracotta — a печатарско accent, warm but not sweet. */
+  --primary: oklch(0.55 0.115 40);
+  --primary-foreground: oklch(0.985 0.006 85);
+  --secondary: oklch(0.935 0.008 80);
+  --secondary-foreground: oklch(0.34 0.015 60);
+  --muted: oklch(0.945 0.007 82);
+  --muted-foreground: oklch(0.48 0.012 62);
+  --accent: oklch(0.925 0.014 60);
+  --accent-foreground: oklch(0.32 0.02 50);
+  --destructive: oklch(0.55 0.2 27);
+  --border: oklch(0.885 0.008 78);
+  --input: oklch(0.885 0.008 78);
+  --ring: oklch(0.55 0.115 40);
+  --chart-1: oklch(0.55 0.115 40);
+  --chart-2: oklch(0.62 0.055 210);
+  --chart-3: oklch(0.68 0.06 145);
+  --chart-4: oklch(0.72 0.075 85);
+  --chart-5: oklch(0.5 0.05 300);
+  /* Square-ish. The nursery look leaned on very round corners. */
+  --radius: 0.625rem;
+  --sidebar: oklch(0.962 0.006 85);
+  --sidebar-foreground: oklch(0.24 0.012 60);
+  --sidebar-primary: oklch(0.55 0.115 40);
+  --sidebar-primary-foreground: oklch(0.985 0.006 85);
+  --sidebar-accent: oklch(0.925 0.014 60);
+  --sidebar-accent-foreground: oklch(0.32 0.02 50);
+  --sidebar-border: oklch(0.885 0.008 78);
+  --sidebar-ring: oklch(0.55 0.115 40);
 
-  /* Brand pastels */
-  --blush: oklch(0.9 0.055 20);
-  --peach: oklch(0.92 0.055 55);
-  --lavender: oklch(0.91 0.05 300);
-  --sky: oklch(0.91 0.05 230);
-  --mint: oklch(0.93 0.05 160);
-  --sun: oklch(0.94 0.08 90);
-  --cream: oklch(0.993 0.008 84);
-  --plum: oklch(0.34 0.05 295);
+  /* Retuned from nursery pastels to muted archival tints. The names are kept
+     because ~80 call sites reference them; only the values moved. */
+  --blush: oklch(0.9 0.028 35);
+  --peach: oklch(0.915 0.03 62);
+  --lavender: oklch(0.905 0.022 295);
+  --sky: oklch(0.905 0.024 225);
+  --mint: oklch(0.915 0.025 165);
+  --sun: oklch(0.93 0.04 92);
+  --cream: oklch(0.977 0.006 85);
+  --plum: oklch(0.24 0.012 60);
 }
 
 .dark {
-  --background: oklch(0.22 0.03 295);
-  --foreground: oklch(0.96 0.01 84);
-  --card: oklch(0.26 0.035 295);
-  --card-foreground: oklch(0.96 0.01 84);
-  --popover: oklch(0.26 0.035 295);
-  --popover-foreground: oklch(0.96 0.01 84);
-  --primary: oklch(0.74 0.13 22);
-  --primary-foreground: oklch(0.18 0.02 295);
-  --secondary: oklch(0.32 0.05 300);
-  --secondary-foreground: oklch(0.93 0.03 300);
-  --muted: oklch(0.3 0.03 295);
-  --muted-foreground: oklch(0.72 0.02 295);
-  --accent: oklch(0.32 0.05 245);
-  --accent-foreground: oklch(0.93 0.03 230);
-  --destructive: oklch(0.704 0.191 22.216);
+  --background: oklch(0.19 0.008 60);
+  --foreground: oklch(0.95 0.006 85);
+  --card: oklch(0.235 0.009 60);
+  --card-foreground: oklch(0.95 0.006 85);
+  --popover: oklch(0.235 0.009 60);
+  --popover-foreground: oklch(0.95 0.006 85);
+  --primary: oklch(0.68 0.12 42);
+  --primary-foreground: oklch(0.17 0.008 60);
+  --secondary: oklch(0.29 0.01 60);
+  --secondary-foreground: oklch(0.92 0.006 85);
+  --muted: oklch(0.27 0.009 60);
+  --muted-foreground: oklch(0.72 0.01 70);
+  --accent: oklch(0.31 0.018 50);
+  --accent-foreground: oklch(0.92 0.012 60);
+  --destructive: oklch(0.7 0.19 22);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.74 0.13 22);
-  --chart-1: oklch(0.74 0.13 22);
-  --chart-2: oklch(0.7 0.1 300);
-  --chart-3: oklch(0.72 0.09 230);
-  --chart-4: oklch(0.74 0.1 150);
-  --chart-5: oklch(0.8 0.11 85);
-  --sidebar: oklch(0.26 0.035 295);
-  --sidebar-foreground: oklch(0.96 0.01 84);
-  --sidebar-primary: oklch(0.74 0.13 22);
-  --sidebar-primary-foreground: oklch(0.18 0.02 295);
-  --sidebar-accent: oklch(0.32 0.05 300);
-  --sidebar-accent-foreground: oklch(0.93 0.03 300);
+  --ring: oklch(0.68 0.12 42);
+  --chart-1: oklch(0.68 0.12 42);
+  --chart-2: oklch(0.66 0.06 210);
+  --chart-3: oklch(0.7 0.06 145);
+  --chart-4: oklch(0.76 0.075 85);
+  --chart-5: oklch(0.6 0.05 300);
+  --sidebar: oklch(0.235 0.009 60);
+  --sidebar-foreground: oklch(0.95 0.006 85);
+  --sidebar-primary: oklch(0.68 0.12 42);
+  --sidebar-primary-foreground: oklch(0.17 0.008 60);
+  --sidebar-accent: oklch(0.31 0.018 50);
+  --sidebar-accent-foreground: oklch(0.92 0.012 60);
   --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.74 0.13 22);
+  --sidebar-ring: oklch(0.68 0.12 42);
 
-  --blush: oklch(0.45 0.06 20);
-  --peach: oklch(0.48 0.06 55);
-  --lavender: oklch(0.42 0.06 300);
-  --sky: oklch(0.42 0.05 230);
-  --mint: oklch(0.44 0.05 160);
-  --sun: oklch(0.5 0.08 90);
-  --cream: oklch(0.22 0.03 295);
-  --plum: oklch(0.96 0.01 84);
+  --blush: oklch(0.33 0.03 35);
+  --peach: oklch(0.34 0.032 62);
+  --lavender: oklch(0.32 0.025 295);
+  --sky: oklch(0.32 0.026 225);
+  --mint: oklch(0.33 0.026 165);
+  --sun: oklch(0.36 0.04 92);
+  --cream: oklch(0.19 0.008 60);
+  --plum: oklch(0.95 0.006 85);
 }
 
 @layer base {
@@ -282,11 +286,13 @@ section[id],
     inset: -10%;
     z-index: -1;
     pointer-events: none;
+    /* One warm wash, not three tints. Three drifting pastels behind a section
+       is a nursery mobile; a single low-contrast paper glow just keeps the
+       section from reading as a flat slab, which is all it was ever for. */
     background:
-      radial-gradient(42rem 26rem at 12% 8%, var(--blush) 0%, transparent 62%),
-      radial-gradient(38rem 24rem at 88% 22%, var(--sky) 0%, transparent 60%),
-      radial-gradient(34rem 22rem at 70% 92%, var(--lavender) 0%, transparent 62%);
-    opacity: 0.5;
+      radial-gradient(46rem 28rem at 14% 6%, var(--peach) 0%, transparent 64%),
+      radial-gradient(40rem 26rem at 86% 88%, var(--cream) 0%, transparent 62%);
+    opacity: 0.55;
     animation: aura-drift 26s ease-in-out infinite;
     will-change: transform;
   }
@@ -310,9 +316,9 @@ section[id],
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(40rem 26rem at 85% 10%, var(--mint) 0%, transparent 60%),
-      radial-gradient(36rem 24rem at 10% 80%, var(--peach) 0%, transparent 62%);
-    opacity: 0.45;
+      radial-gradient(40rem 26rem at 85% 10%, var(--blush) 0%, transparent 60%),
+      radial-gradient(36rem 24rem at 10% 80%, var(--sun) 0%, transparent 62%);
+    opacity: 0.4;
     animation: aura-drift 32s ease-in-out infinite reverse;
     will-change: transform;
   }
@@ -430,22 +436,28 @@ section[id],
   pointer-events: none;
 }
 
+/** Red → violet → blue read as a rainbow sticker. Terracotta into ink instead. */
 @utility text-gradient-warm {
   background: linear-gradient(
     100deg,
-    oklch(0.62 0.16 22),
-    oklch(0.6 0.14 320) 55%,
-    oklch(0.58 0.12 260)
+    oklch(0.55 0.115 40),
+    oklch(0.45 0.08 45) 60%,
+    oklch(0.3 0.03 55)
   );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
+/**
+ * Hero backdrop. Was lilac + sky + apricot, which is the palette of a birthday
+ * invitation; it is now warm paper with a single terracotta breath, so the
+ * poster deck in front of it supplies all the colour on screen.
+ */
 @utility bg-dreamy {
   background:
-    radial-gradient(60rem 40rem at 85% -10%, oklch(0.94 0.04 300 / 0.55), transparent 60%),
-    radial-gradient(50rem 36rem at -10% 20%, oklch(0.93 0.05 230 / 0.5), transparent 60%),
-    radial-gradient(46rem 34rem at 50% 110%, oklch(0.92 0.055 55 / 0.45), transparent 60%),
+    radial-gradient(62rem 42rem at 84% -12%, oklch(0.93 0.035 55 / 0.6), transparent 62%),
+    radial-gradient(52rem 38rem at -10% 24%, oklch(0.95 0.018 80 / 0.8), transparent 62%),
+    radial-gradient(44rem 32rem at 46% 112%, oklch(0.91 0.045 40 / 0.35), transparent 62%),
     var(--background);
 }

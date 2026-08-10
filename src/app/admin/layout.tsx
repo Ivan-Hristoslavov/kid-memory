@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { AdminTabs } from "@/components/admin/admin-tabs";
+import { BRAND } from "@/lib/brand";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,7 +12,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span className="grid size-8 place-items-center rounded-full bg-primary/10 text-primary">
               <Heart className="size-4 fill-current" />
             </span>
-            <span className="font-heading font-bold">Админ · Бисерите</span>
+            <span className="font-heading font-bold">Админ · {BRAND.name}</span>
           </Link>
           <AdminTabs />
         </div>

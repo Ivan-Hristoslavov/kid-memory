@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/site/legal-layout";
 import { COMPANY, PHOTO_RETENTION_DAYS } from "@/lib/legal";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Политика за поверителност",
   description:
-    "Как събираме, използваме и защитаваме личните данни и снимките, които качвате в „Бисерите на моето дете“.",
+    `Как събираме, използваме и защитаваме личните данни и снимките, които качвате в „${BRAND.name}“.`,
   alternates: { canonical: "/poveritelnost" },
 };
 

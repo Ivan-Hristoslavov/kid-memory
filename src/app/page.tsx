@@ -16,16 +16,27 @@ import { FinalCta } from "@/components/landing/final-cta";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { landingJsonLd } from "@/lib/seo";
+import { campaignStyle, getActiveCampaign } from "@/lib/campaigns";
 import { getSettings } from "@/lib/settings";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
-};
+/**
+ * Metadata follows the active campaign, so a search result for "подарък за
+ * 8 март" lands on a page whose title says exactly that.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const campaign = await getActiveCampaign();
+  return {
+    alternates: { canonical: "/" },
+    ...(campaign?.seoTitle ? { title: campaign.seoTitle } : {}),
+    ...(campaign?.seoDescription ? { description: campaign.seoDescription } : {}),
+  };
+}
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const settings = await getSettings();
+  const campaign = await getActiveCampaign();
 
   // Ratings are only published as structured data when genuine approved
   // reviews exist and are rendered on this same page.
@@ -51,23 +62,32 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(landingJsonLd(reviewSummary)) }}
       />
-      <SiteHeader />
-      <main className="flex-1">
-        <Hero title={settings.heroTitle} subtitle={settings.heroSubtitle} />
-        <WordMarquee />
-        <Story />
-        <Showcase />
-        <HowItWorks />
-        <OnTheWall />
-        {settings.showReviews && <Testimonials heading={settings.reviewsHeading} />}
-        <Occasions />
-        <Pricing />
-        <Guarantee />
-        <Faq />
-        <FinalCta />
-      </main>
-      <Footer />
-      <MobileCta />
+      {/* Campaign colours are applied as CSS variables on a wrapper, so the
+          whole page re-tints without touching a single component. */}
+      <div style={campaignStyle(campaign)} className="contents">
+        <SiteHeader campaign={campaign} />
+        <main className="flex-1">
+          <Hero
+            title={campaign?.heroTitle ?? settings.heroTitle}
+            subtitle={campaign?.heroSubtitle ?? settings.heroSubtitle}
+            badge={campaign?.heroBadge}
+            template={campaign?.template ?? null}
+          />
+          <WordMarquee />
+          <Story />
+          <Showcase />
+          <HowItWorks />
+          <OnTheWall />
+          {settings.showReviews && <Testimonials heading={settings.reviewsHeading} />}
+          <Occasions />
+          <Pricing />
+          <Guarantee />
+          <Faq />
+          <FinalCta />
+        </main>
+        <Footer />
+        <MobileCta />
+      </div>
     </>
   );
 }
