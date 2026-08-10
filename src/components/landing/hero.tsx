@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Eye, Heart, ShieldCheck, Sparkles, Tag } from "lucide-react";
+import { ArrowRight, Eye, ShieldCheck, Sparkles, Tag } from "lucide-react";
 import { formatPrice, lowestPriceEUR } from "@/lib/catalog";
 import { HashLink } from "@/components/site/hash-link";
 import { Magnetic } from "@/components/site/magnetic";
 import { Button } from "@/components/ui/button";
+import { BRAND } from "@/lib/brand";
+import { AVAILABLE_TEMPLATES, TEMPLATES, type TemplateId } from "@/lib/templates";
+import { iconFor } from "@/lib/icons";
 import { HeroPoster } from "./hero-poster";
-import { FloatingMagic } from "./floating-magic";
 
 /**
  * Underlines the quoted word in the headline with a hand-drawn squiggle that
@@ -47,10 +49,21 @@ function HeadlineWithSquiggle({ text }: { text: string }) {
   );
 }
 
-export function Hero({ title, subtitle }: { title?: string; subtitle?: string } = {}) {
+export function Hero({
+  title,
+  subtitle,
+  badge,
+  template,
+}: {
+  title?: string;
+  subtitle?: string;
+  badge?: string | null;
+  /** Set by the active campaign, so its CTA opens the form it advertised. */
+  template?: TemplateId | null;
+} = {}) {
+  const createHref = template ? `/create?template=${template}` : "/create";
   return (
     <section className="bg-dreamy relative overflow-hidden pt-14 pb-20 sm:pt-20 sm:pb-28">
-      <FloatingMagic />
       <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="text-center lg:text-left">
           <motion.div
@@ -60,7 +73,7 @@ export function Hero({ title, subtitle }: { title?: string; subtitle?: string } 
             className="mb-5 inline-flex items-center gap-2 rounded-full bg-secondary px-4 py-1.5 text-sm font-bold text-secondary-foreground"
           >
             <Sparkles className="size-4" />
-            С лицето на твоето дете — не само думички
+            {badge ?? "Илюстрован постер по твоя снимка"}
           </motion.div>
 
           <motion.h1
@@ -69,7 +82,7 @@ export function Hero({ title, subtitle }: { title?: string; subtitle?: string } 
             transition={{ duration: 0.7, delay: 0.1 }}
             className="text-balance font-heading text-5xl font-extrabold leading-[1.03] tracking-tight sm:text-6xl lg:text-[4.2rem]"
           >
-            <HeadlineWithSquiggle text={title ?? "Догодина няма да казва „лисапед“."} />
+            <HeadlineWithSquiggle text={title ?? "Подарък, който казва „това си ти“."} />
           </motion.h1>
 
           <motion.p
@@ -78,8 +91,7 @@ export function Hero({ title, subtitle }: { title?: string; subtitle?: string } 
             transition={{ duration: 0.7, delay: 0.25 }}
             className="mx-auto mt-6 max-w-xl text-pretty text-lg text-muted-foreground lg:mx-0"
           >
-            {subtitle ??
-              "Превърни първите смешни думи на твоето дете в уникален илюстриран постер, който ще топли сърцето ти завинаги."}
+            {subtitle ?? BRAND.description}
           </motion.p>
 
           <motion.div
@@ -94,9 +106,9 @@ export function Hero({ title, subtitle }: { title?: string; subtitle?: string } 
                 size="lg"
                 className="group h-14 rounded-full px-8 text-lg shadow-xl shadow-primary/30"
               >
-                <Link href="/create">
-                  Създай моя спомен
-                  <Heart className="size-5 fill-current transition-transform group-hover:scale-110" />
+                <Link href={createHref}>
+                  Създай постер
+                  <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </Magnetic>
@@ -108,10 +120,34 @@ export function Hero({ title, subtitle }: { title?: string; subtitle?: string } 
             </Button>
           </motion.div>
 
+          {/* The single clearest signal that this is not a children-only shop,
+              and it sits above the fold. Each chip opens its own template. */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.6 }}
+            transition={{ duration: 0.7, delay: 0.55 }}
+            className="mt-8 flex flex-wrap items-center justify-center gap-2 lg:justify-start"
+          >
+            {AVAILABLE_TEMPLATES.map((id) => {
+              const t = TEMPLATES[id];
+              const Icon = iconFor(t.icon);
+              return (
+                <Link
+                  key={id}
+                  href={`/create?template=${id}`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1.5 text-sm font-medium transition-colors hover:border-primary/50 hover:text-primary"
+                >
+                  <Icon className="size-3.5" />
+                  {t.name}
+                </Link>
+              );
+            })}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.7 }}
             className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground lg:justify-start"
           >
             <span className="inline-flex items-center gap-1.5">

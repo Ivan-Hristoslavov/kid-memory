@@ -11,7 +11,7 @@ import { Eyebrow } from "./shared";
 
 const POINTS = [
   "Премиум матова хартия 250 г, наситени цветове",
-  "Формати A4 и A3 — за рамка над леглото или до бюрото",
+  "Формати A4 и A3 — за рамка в хола, в спалнята или над бюрото",
   `Дървена рамка по избор (+${formatPrice(ADDONS.FRAME.priceEUR)})`,
   "Опаковано като подарък, готово за връчване",
 ];
@@ -34,12 +34,12 @@ export function OnTheWall() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
-          className="elevate-lg relative overflow-hidden rounded-[2rem]"
+          className="elevate-lg relative overflow-hidden rounded-2xl"
         >
           <motion.div style={{ y: imageY }} className="scale-110">
             <Image
               src="/samples/wall.webp"
-              alt="Персонализиран детски постер в рамка на стената в детска стая"
+              alt="Персонализиран илюстрован постер в рамка на стена"
               width={1200}
               height={800}
               sizes="(max-width: 1024px) 92vw, 560px"
@@ -59,7 +59,7 @@ export function OnTheWall() {
             Спомен, който се вижда всеки ден
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Не е файл, който потъва в телефона. Виси в детската стая и връща усмивката
+            Не е файл, който потъва в телефона. Виси на стената и връща усмивката
             всеки път, когато минеш покрай него.
           </p>
 

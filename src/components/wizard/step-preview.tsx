@@ -14,12 +14,15 @@ import { SaveDraft } from "./save-draft";
 import { postJson } from "@/lib/fetch-json";
 import { trackFunnel } from "@/components/site/analytics";
 import { useWizard } from "@/lib/store/wizard";
+import { TEMPLATES } from "@/lib/templates";
+import { STYLE_STEP } from "./wizard";
 
 export function StepPreview() {
   const wizard = useWizard();
   const router = useRouter();
   const displayName =
-    wizard.children.map((c) => c.name).filter(Boolean).join(" и ") || "детето";
+    wizard.subjects.map((s) => s.name).filter(Boolean).join(" и ") ||
+    TEMPLATES[wizard.template].subject.noun;
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
   const [phase, setPhase] = useState(0);
@@ -40,11 +43,16 @@ export function StepPreview() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          children: wizard.children.map((c) => ({
-            name: c.name,
-            age: Number(c.age),
-            gender: c.gender,
-            words: c.words,
+          template: wizard.template,
+          subjects: wizard.subjects.map((s) => ({
+            name: s.name,
+            // Empty stays empty — the server treats a missing age as "not
+            // asked", while Number("") would silently become 0.
+            age: s.age === "" ? null : Number(s.age),
+            gender: s.gender || null,
+            relation: s.relation,
+            species: s.species,
+            lines: s.lines,
           })),
           photoKey: wizard.photoKey,
           leadEmail: wizard.leadEmail,
@@ -63,7 +71,14 @@ export function StepPreview() {
       setGenerating(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wizard.children, wizard.photoKey, wizard.leadEmail, wizard.animals, wizard.style]);
+  }, [
+    wizard.template,
+    wizard.subjects,
+    wizard.photoKey,
+    wizard.leadEmail,
+    wizard.animals,
+    wizard.style,
+  ]);
 
   useEffect(() => {
     if (!started.current && !wizard.previewUrl) {
@@ -95,7 +110,7 @@ export function StepPreview() {
   const shownUrl = testMode ? wizard.finalUrl : wizard.previewUrl;
 
   return (
-    <Card className="glass overflow-hidden rounded-[2rem] border-none">
+    <Card className="glass overflow-hidden rounded-2xl border-none">
       {/* `relative` anchors the reveal glow below — without it the burst
           positions against some far-off ancestor. */}
       <CardContent className="relative flex flex-col items-center gap-6 p-8">
@@ -133,7 +148,7 @@ export function StepPreview() {
               initial={{ opacity: 0, scale: 0.82, y: 24 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ type: "spring", stiffness: 120, damping: 16, mass: 0.9 }}
-              className="elevate-lg relative w-full max-w-sm overflow-hidden rounded-3xl"
+              className="elevate-lg relative w-full max-w-sm overflow-hidden rounded-2xl"
             >
               {testMode ? (
                 <Image
@@ -187,7 +202,7 @@ export function StepPreview() {
                 className="rounded-full"
                 onClick={() => {
                   wizard.setGenerated("", "", "");
-                  wizard.setStep(2);
+                  wizard.setStep(STYLE_STEP);
                 }}
               >
                 ← Промени

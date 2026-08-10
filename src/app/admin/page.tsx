@@ -3,7 +3,6 @@ import Link from "next/link";
 import type { OrderStatus, Prisma } from "@prisma/client";
 import {
   ChevronRight,
-  CircleCheck,
   CircleDollarSign,
   Clock,
   Package,
@@ -14,6 +13,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import { ADDONS, PRODUCTS, formatPrice, type ProductId } from "@/lib/catalog";
+import { getTemplate, orderSubjects } from "@/lib/templates";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { WorkQueue } from "@/components/admin/work-queue";
 import { BatchPrintButton } from "@/components/admin/batch-print";
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Администрация",
@@ -152,7 +153,7 @@ export default async function AdminPage({
               Табло за поръчки
             </h1>
             <p className="mt-1 text-muted-foreground">
-              Управление на „Бисерите на моето дете“
+              Управление на „{BRAND.name}“
             </p>
           </div>
           {/* search */}
@@ -228,7 +229,7 @@ export default async function AdminPage({
               <TableRow>
                 <TableHead className="w-12">№</TableHead>
                 <TableHead className="w-16">Постер</TableHead>
-                <TableHead>Дете и думички</TableHead>
+                <TableHead>Герой и реплики</TableHead>
                 <TableHead>Клиент</TableHead>
                 <TableHead>Продукт</TableHead>
                 <TableHead className="text-right">Сума</TableHead>
@@ -247,7 +248,7 @@ export default async function AdminPage({
                 </TableRow>
               )}
               {orders.map((order) => {
-                const kids = (order.children as { name: string; age: number }[]) ?? [];
+                const kids = orderSubjects(order);
                 const addonNames = order.addons
                   .map((a) => ADDONS[a as keyof typeof ADDONS]?.name)
                   .filter(Boolean);
@@ -272,10 +273,21 @@ export default async function AdminPage({
 
                     <TableCell>
                       <div className="font-semibold">{order.childName}</div>
+                      {/* Which product this is — a pet poster and a birth
+                          announcement need different handling at print. */}
+                      <div className="text-xs font-semibold text-primary">
+                        {getTemplate(order.template).name}
+                      </div>
                       <div className="text-xs text-muted-foreground">
                         {kids.length > 1
-                          ? kids.map((k) => `${k.name} ${k.age} г.`).join(" · ")
-                          : `${order.childAge} г.`}
+                          ? kids
+                              .map((k) =>
+                                typeof k.age === "number" ? `${k.name} ${k.age} г.` : k.name
+                              )
+                              .join(" · ")
+                          : typeof order.childAge === "number"
+                            ? `${order.childAge} г.`
+                            : (kids[0]?.species ?? "")}
                       </div>
                       {orderWords.length > 0 && (
                         <div className="mt-1 max-w-[16rem] truncate text-xs text-muted-foreground/80">

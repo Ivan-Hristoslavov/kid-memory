@@ -1,27 +1,36 @@
 import {
   Aperture,
+  Baby,
   Bird,
   BookHeart,
   Brush,
   Bug,
+  Cake,
   Castle,
   Cat,
   Dog,
   Drama,
   Feather,
   Fish,
+  GraduationCap,
+  Heart,
   Panda,
+  PartyPopper,
   PawPrint,
+  Quote,
   Rabbit,
   Rat,
   Snail,
+  Snowflake,
+  Sparkles,
   Squirrel,
+  Sun,
   Turtle,
   Wand2,
   type LucideIcon,
 } from "lucide-react";
 
-/** Maps catalog `icon` names (animals + styles) to lucide components. */
+/** Maps catalog `icon` names (animals, styles, templates, occasions) to lucide components. */
 const ICON_MAP: Record<string, LucideIcon> = {
   // animals
   Dog,
@@ -43,6 +52,17 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Drama,
   Brush,
   Wand2,
+  // templates + occasions
+  Baby,
+  Quote,
+  PawPrint,
+  Heart,
+  Sparkles,
+  Cake,
+  PartyPopper,
+  GraduationCap,
+  Sun,
+  Snowflake,
 };
 
 export function iconFor(name: string): LucideIcon {

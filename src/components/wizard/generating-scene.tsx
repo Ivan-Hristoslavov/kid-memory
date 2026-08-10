@@ -40,7 +40,7 @@ export function GeneratingScene({
       <div className="relative">
         <motion.div
           aria-hidden
-          className="absolute -inset-10 -z-10 rounded-full bg-gradient-to-tr from-blush via-lavender to-sky blur-3xl"
+          className="absolute -inset-10 -z-10 rounded-full bg-gradient-to-tr from-peach via-cream to-blush blur-3xl"
           animate={{ opacity: [0.35, 0.65, 0.35], scale: [0.95, 1.08, 0.95] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />

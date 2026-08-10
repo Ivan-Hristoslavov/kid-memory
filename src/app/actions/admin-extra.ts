@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
-import { aiProvider, joinNames } from "@/lib/ai/provider";
+import { aiProvider } from "@/lib/ai/provider";
+import { getTemplate, orderSubjects } from "@/lib/templates";
 import { composeFinalPoster, composeProtectedPreview } from "@/lib/poster/compose";
 import { aiBakesText, isTestMode } from "@/lib/config";
 import { getSettings, saveSettings, type SiteSettings } from "@/lib/settings";
@@ -108,6 +109,9 @@ export async function updateSettings(
       ? (str("aiQuality") as "low" | "medium" | "high")
       : "medium",
     aiDailyLimit: Math.max(0, Number(str("aiDailyLimit")) || 0),
+    shopPaused: formData.get("shopPaused") === "on",
+    shopPausedMessage: str("shopPausedMessage"),
+    orderCutoffNote: str("orderCutoffNote"),
   };
 
   try {
@@ -149,19 +153,16 @@ export async function regeneratePoster(
     return { error: "Снимката вече не е налична (може да е изтрита по давност)" };
   }
 
-  const children = (order.children as {
-    name: string;
-    age: number;
-    gender: "BOY" | "GIRL";
-    words: { word: string; saidAs: string; visual?: string }[];
-  }[]) ?? [];
-
-  if (children.length === 0) return { error: "Липсват данни за децата" };
+  // Goes through the mapper so orders placed before templates existed (which
+  // have `children` but an empty `subjects`) still regenerate.
+  const subjects = orderSubjects(order);
+  if (subjects.length === 0) return { error: "Липсват данни за постера" };
 
   try {
     const illustration = await aiProvider().generate({
       photo,
-      children,
+      template: getTemplate(order.template).id,
+      subjects,
       animals: order.animals,
       style: order.style,
       quality: (await getSettings()).aiQuality,
@@ -170,8 +171,8 @@ export async function regeneratePoster(
     const finalPoster = aiBakesText()
       ? illustration
       : await composeFinalPoster(illustration, {
-          childName: joinNames(children.map((c) => c.name)),
-          words: children.flatMap((c) => c.words),
+          template: getTemplate(order.template).id,
+          subjects,
         });
     const preview = await composeProtectedPreview(finalPoster);
 

@@ -110,7 +110,7 @@ export function CheckoutForm({
 
       <div className="space-y-8">
         {/* Product selection */}
-        <section className="glass rounded-3xl p-7">
+        <section className="glass rounded-2xl p-7">
           <h2 className="font-heading text-xl font-bold">Избери продукт</h2>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {AVAILABLE_PRODUCTS.map((id) => {
@@ -150,7 +150,7 @@ export function CheckoutForm({
         </section>
 
         {/* Customer details */}
-        <section className="glass rounded-3xl p-7">
+        <section className="glass rounded-2xl p-7">
           <h2 className="font-heading text-xl font-bold">Твоите данни</h2>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <div className="space-y-2 sm:col-span-2">
@@ -192,7 +192,7 @@ export function CheckoutForm({
 
         {/* Delivery */}
         {!isDigital && (
-          <section className="glass rounded-3xl p-7">
+          <section className="glass rounded-2xl p-7">
             <h2 className="font-heading text-xl font-bold">Доставка</h2>
 
             <div className="mt-5 space-y-5">
@@ -314,7 +314,7 @@ export function CheckoutForm({
           </section>
         )}
         {/* Add-ons */}
-        <section className="glass rounded-3xl p-7">
+        <section className="glass rounded-2xl p-7">
           <h2 className="font-heading text-xl font-bold">Направи го още по-специално</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Малки допълнения, които правят подаръка завършен.
@@ -374,7 +374,7 @@ export function CheckoutForm({
 
       {/* Summary */}
       <aside className="lg:sticky lg:top-28 h-fit space-y-5">
-        <div className="glass overflow-hidden rounded-3xl">
+        <div className="glass overflow-hidden rounded-2xl">
           {previewUrl && (
             <ProtectedImage
               src={previewUrl}
@@ -433,6 +433,41 @@ export function CheckoutForm({
             {state.error}
           </p>
         )}
+
+        {/* Both optional and both about coming back later, so they sit
+            together and out of the way of the required fields. */}
+        <section className="glass rounded-2xl p-7">
+          <h2 className="font-heading text-xl font-bold">Да ти напомним ли догодина?</h2>
+          <div className="mt-5 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="childBirthday">
+                Рожден ден на детето{" "}
+                <span className="font-normal text-muted-foreground">(по избор)</span>
+              </Label>
+              <Input
+                id="childBirthday"
+                name="childBirthday"
+                type="date"
+                className="h-12 rounded-2xl"
+              />
+              <p className="text-xs text-muted-foreground">
+                Пишем ти три седмици преди следващия — думичките дотогава ще са други.
+              </p>
+            </div>
+
+            <label className="flex cursor-pointer items-start gap-3 text-sm">
+              <input
+                type="checkbox"
+                name="marketingOptIn"
+                className="mt-0.5 size-4 shrink-0 accent-[var(--primary)]"
+              />
+              <span className="text-muted-foreground">
+                Пишете ми преди празници като 8 март и Коледа. Само поводи, без спам —
+                отписваш се с едно кликване.
+              </span>
+            </label>
+          </div>
+        </section>
 
         {/* Personalised goods are excluded from the statutory right of
             withdrawal (чл. 57, т. 3 ЗЗП). Making the customer tick it here is

@@ -1,6 +1,7 @@
 import { AVAILABLE_PRODUCTS, PRODUCTS, highestPriceEUR, lowestPriceEUR } from "@/lib/catalog";
 import { COMPANY } from "@/lib/legal";
 import { FAQ_ITEMS } from "@/lib/faq";
+import { BRAND } from "@/lib/brand";
 
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -30,7 +31,7 @@ export function landingJsonLd(reviews: { count: number; average: number } | null
   const product = {
     "@type": "Product",
     "@id": `${SITE_URL}#product`,
-    name: "Персонализиран детски постер „Бисерите на моето дете“",
+    name: `Персонализиран постер по снимка — „${BRAND.name}“`,
     description:
       "Персонализиран подарък за дете — снимката на детето, превърната в илюстрация, заедно с най-смешните думички, които казва грешно. Изработва се по поръчка и се доставя с Еконт или Спиди.",
     brand: { "@type": "Brand", name: COMPANY.brand },

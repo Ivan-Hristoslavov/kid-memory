@@ -3,25 +3,40 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Battery, Signal, Wifi } from "lucide-react";
+import { ArrowRight, Camera, MessageSquareQuote, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "./shared";
 
 /**
- * The problem section. Parents already collect these words — in the Notes app,
- * where they are forgotten. Showing that exact artifact next to the finished
- * poster makes the section do three jobs at once: recognition, the closing
- * window, and a demo of the transformation we sell.
+ * The "what am I actually buying" section.
  *
- * Replace NOTE_WORDS with real submissions as soon as there are any — invented
- * examples read as invented.
+ * It used to be an iPhone Notes mock-up with a parent's list of toddler words —
+ * emotionally strong, but it assumed the visitor was a parent who already keeps
+ * such a list, which is exactly the assumption the shop no longer makes. It is
+ * now a straight demo of the transform: the three things you fill in on the
+ * left, the finished print on the right. That reads the same whether the poster
+ * is for a child, a colleague or a dog, and it doubles as a promise about how
+ * little work is involved.
  */
-const NOTE_WORDS = [
-  { said: "прахумосмачка", real: "прахосмукачка" },
-  { said: "аляяяя", real: "вода" },
-  { said: "лисапед", real: "велосипед" },
-  { said: "хелкоптел", real: "хеликоптер" },
-  { said: "майпуна", real: "маймуна" },
+const INPUTS = [
+  {
+    icon: Camera,
+    label: "Снимката",
+    value: "IMG_4821.HEIC",
+    hint: "една ясна снимка, нищо повече",
+  },
+  {
+    icon: MessageSquareQuote,
+    label: "Репликите",
+    value: "„Ще го оправим в понеделник“",
+    hint: "две до шест, колкото искаш",
+  },
+  {
+    icon: Palette,
+    label: "Стилът",
+    value: "Реалистична рисунка",
+    hint: "шест на избор",
+  },
 ];
 
 export function Story() {
@@ -37,12 +52,12 @@ export function Story() {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <Eyebrow>Познато ли ти е?</Eyebrow>
+          <Eyebrow>От три полета до стената</Eyebrow>
           <h2 className="mt-5 text-balance font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Записваш ги в бележките на телефона.
+            Ти попълваш три неща.
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            И там си остават — между списъка за пазар и паролата от Wi-Fi.
+            Останалото — рисунката, надписите, печатът и доставката — е наша работа.
           </p>
         </motion.div>
 
@@ -50,45 +65,34 @@ export function Story() {
             poster column made the right side wider and threw the whole row off
             axis. Both halves are capped and centred inside their own column. */}
         <div className="mt-14 grid items-center justify-items-center gap-8 lg:grid-cols-[1fr_auto_1fr] lg:gap-10">
-          {/* Phone note */}
+          {/* What the visitor fills in */}
           <motion.div
-            initial={{ opacity: 0, y: 28, rotate: -3 }}
-            whileInView={{ opacity: 1, y: 0, rotate: -2 }}
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6 }}
-            className="w-full max-w-[290px] lg:justify-self-end"
+            className="w-full max-w-[330px] lg:justify-self-end"
           >
-            <div className="elevate rounded-[2.2rem] bg-foreground/90 p-2.5">
-              <div className="overflow-hidden rounded-[1.7rem] bg-[#fdfcf8]">
-                <div className="flex items-center justify-between px-5 pt-3 text-[11px] font-semibold text-foreground/70">
-                  <span>9:41</span>
-                  <span className="flex items-center gap-1">
-                    <Signal className="size-3" />
-                    <Wifi className="size-3" />
-                    <Battery className="size-3.5" />
-                  </span>
-                </div>
-
-                <div className="px-5 pb-6 pt-4">
-                  <p className="text-[11px] font-medium text-foreground/40">
-                    вторник, 14:32
+            <div className="elevate space-y-3 rounded-2xl bg-card p-5">
+              {INPUTS.map((f, i) => (
+                <div
+                  key={f.label}
+                  className="rounded-2xl border border-border bg-background/60 p-4"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+                      <f.icon className="size-4" />
+                    </span>
+                    <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      {i + 1}. {f.label}
+                    </span>
+                  </div>
+                  <p className="mt-2.5 truncate font-heading text-base font-bold">
+                    {f.value}
                   </p>
-                  <p className="mt-1 font-heading text-lg font-bold">Думичките на Мила</p>
-
-                  <ul className="mt-4 space-y-3">
-                    {NOTE_WORDS.map((w) => (
-                      <li key={w.said} className="border-b border-dashed border-foreground/10 pb-2.5 last:border-0">
-                        <span className="block font-semibold">{w.said}</span>
-                        <span className="block text-xs text-foreground/45">
-                          = {w.real}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <span className="mt-4 block h-4 w-px animate-pulse bg-primary" />
+                  <p className="mt-0.5 text-xs text-muted-foreground">{f.hint}</p>
                 </div>
-              </div>
+              ))}
             </div>
           </motion.div>
 
@@ -114,10 +118,10 @@ export function Story() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="relative w-full max-w-[290px] lg:justify-self-start"
           >
-            <div className="elevate overflow-hidden rounded-3xl bg-white p-3">
+            <div className="elevate overflow-hidden rounded-2xl bg-white p-3">
               <Image
                 src="/samples/realistic.webp"
-                alt="Постер с илюстрация на дете и неговите смешни думички"
+                alt="Готов илюстрован постер по снимка, отпечатан и готов за рамка"
                 width={768}
                 height={1152}
                 className="w-full rounded-2xl"
@@ -142,14 +146,15 @@ export function Story() {
           className="mt-14 text-center"
         >
           <p className="font-heading text-2xl font-bold sm:text-3xl">
-            Догодина вече ще ги казва правилно.
+            Виждаш готовия постер, преди да платиш.
           </p>
           <p className="mt-2 text-lg text-muted-foreground">
-            Бележката ще я изтриеш. Стената — <span className="text-gradient-warm">не.</span>
+            Без карта, без абонамент. Не ти хареса —{" "}
+            <span className="text-gradient-warm">не поръчваш.</span>
           </p>
           <Button asChild size="lg" className="mt-8 h-13 rounded-full px-8 text-base">
             <Link href="/create">
-              Извади ги от телефона
+              Пробвай безплатно
               <ArrowRight className="size-5" />
             </Link>
           </Button>

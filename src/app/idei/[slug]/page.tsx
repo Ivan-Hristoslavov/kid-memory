@@ -99,7 +99,7 @@ export default async function ArticlePage({
             {new Date(article.updated).toLocaleDateString("bg-BG")}
           </p>
 
-          <div className="elevate-lg relative mt-8 aspect-[3/2] overflow-hidden rounded-3xl">
+          <div className="elevate-lg relative mt-8 aspect-[3/2] overflow-hidden rounded-2xl">
             <Image
               src={article.image}
               alt=""
@@ -110,7 +110,7 @@ export default async function ArticlePage({
             />
           </div>
 
-          <div className="glass mt-8 rounded-3xl p-8 leading-relaxed">
+          <div className="glass mt-8 rounded-2xl p-8 leading-relaxed">
             {article.body.map((block, i) => (
               <section key={i} className={i > 0 ? "mt-8" : ""}>
                 {block.h && (

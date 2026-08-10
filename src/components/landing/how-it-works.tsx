@@ -10,25 +10,21 @@ const STEPS = [
     icon: Camera,
     title: "Качи снимка",
     text: "Ясна, цветна снимка отблизо — по нея създаваме уникалната илюстрация.",
-    tint: "bg-sky/60 text-sky-950/70",
   },
   {
     icon: MessageSquareHeart,
     title: "Добави думичките",
-    text: "Истинската дума и как я казва детето. И двете влизат на постера.",
-    tint: "bg-blush/60 text-rose-950/70",
+    text: "Репликите, думичките или данните, които правят този постер негов. Влизат в балончетата.",
   },
   {
     icon: Eye,
     title: "Виж го готов",
     text: "За около 2 минути. Безплатно, без карта — ако не ти хареса, просто не поръчваш.",
-    tint: "bg-mint/60 text-emerald-950/70",
   },
   {
     icon: Truck,
     title: "Плащаш при доставка",
     text: "Отпечатваме и изпращаме с Еконт или Спиди. Плащаш на куриера.",
-    tint: "bg-sun/60 text-amber-950/70",
   },
 ];
 
@@ -59,14 +55,14 @@ export function HowItWorks() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.15 }}
-              className="glass lift relative rounded-3xl p-8 text-center"
+              className="lift relative rounded-xl bg-card p-8 text-center ring-1 ring-border/70"
             >
               <span className="absolute -top-4 left-1/2 grid size-8 -translate-x-1/2 place-items-center rounded-full bg-primary font-heading text-sm font-bold text-primary-foreground shadow-lg shadow-primary/30">
                 {i + 1}
               </span>
-              <div
-                className={`mx-auto grid size-16 place-items-center rounded-2xl ${step.tint}`}
-              >
+              {/* One ink-on-paper plate for all four steps. A different pastel
+                  per step read as a nursery chart, not as a process. */}
+              <div className="mx-auto grid size-16 place-items-center rounded-xl bg-secondary text-foreground/70 ring-1 ring-border/60">
                 <step.icon className="size-7" />
               </div>
               <h3 className="mt-6 font-heading text-xl font-bold">{step.title}</h3>

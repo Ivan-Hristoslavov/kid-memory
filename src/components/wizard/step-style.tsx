@@ -9,20 +9,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { STYLES } from "@/lib/catalog";
 import { iconFor } from "@/lib/icons";
+import { TEMPLATES } from "@/lib/templates";
 import { useWizard } from "@/lib/store/wizard";
+import { LINES_STEP, PREVIEW_STEP } from "./wizard";
 
 export function StepStyle() {
   const wizard = useWizard();
-  const childrenName =
-    wizard.children.map((c) => c.name).filter(Boolean).join(" и ") || "детето";
+  const subjectName =
+    wizard.subjects.map((s) => s.name).filter(Boolean).join(" и ") ||
+    TEMPLATES[wizard.template].subject.noun;
 
   return (
-    <Card className="glass overflow-hidden rounded-[2rem] border-none">
+    <Card className="glass overflow-hidden rounded-2xl border-none">
       <CardContent className="space-y-6 p-8">
-        <div className="rounded-2xl bg-lavender/40 p-4 text-center">
+        <div className="rounded-2xl bg-secondary p-4 text-center">
           <p className="flex items-center justify-center gap-2 font-heading font-bold">
             <Palette className="size-4 text-primary" />
-            Как да изглежда светът на {childrenName}?
+            Как да изглежда светът на {subjectName}?
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
             Всеки стил дава различно усещане. Избери любимия.
@@ -42,7 +45,7 @@ export function StepStyle() {
                 transition={{ delay: i * 0.06 }}
                 onClick={() => wizard.setStyle(style.id)}
                 aria-pressed={selected}
-                className={`group relative overflow-hidden rounded-3xl border-2 p-6 text-left transition-all ${
+                className={`group relative overflow-hidden rounded-2xl border-2 p-6 text-left transition-all ${
                   selected
                     ? "border-primary shadow-xl shadow-primary/15"
                     : "border-border hover:scale-[1.01] hover:border-primary/40"
@@ -94,7 +97,7 @@ export function StepStyle() {
             variant="outline"
             size="lg"
             className="rounded-full"
-            onClick={() => wizard.setStep(1)}
+            onClick={() => wizard.setStep(LINES_STEP)}
           >
             <ArrowLeft className="size-4" /> Назад
           </Button>
@@ -106,7 +109,7 @@ export function StepStyle() {
                 toast.error("Избери стил на илюстрацията");
                 return;
               }
-              wizard.setStep(3);
+              wizard.setStep(PREVIEW_STEP);
             }}
           >
             Създай магията

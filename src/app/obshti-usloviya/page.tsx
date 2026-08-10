@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { LegalLayout } from "@/components/site/legal-layout";
 import { COMPANY } from "@/lib/legal";
 import { PRODUCTS, formatPrice } from "@/lib/catalog";
+import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Общи условия",
-  description: "Общи условия за ползване и покупка от „Бисерите на моето дете“.",
+  description: `Общи условия за ползване и покупка от „${BRAND.name}“.`,
   alternates: { canonical: "/obshti-usloviya" },
 };
 

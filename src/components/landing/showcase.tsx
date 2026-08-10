@@ -7,18 +7,9 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { STYLES } from "@/lib/catalog";
 import { iconFor } from "@/lib/icons";
+import { SAMPLE_POSTERS, TEMPLATES } from "@/lib/templates";
 import { Eyebrow } from "./shared";
 import { TiltCard } from "./tilt-card";
-
-/** Child name shown under each sample poster (fictional examples). */
-const SAMPLE_NAMES: Record<string, string> = {
-  realistic: "Мила",
-  storybook: "Боби",
-  disney: "Ема",
-  caricature: "Ники",
-  watercolor: "Дара",
-  fantasy: "Ани и Алекс",
-};
 
 export function Showcase() {
   return (
@@ -33,19 +24,20 @@ export function Showcase() {
           transition={{ duration: 0.7 }}
           className="flex flex-col items-center text-center"
         >
-          <Eyebrow>6 стила · безкрайно сладки</Eyebrow>
+          <Eyebrow>6 стила</Eyebrow>
           <h2 className="mt-5 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Всяко дете — своя собствена приказка
+            Един стил за всеки повод
           </h2>
           <p className="mt-4 max-w-xl text-lg text-muted-foreground">
-            Примерни постери с измислени дечица. Твоят ще е със снимката и думичките на
-            твоето дете.
+            Примерни постери по измислени снимки. Твоят ще е с твоята снимка и твоите
+            реплики.
           </p>
         </motion.div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {STYLES.map((style, i) => {
             const Icon = iconFor(style.icon);
+            const sample = SAMPLE_POSTERS[style.id];
             return (
               <motion.div
                 key={style.id}
@@ -55,13 +47,18 @@ export function Showcase() {
                 transition={{ duration: 0.55, delay: (i % 3) * 0.1 }}
                 className="group"
               >
-                <Link href="/create" className="block">
+                {/* Each card opens the template its sample actually shows —
+                    clicking the dog poster should not land on a child's form. */}
+                <Link
+                  href={sample ? `/create?template=${sample.template}` : "/create"}
+                  className="block"
+                >
                   <TiltCard className="relative">
-                  <div className="elevate relative overflow-hidden rounded-[1.6rem] bg-white p-2.5 ring-1 ring-black/5 transition-shadow duration-300 group-hover:shadow-2xl group-hover:shadow-plum/25">
-                    <div className="relative aspect-[2/3] overflow-hidden rounded-[1.1rem]">
+                  <div className="elevate relative overflow-hidden rounded-lg bg-white p-2.5 ring-1 ring-black/5 transition-shadow duration-300 group-hover:shadow-2xl group-hover:shadow-plum/25">
+                    <div className="relative aspect-[2/3] overflow-hidden rounded-md">
                       <Image
                         src={`/samples/${style.id}.webp`}
-                        alt={`Примерен постер в стил ${style.name} — Думичките на ${SAMPLE_NAMES[style.id]}`}
+                        alt={`Примерен постер в стил ${style.name} — ${sample?.caption ?? ""}`}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
@@ -84,7 +81,12 @@ export function Showcase() {
                     <div className="text-left">
                       <p className="font-heading font-bold leading-tight">{style.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        Думичките на {SAMPLE_NAMES[style.id]}
+                        {sample?.caption}
+                        {sample ? (
+                          <span className="ml-1.5 text-muted-foreground/70">
+                            · {TEMPLATES[sample.template].name}
+                          </span>
+                        ) : null}
                       </p>
                     </div>
                   </div>

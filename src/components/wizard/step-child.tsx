@@ -7,12 +7,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import {
   AlertCircle,
+  ArrowLeft,
   ArrowRight,
-  Baby,
   Cake,
   Camera,
+  Heart,
   Loader2,
   Lock,
+  PawPrint,
   Plus,
   CircleCheck,
   Sparkle,
@@ -35,27 +37,43 @@ import {
 import { MAX_PHOTO_BYTES } from "@/lib/validations";
 import { PHOTO_RETENTION_DAYS } from "@/lib/legal";
 import { postJson } from "@/lib/fetch-json";
-import { MAX_CHILDREN, useWizard } from "@/lib/store/wizard";
+import { TEMPLATES, type PosterTemplateDef } from "@/lib/templates";
+import { useWizard } from "@/lib/store/wizard";
+import { TEMPLATE_STEP, LINES_STEP } from "./wizard";
 
-const GENDERS = [
-  { id: "BOY", label: "Момче", ring: "from-sky to-mint" },
-  { id: "GIRL", label: "Момиче", ring: "from-blush to-lavender" },
-] as const;
-
-// Preset ages (halves for toddlers, whole after 6) — easy to pick on mobile.
-const AGE_OPTIONS: { value: string; label: string }[] = (() => {
+/**
+ * Age options for a template. Toddlers need halves (2.5 is a different child
+ * from 2), adults do not — offering "37.5 г." on a colleague's poster reads as
+ * a bug.
+ */
+function ageOptions(ageMax: number): { value: string; label: string }[] {
   const out: { value: string; label: string }[] = [];
-  for (let a = 0.5; a <= 6; a += 0.5) out.push({ value: String(a), label: `${a} г.` });
-  for (let a = 7; a <= 18; a++) out.push({ value: String(a), label: `${a} г.` });
+  const halves = ageMax <= 30;
+  if (halves) {
+    for (let a = 0.5; a <= Math.min(6, ageMax); a += 0.5)
+      out.push({ value: String(a), label: `${a} г.` });
+  }
+  for (let a = halves ? 7 : 1; a <= ageMax; a++)
+    out.push({ value: String(a), label: `${a} г.` });
   return out;
-})();
+}
+
+function SubjectIcon({ template }: { template: PosterTemplateDef }) {
+  if (template.subject.species === "required") return <PawPrint className="size-4" />;
+  if (template.id === "COUPLE") return <Heart className="size-4" />;
+  return <User className="size-4" />;
+}
 
 export function StepChild() {
   const wizard = useWizard();
+  const template = TEMPLATES[wizard.template];
+  const { subject } = template;
   const fileInput = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [photoWarnings, setPhotoWarnings] = useState<string[]>([]);
+
+  const AGE_OPTIONS = ageOptions(subject.ageMax);
 
   async function handlePhoto(file: File) {
     if (file.size > MAX_PHOTO_BYTES) {
@@ -73,8 +91,8 @@ export function StepChild() {
       }>("/api/upload", { method: "POST", body });
       if (!ok) throw new Error(error ?? "Качването не успя");
       wizard.setPhoto(data.key, data.previewUrl);
-      // Quality warnings are advisory — the parent may have only this one photo,
-      // so we flag the risk and let them decide rather than blocking.
+      // Quality warnings are advisory — the customer may have only this one
+      // photo, so we flag the risk and let them decide rather than blocking.
       if (data.warnings?.length) {
         setPhotoWarnings(data.warnings);
         toast.warning(data.warnings[0]);
@@ -100,39 +118,45 @@ export function StepChild() {
       toast.error("Качи снимка");
       return;
     }
-    for (const c of wizard.children) {
-      if (c.name.trim().length < 2) {
-        toast.error("Въведи име на всяко дете");
+    for (const s of wizard.subjects) {
+      const who = s.name.trim() || subject.noun;
+      if (s.name.trim().length < 2) {
+        toast.error(`Въведи име на ${subject.noun}`);
         return;
       }
-      if (c.age === "" || Number.isNaN(Number(c.age))) {
-        toast.error(`Въведи възраст на ${c.name || "детето"}`);
+      if (subject.age === "required" && (s.age === "" || Number.isNaN(Number(s.age)))) {
+        toast.error(`Въведи възраст на ${who}`);
         return;
       }
-      if (!c.gender) {
-        toast.error(`Избери пол на ${c.name || "детето"}`);
+      if (subject.gender === "required" && !s.gender) {
+        toast.error(`Избери пол на ${who}`);
+        return;
+      }
+      if (subject.species === "required" && s.species.trim().length < 2) {
+        toast.error(`Въведи вид или порода на ${who}`);
         return;
       }
     }
-    wizard.setStep(1);
+    wizard.setStep(LINES_STEP);
   }
 
   const hasPhoto = Boolean(wizard.photoKey && wizard.photoPreviewUrl);
+  const multi = wizard.subjects.length > 1;
 
   return (
-    <Card className="glass overflow-hidden rounded-[2rem] border-none">
+    <Card className="glass overflow-hidden rounded-2xl border-none">
       <CardContent className="space-y-7 p-8">
         {/* Photo */}
         <div className="space-y-2">
           <Label className="flex items-center gap-2 text-base">
-            <span className="grid size-7 place-items-center rounded-full bg-mint/70 text-foreground/70">
+            <span className="grid size-7 place-items-center rounded-full bg-secondary text-foreground/70">
               <Camera className="size-4" />
             </span>
-            Снимка на детето/децата
+            Снимка на {subject.nounPlural}
           </Label>
 
           {/* Photo guidance — input quality is the single biggest factor in how
-              much the illustration ends up looking like the real child. */}
+              much the illustration ends up looking like the real subject. */}
           <div className="rounded-2xl bg-secondary/50 px-4 py-3">
             <div className="flex flex-wrap gap-x-4 gap-y-1.5">
               {["Ясно лице към камерата", "Добра светлина", "Цветна и рязка", "Отблизо"].map(
@@ -150,14 +174,15 @@ export function StepChild() {
             <p className="mt-2 flex items-start gap-1.5 text-sm text-muted-foreground">
               <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive/70" />
               <span>
-                Избягвай тъмни, размазани и силно филтрирани снимки, слънчеви очила и
-                шапки над очите. Няколко деца на една снимка е напълно наред — просто
-                добави всяко от тях по-долу.
+                {template.photoHint} Избягвай тъмни, размазани и силно филтрирани
+                снимки.{" "}
+                {subject.max > 1 &&
+                  `Няколко на една снимка е напълно наред — просто добави всеки от тях по-долу.`}
               </span>
             </p>
           </div>
 
-          {/* The upload button is exactly where a parent hesitates — answer the
+          {/* The upload button is exactly where someone hesitates — answer the
               privacy question here, not three sections down in the FAQ. */}
           <p className="flex items-start gap-1.5 rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
             <Lock className="mt-0.5 size-4 shrink-0" />
@@ -210,9 +235,11 @@ export function StepChild() {
               </div>
               <div className="min-w-0">
                 <p className="font-heading font-bold text-primary">Снимката е готова ✓</p>
-                <p className="text-sm text-muted-foreground">
-                  Ако на снимката има братче/сестриче — добави ги по-долу.
-                </p>
+                {subject.max > 1 && (
+                  <p className="text-sm text-muted-foreground">
+                    Ако на снимката има още някой — добави го по-долу.
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={() => fileInput.current?.click()}
@@ -258,7 +285,7 @@ export function StepChild() {
               <motion.span
                 animate={dragActive ? { y: [-2, -8, -2] } : { y: 0 }}
                 transition={{ duration: 0.8, repeat: dragActive ? Infinity : 0 }}
-                className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-sky to-lavender text-foreground/70 shadow-inner"
+                className="grid size-14 place-items-center rounded-2xl bg-secondary text-foreground/70 shadow-inner"
               >
                 {uploading ? (
                   <Loader2 className="size-7 animate-spin" />
@@ -275,19 +302,19 @@ export function StepChild() {
                       : "Провлачи снимка тук или кликни"}
                 </p>
                 <p className="mt-0.5 text-sm text-muted-foreground">
-                  JPG, PNG или HEIC (iPhone) до 8 MB · може и снимка с няколко деца
+                  JPG, PNG или HEIC (iPhone) до 8 MB
                 </p>
               </div>
             </button>
           )}
         </div>
 
-        {/* Children */}
+        {/* Subjects */}
         <div className="space-y-4">
           <AnimatePresence initial={false}>
-            {wizard.children.map((child, idx) => (
+            {wizard.subjects.map((s, idx) => (
               <motion.div
-                key={child.id}
+                key={s.id}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, height: 0 }}
@@ -295,16 +322,16 @@ export function StepChild() {
               >
                 <div className="mb-4 flex items-center justify-between">
                   <span className="inline-flex items-center gap-2 font-heading font-bold">
-                    <span className="grid size-7 place-items-center rounded-full bg-blush/70 text-foreground/70">
-                      <User className="size-4" />
+                    <span className="grid size-7 place-items-center rounded-full bg-secondary text-foreground/70">
+                      <SubjectIcon template={template} />
                     </span>
-                    {wizard.children.length > 1 ? `Дете ${idx + 1}` : "Детето"}
+                    {multi ? `№ ${idx + 1}` : template.name}
                   </span>
-                  {wizard.children.length > 1 && (
+                  {wizard.subjects.length > subject.min && (
                     <button
                       type="button"
-                      onClick={() => wizard.removeChild(child.id)}
-                      aria-label="Премахни дете"
+                      onClick={() => wizard.removeSubject(s.id)}
+                      aria-label="Премахни"
                       className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                     >
                       <Trash2 className="size-4" />
@@ -316,86 +343,136 @@ export function StepChild() {
                   <div className="relative">
                     <Sparkle className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-primary/50" />
                     <Input
-                      placeholder="Име на детето"
+                      placeholder={`Име на ${subject.noun}`}
                       className="h-12 rounded-2xl border-2 pl-11"
-                      value={child.name}
-                      onChange={(e) => wizard.updateChild(child.id, { name: e.target.value })}
+                      value={s.name}
+                      onChange={(e) => wizard.updateSubject(s.id, { name: e.target.value })}
                     />
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  {subject.species !== "none" && (
                     <div className="relative">
-                      <Cake className="pointer-events-none absolute left-4 top-1/2 z-10 size-4 -translate-y-1/2 text-primary/50" />
-                      <Select
-                        value={child.age}
-                        onValueChange={(v) => wizard.updateChild(child.id, { age: v })}
-                      >
-                        <SelectTrigger className="!h-12 w-full whitespace-nowrap rounded-2xl border-2 pl-11 [&>span]:truncate">
-                          <SelectValue placeholder="Възраст" />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-64">
-                          {AGE_OPTIONS.map((o) => (
-                            <SelectItem key={o.value} value={o.value}>
-                              {o.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <PawPrint className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-primary/50" />
+                      <Input
+                        placeholder="Вид или порода — напр. лабрадор, сиамска котка"
+                        className="h-12 rounded-2xl border-2 pl-11"
+                        value={s.species}
+                        onChange={(e) =>
+                          wizard.updateSubject(s.id, { species: e.target.value })
+                        }
+                      />
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {GENDERS.map((g) => {
-                        const active = child.gender === g.id;
-                        return (
-                          <button
-                            key={g.id}
-                            type="button"
-                            onClick={() => wizard.updateChild(child.id, { gender: g.id })}
-                            className={`group relative h-12 overflow-hidden rounded-2xl border-2 text-sm font-semibold transition-all ${
-                              active
-                                ? "border-primary shadow-md shadow-primary/15"
-                                : "border-border bg-card hover:border-primary/40"
-                            }`}
+                  )}
+
+                  {subject.relation !== "none" && (
+                    <div className="relative">
+                      <Heart className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-primary/50" />
+                      <Input
+                        placeholder="Какъв ти е (по избор) — напр. колежка, учител"
+                        className="h-12 rounded-2xl border-2 pl-11"
+                        value={s.relation}
+                        onChange={(e) =>
+                          wizard.updateSubject(s.id, { relation: e.target.value })
+                        }
+                      />
+                    </div>
+                  )}
+
+                  {(subject.age !== "none" || subject.gender !== "none") && (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {subject.age !== "none" && (
+                        <div className="relative">
+                          <Cake className="pointer-events-none absolute left-4 top-1/2 z-10 size-4 -translate-y-1/2 text-primary/50" />
+                          <Select
+                            value={s.age}
+                            onValueChange={(v) => wizard.updateSubject(s.id, { age: v })}
                           >
-                            {active && (
-                              <span
-                                className={`absolute inset-0 bg-gradient-to-br ${g.ring} opacity-40`}
+                            <SelectTrigger className="!h-12 w-full whitespace-nowrap rounded-2xl border-2 pl-11 [&>span]:truncate">
+                              <SelectValue
+                                placeholder={
+                                  subject.age === "optional"
+                                    ? "Възраст (по избор)"
+                                    : "Възраст"
+                                }
                               />
-                            )}
-                            <span className="relative flex items-center justify-center gap-1">
-                              <Baby className="size-4" />
-                              {g.label}
-                            </span>
-                          </button>
-                        );
-                      })}
+                            </SelectTrigger>
+                            <SelectContent className="max-h-64">
+                              {AGE_OPTIONS.map((o) => (
+                                <SelectItem key={o.value} value={o.value}>
+                                  {o.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                      {subject.gender !== "none" && (
+                        <div className="grid grid-cols-2 gap-2">
+                          {(["MALE", "FEMALE"] as const).map((g, gi) => {
+                            const active = s.gender === g;
+                            return (
+                              <button
+                                key={g}
+                                type="button"
+                                onClick={() => wizard.updateSubject(s.id, { gender: g })}
+                                className={`group relative h-12 overflow-hidden rounded-2xl border-2 text-sm font-semibold transition-all ${
+                                  active
+                                    ? "border-primary shadow-md shadow-primary/15"
+                                    : "border-border bg-card hover:border-primary/40"
+                                }`}
+                              >
+                                {/* One accent for whichever side is picked. Blue
+                                    for the man and pink for the woman was the
+                                    last piece of nursery colour-coding in the
+                                    form, and it never carried any meaning. */}
+                                {active && <span className="absolute inset-0 bg-primary/12" />}
+                                <span className="relative flex items-center justify-center gap-1">
+                                  <SubjectIcon template={template} />
+                                  {subject.genderLabels[gi]}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
 
-          {wizard.children.length < MAX_CHILDREN && (
+          {subject.addLabel && wizard.subjects.length < subject.max && (
             <button
               type="button"
-              onClick={() => wizard.addChild()}
+              onClick={() => wizard.addSubject()}
               className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-primary/40 py-3 font-semibold text-primary transition-colors hover:bg-primary/5"
             >
-              <Plus className="size-5" /> Добави още дете (братче / сестриче)
+              <Plus className="size-5" /> {subject.addLabel}
             </button>
           )}
         </div>
 
-        <Button
-          type="button"
-          size="lg"
-          onClick={next}
-          disabled={uploading}
-          className="group h-14 w-full rounded-full text-base shadow-lg shadow-primary/25 transition-transform hover:scale-[1.01]"
-        >
-          Продължи към думичките
-          <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            size="lg"
+            className="rounded-full"
+            onClick={() => wizard.setStep(TEMPLATE_STEP)}
+          >
+            <ArrowLeft className="size-4" /> Назад
+          </Button>
+          <Button
+            type="button"
+            size="lg"
+            onClick={next}
+            disabled={uploading}
+            className="group h-14 flex-1 rounded-full text-base shadow-lg shadow-primary/25 transition-transform hover:scale-[1.01]"
+          >
+            Продължи
+            <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

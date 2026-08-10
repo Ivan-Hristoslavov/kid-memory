@@ -28,7 +28,7 @@ export function TrackForm({ defaultOrderNumber }: { defaultOrderNumber?: string 
 
   return (
     <div className="mx-auto w-full max-w-lg">
-      <form action={action} className="glass space-y-5 rounded-3xl p-7">
+      <form action={action} className="glass space-y-5 rounded-2xl p-7">
         <div className="space-y-2">
           <Label htmlFor="orderNumber">Номер на поръчка</Label>
           <Input
@@ -76,7 +76,7 @@ export function TrackForm({ defaultOrderNumber }: { defaultOrderNumber?: string 
       </form>
 
       {state.order && status && (
-        <div className="glass mt-6 rounded-3xl p-7">
+        <div className="glass mt-6 rounded-2xl p-7">
           <p className="text-sm text-muted-foreground">
             Поръчка №{state.order.orderNumber} · {state.order.childName}
           </p>

@@ -12,7 +12,9 @@ import { readFile, writeFile } from "node:fs/promises";
 
 const WIDTH = 1200;
 const HEIGHT = 630;
-const POSTER = "public/samples/disney.webp";
+// The one sample whose baked Cyrillic came out clean — the OG card is the
+// first thing anyone sees shared, so it must not carry a spelling slip.
+const POSTER = "public/samples/storybook.webp";
 const OUT = "public/og.jpg";
 
 const POSTER_H = 470;
@@ -24,31 +26,31 @@ const background = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#fdf3f5"/>
-      <stop offset="55%" stop-color="#f6eefb"/>
-      <stop offset="100%" stop-color="#e9f2fb"/>
+      <stop offset="0%" stop-color="#faf7f1"/>
+      <stop offset="60%" stop-color="#f5f1e9"/>
+      <stop offset="100%" stop-color="#efe9df"/>
     </linearGradient>
   </defs>
   <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bg)"/>
-  <circle cx="120" cy="90" r="140" fill="#ffffff" opacity="0.45"/>
-  <circle cx="980" cy="600" r="180" fill="#ffffff" opacity="0.35"/>
+  <circle cx="120" cy="90" r="140" fill="#ffffff" opacity="0.4"/>
+  <circle cx="980" cy="600" r="180" fill="#ffffff" opacity="0.3"/>
 </svg>`;
 
 const text = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}">
   <style>
-    .eyebrow { font: 700 24px "Helvetica Neue", Arial, sans-serif; fill: #c4778c; letter-spacing: 3px; }
-    .title   { font: 800 62px "Helvetica Neue", Arial, sans-serif; fill: #4a3b5c; }
-    .sub     { font: 400 28px "Helvetica Neue", Arial, sans-serif; fill: #7a6b8c; }
+    .eyebrow { font: 700 24px "Helvetica Neue", Arial, sans-serif; fill: #9c5a35; letter-spacing: 4px; }
+    .title   { font: 800 62px Georgia, "Times New Roman", serif; fill: #312c26; }
+    .sub     { font: 400 28px "Helvetica Neue", Arial, sans-serif; fill: #6b635a; }
     .badge   { font: 700 24px "Helvetica Neue", Arial, sans-serif; fill: #ffffff; }
   </style>
-  <text class="eyebrow" x="80" y="128">БИСЕРИТЕ НА МОЕТО ДЕТЕ</text>
-  <text class="title" x="80" y="228">Думичките, които</text>
-  <text class="title" x="80" y="300">детето ти казва</text>
-  <text class="title" x="80" y="372">грешно — на стената</text>
-  <text class="sub" x="80" y="438">Снимката става илюстрация. Спомeнът остава.</text>
-  <rect x="80" y="486" width="392" height="62" rx="31" fill="#e07189"/>
-  <text class="badge" x="112" y="526">Виждаш го, преди да платиш</text>
+  <text class="eyebrow" x="80" y="128">ПОВОД</text>
+  <text class="title" x="80" y="228">Подарък, който</text>
+  <text class="title" x="80" y="300">казва „това си ти“</text>
+  <text class="sub" x="80" y="368">Снимката става илюстрован постер. За всеки повод.</text>
+  <text class="sub" x="80" y="412">за дете · за колега · за двойка · за любимец</text>
+  <rect x="80" y="466" width="392" height="62" rx="10" fill="#9c5a35"/>
+  <text class="badge" x="112" y="506">Виждаш го, преди да платиш</text>
 </svg>`;
 
 const poster = await sharp(await readFile(POSTER))

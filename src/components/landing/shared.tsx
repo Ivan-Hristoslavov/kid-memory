@@ -34,16 +34,7 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
-const AVATAR_GRADIENTS = [
-  "from-blush to-peach",
-  "from-sky to-mint",
-  "from-lavender to-sky",
-  "from-peach to-sun",
-  "from-mint to-sky",
-  "from-blush to-lavender",
-];
-
-/** Colorful initials avatar — no real photos, deterministic colour per name. */
+/** Initials avatar — no real photos, ink on paper rather than a pastel disc. */
 export function Avatar({ name, className = "size-11" }: { name: string; className?: string }) {
   const initials = name
     .split(" ")
@@ -51,10 +42,9 @@ export function Avatar({ name, className = "size-11" }: { name: string; classNam
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const idx = name.charCodeAt(0) % AVATAR_GRADIENTS.length;
   return (
     <span
-      className={`grid ${className} shrink-0 place-items-center rounded-full bg-gradient-to-br ${AVATAR_GRADIENTS[idx]} font-heading text-sm font-bold text-white/90 shadow-inner ring-2 ring-white`}
+      className={`grid ${className} shrink-0 place-items-center rounded-full bg-secondary font-heading text-sm font-bold text-foreground/70 ring-1 ring-border`}
     >
       {initials}
     </span>

@@ -34,7 +34,7 @@ export default function ArticlesPage() {
           <div className="mt-14 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {ARTICLES.map((a) => (
               <Link key={a.slug} href={`/idei/${a.slug}`} className="group block">
-                <article className="glass lift flex h-full flex-col overflow-hidden rounded-3xl">
+                <article className="glass lift flex h-full flex-col overflow-hidden rounded-2xl">
                   <div className="relative aspect-[3/2] overflow-hidden">
                     <Image
                       src={a.image}

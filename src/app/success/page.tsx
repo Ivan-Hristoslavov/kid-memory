@@ -47,7 +47,7 @@ export default async function SuccessPage({
           <PurchaseTracker orderId={record.id} valueEUR={total} />
         )}
 
-        <div className="glass relative mx-auto max-w-xl rounded-3xl p-8 text-center sm:p-12">
+        <div className="glass relative mx-auto max-w-xl rounded-2xl p-8 text-center sm:p-12">
           <span className="mx-auto grid size-16 place-items-center rounded-full bg-primary/10 text-primary">
             <Heart className="size-8 fill-current" />
           </span>
@@ -110,7 +110,7 @@ export default async function SuccessPage({
 
         {/* Word of mouth is the cheapest channel for a gift that hangs on a
             wall — ask while the excitement is at its peak. */}
-        <div className="glass mx-auto mt-6 max-w-xl rounded-3xl p-7 text-center">
+        <div className="glass mx-auto mt-6 max-w-xl rounded-2xl p-7 text-center">
           <h2 className="font-heading text-xl font-bold">
             Знаеш ли друг родител, който събира такива думички?
           </h2>

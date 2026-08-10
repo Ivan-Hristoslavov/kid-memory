@@ -5,6 +5,7 @@ import { ArrowLeft, BadgeCheck, Clock } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import { ADDONS, PRODUCTS, formatPrice, type ProductId } from "@/lib/catalog";
+import { getTemplate, orderSubjects } from "@/lib/templates";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { OrderActions } from "@/components/admin/order-actions";
 import { CopyButton } from "@/components/admin/copy-button";
@@ -35,7 +36,10 @@ export default async function AdminOrderPage({
     : null;
   const pdfUrl = order.finalPdf ? await storage().signedUrl(order.finalPdf, 15 * 60) : null;
 
-  const words = order.words as { word: string; saidAs: string }[];
+  // Always through the mapper — orders placed before templates existed carry
+  // `children` and an empty `subjects`, and would otherwise render blank.
+  const template = getTemplate(order.template);
+  const subjects = orderSubjects(order);
 
   return (
     <main className="min-h-screen bg-background px-6 py-10">
@@ -76,32 +80,64 @@ export default async function AdminOrderPage({
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="space-y-6">
             <section className="glass rounded-3xl p-7">
-              <h2 className="font-heading text-lg font-bold">Дете и постер</h2>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 className="font-heading text-lg font-bold">Постер</h2>
+                {/* The template decides how this order is drawn and printed, so
+                    it is the first thing the operator needs to see. */}
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
+                  {template.name}
+                </span>
+              </div>
               <dl className="mt-4 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
-                <div>
-                  <dt className="text-muted-foreground">Име</dt>
-                  <dd className="font-semibold">
-                    {order.childName}, {order.childAge} г. (
-                    {order.childGender === "BOY" ? "момче" : "момиче"})
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">Стил / животни</dt>
-                  <dd className="font-semibold">
-                    {order.style} · {order.animals.join(", ")}
+                <div className="sm:col-span-2">
+                  <dt className="text-muted-foreground">
+                    {subjects.length > 1 ? template.subject.nounPlural : template.subject.noun}
+                  </dt>
+                  <dd className="mt-1 space-y-1 font-semibold">
+                    {subjects.map((s, i) => (
+                      <div key={i}>
+                        {s.name}
+                        {[
+                          typeof s.age === "number" ? `${s.age} г.` : null,
+                          s.gender
+                            ? s.gender === "FEMALE"
+                              ? template.subject.genderLabels[1]
+                              : template.subject.genderLabels[0]
+                            : null,
+                          s.species || null,
+                          s.relation || null,
+                        ]
+                          .filter(Boolean)
+                          .map((bit) => (
+                            <span key={String(bit)} className="ml-2 font-normal text-muted-foreground">
+                              {bit}
+                            </span>
+                          ))}
+                      </div>
+                    ))}
                   </dd>
                 </div>
                 <div className="sm:col-span-2">
-                  <dt className="text-muted-foreground">Думички</dt>
+                  <dt className="text-muted-foreground">Стил / животни</dt>
+                  <dd className="font-semibold">
+                    {order.style}
+                    {order.animals.length > 0 ? ` · ${order.animals.join(", ")}` : ""}
+                  </dd>
+                </div>
+                <div className="sm:col-span-2">
+                  <dt className="text-muted-foreground">{template.lines.heading}</dt>
                   <dd className="mt-1 flex flex-wrap gap-2">
-                    {words.map((w, i) => (
-                      <span
-                        key={i}
-                        className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground"
-                      >
-                        „{w.saidAs}“ <span className="opacity-60">({w.word})</span>
-                      </span>
-                    ))}
+                    {subjects.flatMap((subj, si) =>
+                      subj.lines.map((l, i) => (
+                        <span
+                          key={`${si}-${i}`}
+                          className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground"
+                        >
+                          „{l.text}“
+                          {l.sub ? <span className="opacity-60"> ({l.sub})</span> : null}
+                        </span>
+                      ))
+                    )}
                   </dd>
                 </div>
               </dl>

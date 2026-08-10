@@ -73,7 +73,7 @@ export function HeroPoster() {
     >
       <div
         aria-hidden
-        className="absolute -inset-10 -z-10 rounded-[3rem] bg-gradient-to-tr from-blush via-lavender to-sky opacity-50 blur-3xl"
+        className="absolute -inset-10 -z-10 rounded-[3rem] bg-gradient-to-tr from-peach via-cream to-blush opacity-55 blur-3xl"
       />
 
       <div className="relative aspect-[2/3] w-full [perspective:1600px]">

@@ -216,7 +216,7 @@ export const STYLES = [
     name: "Реалистична рисунка",
     description: "Детайлна, близка до истинската — почти като жива снимка.",
     icon: "Aperture",
-    gradient: "from-sky to-mint",
+    gradient: "from-cream to-peach",
   },
   {
     id: "storybook",
@@ -231,28 +231,28 @@ export const STYLES = [
     name: "Анимационно 3D",
     description: "Сладък обемен стил с големи изразителни очи, като от анимация.",
     icon: "Castle",
-    gradient: "from-lavender to-sky",
+    gradient: "from-blush to-peach",
   },
   {
     id: "caricature",
     name: "Карикатура",
     description: "Забавен, шаржов стил с ярки цветове и настроение.",
     icon: "Drama",
-    gradient: "from-blush to-peach",
+    gradient: "from-sun to-peach",
   },
   {
     id: "watercolor",
     name: "Акварел",
     description: "Нежни, меки акварелни цветове и преливания.",
     icon: "Brush",
-    gradient: "from-sky to-lavender",
+    gradient: "from-cream to-blush",
   },
   {
     id: "fantasy",
     name: "Фентъзи свят",
     description: "Магичен свят с блясък, звезди и приключения.",
     icon: "Wand2",
-    gradient: "from-blush to-lavender",
+    gradient: "from-peach to-blush",
   },
 ] as const;
 

@@ -2,10 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, MessageSquareQuote, Package, Settings } from "lucide-react";
+import {
+  BarChart3,
+  CalendarHeart,
+  MessageSquareQuote,
+  Package,
+  Settings,
+} from "lucide-react";
 
 const TABS = [
   { href: "/admin", label: "Поръчки", icon: Package, exact: true },
+  { href: "/admin/campaigns", label: "Кампании", icon: CalendarHeart },
   { href: "/admin/reviews", label: "Отзиви", icon: MessageSquareQuote },
   { href: "/admin/stats", label: "Статистика", icon: BarChart3 },
   { href: "/admin/settings", label: "Настройки", icon: Settings },

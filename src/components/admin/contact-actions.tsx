@@ -1,6 +1,7 @@
 "use client";
 
 import { MessageSquare, Phone, Mail } from "lucide-react";
+import { BRAND } from "@/lib/brand";
 
 /**
  * Call / SMS / email the customer straight from the admin.
@@ -34,7 +35,7 @@ export function ContactActions({
 
   const sms = tel
     ? `sms:${tel}&body=${encodeURIComponent(
-        `Здравейте! Пиша Ви за поръчка №${orderNumber} от „Бисерите на моето дете“.`
+        `Здравейте! Пиша Ви за поръчка №${orderNumber} от „${BRAND.name}“.`
       )}`
     : null;
 
