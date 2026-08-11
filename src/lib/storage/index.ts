@@ -146,8 +146,35 @@ let driver: StorageDriver | null = null;
 
 export function storage(): StorageDriver {
   if (!driver) {
-    driver =
-      process.env.STORAGE_DRIVER === "supabase" ? new SupabaseStorage() : new LocalStorage();
+    const useSupabase = process.env.STORAGE_DRIVER === "supabase";
+
+    /**
+     * The local driver is a development convenience and silently wrong in
+     * production. Serverless instances do not share a filesystem, so an upload
+     * lands on one machine and `/api/files` reads from another: the write
+     * succeeds, the preview 404s, and the customer is shown a broken image over
+     * "Снимката е готова ✓". Worse, a paid poster written this way is simply
+     * gone by the time anyone goes to print it.
+     *
+     * It is one missing environment variable and it fails quietly, so it is
+     * refused outright rather than left to surface as a mystery days later.
+     */
+    if (!useSupabase && process.env.NODE_ENV === "production") {
+      throw new Error(
+        "Storage misconfigured: STORAGE_DRIVER must be \"supabase\" in production. " +
+          "The local filesystem driver cannot serve uploads from serverless instances."
+      );
+    }
+
+    // The local driver builds absolute URLs from NEXT_PUBLIC_SITE_URL. Left at
+    // localhost, every preview points at the visitor's own machine.
+    if (!useSupabase && /localhost|127\.0\.0\.1/.test(process.env.NEXT_PUBLIC_SITE_URL || "")) {
+      console.warn(
+        "Storage: local driver with a localhost NEXT_PUBLIC_SITE_URL — previews will only load on this machine."
+      );
+    }
+
+    driver = useSupabase ? new SupabaseStorage() : new LocalStorage();
   }
   return driver;
 }

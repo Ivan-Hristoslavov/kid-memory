@@ -200,7 +200,14 @@ export async function POST(req: Request) {
 
   // Signed URL so the client can preview the normalized image (HEIC can't
   // be rendered from an object URL in most browsers).
-  const previewUrl = await storage().signedUrl(key, 30 * 60);
+  //
+  // Long-lived on purpose. This link is held in the wizard for as long as the
+  // customer takes to finish the form — naming everyone, writing the lines,
+  // picking a style — and at 30 minutes it expired mid-order, leaving a broken
+  // image above "Снимката е готова ✓". The key is an unguessable uuid and the
+  // photo is deleted on the usual retention schedule, so outliving the form
+  // costs nothing; expiring inside it costs the order.
+  const previewUrl = await storage().signedUrl(key, 24 * 60 * 60);
 
   // `faces` lets the wizard notice "one face, two children named" while the
   // customer is still on the photo step. A count is safe to expose; the

@@ -173,6 +173,11 @@ export const useWizard = create<WizardState>()(
         template: s.template,
         subjects: s.subjects,
         photoKey: s.photoKey,
+        // Persisted alongside the key it belongs to. Keeping only the key meant
+        // a refresh restored a photo the page could no longer show: `hasPhoto`
+        // needs both, so the upload card silently reverted to an empty dropzone
+        // and the customer had to upload the same file again.
+        photoPreviewUrl: s.photoPreviewUrl,
         leadEmail: s.leadEmail,
         animals: s.animals,
         style: s.style,
