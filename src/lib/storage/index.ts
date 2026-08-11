@@ -39,9 +39,25 @@ class SupabaseStorage implements StorageDriver {
   }
 
   async put(key: string, data: Buffer, contentType: string) {
+    /**
+     * Wrapped in a Blob rather than handed over as a Node Buffer.
+     *
+     * Given a Buffer, the client's fetch layer decided for itself how to send
+     * the body, and on Vercel it chose text: every byte above 0x7F came back as
+     * EF BF BD — U+FFFD, the replacement character. Uploads still succeeded and
+     * the objects still began with something that looked like a PNG header, so
+     * nothing failed until sharp refused the file at generation time with
+     * "unsupported image format", one step removed from the actual damage.
+     * Locally the same code produced perfect files, which is what made it look
+     * like a configuration problem for so long.
+     *
+     * A Blob with an explicit type leaves nothing to infer. The same wrapping
+     * is already used when posting the photo to OpenAI, for the same reason.
+     */
+    const body = new Blob([new Uint8Array(data)], { type: contentType });
     const { error } = await this.client.storage
       .from(this.bucket)
-      .upload(key, data, { contentType, upsert: true });
+      .upload(key, body, { contentType, upsert: true });
     if (error) throw new Error(`Storage upload failed: ${error.message}`);
   }
 
