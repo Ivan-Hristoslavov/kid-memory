@@ -9,6 +9,7 @@ import {
   type TemplateId,
 } from "@/lib/templates";
 import { TEMPLATE_PROMPTS, formatAge } from "./template-prompt";
+import { describeForPrompt, type PhotoDescription } from "./describe-photo";
 
 export { formatAge };
 export { joinNames } from "@/lib/templates";
@@ -31,6 +32,13 @@ export interface GenerationRequest {
   style: string; // style id from catalog
   /** Image quality — set from admin settings; drives cost per poster. */
   quality?: "low" | "medium" | "high";
+  /**
+   * What a vision model saw in the photo, read at upload time. Optional
+   * throughout: the marketing sample scripts, the mock provider and every order
+   * placed before the pre-pass existed have no description, and the prompt is
+   * built without the reference block in that case.
+   */
+  photoDescription?: PhotoDescription | null;
 }
 
 export interface AIImageProvider {
@@ -126,6 +134,9 @@ export function buildPrompt(req: GenerationRequest): string {
     `Transform the uploaded photo of ${n === 1 ? `a real, specific ${t.noun}` : `${n} real, specific ${t.nounPlural}`} into a personalized poster illustration. Keep EVERY ${t.noun} that appears in the photo — all ${n}.`,
     `CRITICAL — PHOTOREALISTIC IDENTITY LOCK: render each ${t.noun} with a faithful, high-fidelity, semi-realistic likeness — as if a master portrait artist carefully painted THIS exact subject from the photo.`,
     t.identityLock(n),
+    // The identity lock above points at the photo; this names what is in it.
+    // Empty whenever no description was captured, and dropped by the filter.
+    describeForPrompt(req.photoDescription),
     `Render the surrounding world, background, lighting and props in this art direction, while keeping the ${noun} true to the photo: ${style}.`,
     `Keep the ${noun} as the clear main hero(es): together, front and centre, facing the viewer, natural pose.`,
     animals
@@ -211,6 +222,7 @@ export function buildPosterPrompt(req: GenerationRequest): string {
       .map((s) => t.describe(s))
       .join("; ")}.`,
     t.identityLock(n),
+    describeForPrompt(req.photoDescription),
     `Whole-scene art style: ${style}. Fill the frame with a lush, richly detailed world (nature, light, soft depth), harmonious colours and a polished professional poster composition — not empty or sparse.`,
     animals
       ? `Populate the scene with these as expressive, friendly companion characters around the ${noun}, ${objectStyle}: ${animals}.`

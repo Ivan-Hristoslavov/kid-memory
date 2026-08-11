@@ -12,8 +12,30 @@ import {
   MIN_PHOTO_SIDE,
 } from "@/lib/validations";
 import { isTestMode } from "@/lib/config";
+import { describePhoto, sidecarKey, type PhotoBlocker } from "@/lib/ai/describe-photo";
 
 export const runtime = "nodejs";
+// The vision pre-pass adds a round trip to an upload that used to be pure
+// image processing. It is capped at 15s inside `describePhoto`, so this only
+// has to cover a slow upload plus that call.
+export const maxDuration = 60;
+
+/**
+ * Why a photo was refused, in the customer's language.
+ *
+ * Ordered by how decisive the failure is: told about a missing face, nobody
+ * needs to also hear the photo was blurry.
+ */
+const BLOCKER_MESSAGES: Record<PhotoBlocker, string> = {
+  NO_FACE:
+    "Не открихме лице на снимката. Качи снимка, на която лицето се вижда ясно — то е основата на целия постер.",
+  FACE_OBSCURED:
+    "Лицето е закрито — от очила, ръка, маска или силна сянка. Трябва ни открито лице, за да уловим приликата.",
+  SEVERE_BLUR:
+    "Снимката е твърде размазана, за да се различат чертите. Избери по-рязка и приликата ще е много по-добра.",
+};
+
+const BLOCKER_ORDER: PhotoBlocker[] = ["NO_FACE", "FACE_OBSCURED", "SEVERE_BLUR"];
 
 /** HEIC/HEIF detection via the ISO-BMFF "ftyp" brand — browsers often send
  *  an empty MIME type for iPhone photos, so the extension alone is not enough. */
@@ -142,12 +164,46 @@ export async function POST(req: Request) {
     warnings.push("Снимката е силно преекспонирана — детайлите по лицето може да се загубят.");
   }
 
+  // Everything above measures pixels. This reads faces: it writes down what the
+  // subjects actually look like, so the illustration prompt can name their
+  // features instead of only pointing at the photo, and it refuses the handful
+  // of photos no illustrator could work from. It never throws, and when it
+  // cannot run the upload continues exactly as it did before.
+  const description = await describePhoto(normalized);
+
+  const blocker = BLOCKER_ORDER.find((b) => description.blockers.includes(b));
+  if (blocker) {
+    // Refused before the photo is stored: there is nothing to keep, and the
+    // customer is about to pick a different file anyway.
+    return NextResponse.json({ error: BLOCKER_MESSAGES[blocker] }, { status: 422 });
+  }
+
   const key = `uploads/${crypto.randomUUID()}.png`;
   await storage().put(key, normalized, "image/png");
+
+  // The description travels to generation as a sidecar object beside the photo,
+  // never through the browser: it is model-written text that ends up inside our
+  // image prompt, so a client-supplied version would be an injection route into
+  // our own generation. Written best-effort — a failure here costs a slightly
+  // weaker prompt later, not the upload.
+  if (description.checked) {
+    try {
+      await storage().put(
+        sidecarKey(key),
+        Buffer.from(JSON.stringify(description), "utf8"),
+        "application/json"
+      );
+    } catch (err) {
+      console.error("Photo description sidecar failed:", err instanceof Error ? err.message : err);
+    }
+  }
 
   // Signed URL so the client can preview the normalized image (HEIC can't
   // be rendered from an object URL in most browsers).
   const previewUrl = await storage().signedUrl(key, 30 * 60);
 
-  return NextResponse.json({ key, previewUrl, warnings });
+  // `faces` lets the wizard notice "one face, two children named" while the
+  // customer is still on the photo step. A count is safe to expose; the
+  // description itself is not.
+  return NextResponse.json({ key, previewUrl, warnings, faces: description.faces });
 }
