@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, PT_Serif } from "next/font/google";
+import { Manrope, Onest } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { BRAND } from "@/lib/brand";
 import { CookieConsent } from "@/components/site/cookie-consent";
@@ -8,17 +8,19 @@ import { HashScroll } from "@/components/site/hash-link";
 import "./globals.css";
 
 /**
- * A serif drawn for Cyrillic over a geometric grotesk. Baloo — a rounded face
- * made for children's material — was what made every page read as a nursery no
- * matter what the copy said, and it has no Cyrillic subset at all.
+ * A contemporary grotesk drawn Cyrillic-first, over a geometric one.
  *
- * PT Serif ships 400/700 only, so headings styled `font-extrabold` resolve to
- * 700 rather than being synthetically emboldened.
+ * The headings used to be PT Serif, which reads as a textbook rather than as a
+ * shop — bookish where the product is a gift. Onest is the modern counterpart
+ * that keeps proper Cyrillic: its ъ, щ, я and Ж are drawn, not adapted from
+ * Latin shapes, which is where most fashionable faces fall apart in Bulgarian.
+ *
+ * It is variable across 100–900, so headings styled `font-extrabold` get a real
+ * 800 cut instead of PT Serif's 700 ceiling.
  */
-const ptSerif = PT_Serif({
+const onest = Onest({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "700"],
-  variable: "--font-pt-serif",
+  variable: "--font-onest",
   display: "swap",
 });
 
@@ -87,7 +89,7 @@ export default function RootLayout({
   return (
     <html lang="bg" className="h-full">
       <body
-        className={`${ptSerif.variable} ${manrope.variable} grain min-h-full flex flex-col font-sans antialiased`}
+        className={`${onest.variable} ${manrope.variable} grain min-h-full flex flex-col font-sans antialiased`}
       >
         {children}
         <HashScroll />

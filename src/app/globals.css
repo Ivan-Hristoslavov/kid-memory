@@ -10,7 +10,7 @@
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   /* Serif headings against a grotesk body — the pairing a print shop uses,
      and the single biggest break from the rounded nursery lettering. */
-  --font-heading: var(--font-pt-serif), ui-serif, Georgia, serif;
+  --font-heading: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
