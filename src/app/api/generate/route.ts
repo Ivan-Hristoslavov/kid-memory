@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import { aiProvider, joinNames } from "@/lib/ai/provider";
+import { readPhotoDescription } from "@/lib/ai/describe-photo";
 import { aiCostEUR } from "@/lib/ai/cost";
 import { logAdminEvent } from "@/lib/admin-log";
 import { sendOwnerAlertEmail } from "@/lib/email/send";
@@ -124,6 +126,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Снимката не е намерена. Качи я отново." }, { status: 400 });
   }
 
+  // Written at upload time and read back here, server-side only. Null for
+  // photos uploaded before the pre-pass existed, or when the vision call failed
+  // — generation then proceeds on the generic identity lock, as it always did.
+  const photoDescription = await readPhotoDescription(input.photoKey);
+
   let order;
   try {
     order = await prisma.order.create({
@@ -139,6 +146,13 @@ export async function POST(req: Request) {
           first.gender === "FEMALE" ? "GIRL" : first.gender === "MALE" ? "BOY" : null,
         subjects: input.subjects,
         photoKey: input.photoKey,
+        // Kept on the order so a regeneration reuses the same reading — a fresh
+        // one would describe the face slightly differently and the likeness
+        // would drift between attempts — and so the admin can see what the
+        // model actually saw when a customer disputes a poster.
+        // A plain interface has no index signature, which is all Prisma's
+        // JSON input type is asking for — the shape is already validated.
+        photoDescription: (photoDescription ?? undefined) as Prisma.InputJsonValue | undefined,
         leadEmail: input.leadEmail || null,
         words: flatWords,
         animals: input.animals,
@@ -161,6 +175,7 @@ export async function POST(req: Request) {
       animals: input.animals,
       style: input.style,
       quality: settings.aiQuality,
+      photoDescription,
     });
 
     // AI_TEXT_MODE=bake trusts the model's own lettering; the default draws it

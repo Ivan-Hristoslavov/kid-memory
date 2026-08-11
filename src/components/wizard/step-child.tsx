@@ -72,6 +72,8 @@ export function StepChild() {
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [photoWarnings, setPhotoWarnings] = useState<string[]>([]);
+  /** How many subjects were found in the photo. Null when it was not read. */
+  const [photoFaces, setPhotoFaces] = useState<number | null>(null);
 
   const AGE_OPTIONS = ageOptions(subject.ageMax);
 
@@ -88,9 +90,11 @@ export function StepChild() {
         key: string;
         previewUrl: string;
         warnings?: string[];
+        faces?: number;
       }>("/api/upload", { method: "POST", body });
       if (!ok) throw new Error(error ?? "Качването не успя");
       wizard.setPhoto(data.key, data.previewUrl);
+      setPhotoFaces(typeof data.faces === "number" ? data.faces : null);
       // Quality warnings are advisory — the customer may have only this one
       // photo, so we flag the risk and let them decide rather than blocking.
       if (data.warnings?.length) {
@@ -110,6 +114,7 @@ export function StepChild() {
   function clearPhoto() {
     wizard.setPhoto("", "");
     setPhotoWarnings([]);
+    setPhotoFaces(null);
     if (fileInput.current) fileInput.current.value = "";
   }
 
@@ -142,6 +147,18 @@ export function StepChild() {
 
   const hasPhoto = Boolean(wizard.photoKey && wizard.photoPreviewUrl);
   const multi = wizard.subjects.length > 1;
+
+  /**
+   * "Two children named, one face in the photo" is only visible once both are
+   * known, and the customer can fix it either way — by changing the photo or by
+   * removing a name. So it is computed live from the current subject count and
+   * shown as advice, never as a block: the reader occasionally miscounts a face
+   * turned away from the camera, and being wrong must not cost an order.
+   */
+  const countWarning =
+    photoFaces !== null && photoFaces > 0 && photoFaces < wizard.subjects.length
+      ? `На снимката разпознахме ${photoFaces} от ${subject.nounPlural}, а тук са добавени ${wizard.subjects.length}. Провери дали снимката е правилната — всички трябва да се виждат на нея, за да ги нарисуваме.`
+      : null;
 
   return (
     <Card className="glass overflow-hidden rounded-2xl border-none">
@@ -247,7 +264,7 @@ export function StepChild() {
                 >
                   Смени снимката
                 </button>
-                {photoWarnings.map((w) => (
+                {[...photoWarnings, ...(countWarning ? [countWarning] : [])].map((w) => (
                   <p
                     key={w}
                     className="mt-2 flex items-start gap-1.5 rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-900"

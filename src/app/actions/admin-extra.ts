@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import { aiProvider } from "@/lib/ai/provider";
+import { coercePhotoDescription, readPhotoDescription } from "@/lib/ai/describe-photo";
 import { getTemplate, orderSubjects } from "@/lib/templates";
 import { composeFinalPoster, composeProtectedPreview } from "@/lib/poster/compose";
 import { aiBakesText, isTestMode } from "@/lib/config";
@@ -158,6 +159,13 @@ export async function regeneratePoster(
   const subjects = orderSubjects(order);
   if (subjects.length === 0) return { error: "Липсват данни за постера" };
 
+  // Prefer the reading stored on the order, so a second take describes the same
+  // face the same way and the likeness does not drift between attempts. Orders
+  // placed before the column existed fall back to the sidecar beside the photo.
+  const photoDescription =
+    coercePhotoDescription(order.photoDescription) ??
+    (await readPhotoDescription(order.photoKey));
+
   try {
     const illustration = await aiProvider().generate({
       photo,
@@ -166,6 +174,7 @@ export async function regeneratePoster(
       animals: order.animals,
       style: order.style,
       quality: (await getSettings()).aiQuality,
+      photoDescription,
     });
 
     const finalPoster = aiBakesText()

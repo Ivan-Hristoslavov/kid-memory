@@ -98,6 +98,11 @@ model Order {
   /// `children` across for those.
   subjects    Json     @default("[]")
   photoKey    String? // private storage key of uploaded photo
+  /// What the vision pre-pass saw in the photo, captured at upload:
+  /// { faces, subjects: [{ position, kind, features, hair, clothing, glasses }] }.
+  /// Null on orders whose photo predates the pre-pass or whose reading failed —
+  /// generation falls back to the generic identity lock for those.
+  photoDescription Json?
   words       Json // flattened [{ word, saidAs }] across all subjects
   animals     String[]
   style       String
