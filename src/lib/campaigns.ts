@@ -128,8 +128,8 @@ export const DEFAULT_CAMPAIGNS = [
     promoText: "Ден на мъжката рожба — поръчай до 28 януари",
     promoSecondary: "Виждаш дизайна за 2 минути",
     seoTitle: "Подарък за Деня на мъжката рожба — персонализиран детски постер",
-    accentColor: "oklch(0.62 0.14 250)",
-    auraColor: "oklch(0.9 0.05 240)",
+    accentColor: "oklch(0.50 0.040 200)",
+    auraColor: "oklch(0.90 0.020 210)",
   },
   {
     name: "8 март",
@@ -147,8 +147,8 @@ export const DEFAULT_CAMPAIGNS = [
     seoTitle: "Подарък за 8 март за мама и баба — персонализиран постер",
     seoDescription:
       "Подарък за 8 март, който не увяхва: снимката на детето, превърната в илюстрация, заедно с думичките, които казва грешно.",
-    accentColor: "oklch(0.68 0.16 350)",
-    auraColor: "oklch(0.9 0.06 350)",
+    accentColor: "oklch(0.62 0.090 20)",
+    auraColor: "oklch(0.88 0.040 25)",
   },
   {
     name: "1 юни — Ден на детето",
@@ -164,8 +164,8 @@ export const DEFAULT_CAMPAIGNS = [
     promoText: "За 1 юни — поръчай до 25 май",
     promoSecondary: "Виждаш дизайна за 2 минути",
     seoTitle: "Подарък за 1 юни — персонализиран детски постер",
-    accentColor: "oklch(0.7 0.15 145)",
-    auraColor: "oklch(0.92 0.06 150)",
+    accentColor: "oklch(0.574 0.032 162)",
+    auraColor: "oklch(0.90 0.025 160)",
   },
   {
     name: "Ден на бащата (26 юни)",
@@ -181,8 +181,8 @@ export const DEFAULT_CAMPAIGNS = [
     promoText: "Ден на бащата — поръчай до 22 юни",
     promoSecondary: "Плащане при доставка",
     seoTitle: "Подарък за Деня на бащата от детето — персонализиран постер",
-    accentColor: "oklch(0.6 0.12 230)",
-    auraColor: "oklch(0.9 0.05 230)",
+    accentColor: "oklch(0.52 0.035 190)",
+    auraColor: "oklch(0.89 0.022 195)",
   },
   {
     name: "Първи учебен ден",
@@ -197,8 +197,8 @@ export const DEFAULT_CAMPAIGNS = [
       "Запази думичките точно преди училището да ги оправи. Постер с лицето на детето и неговия речник.",
     promoText: "Преди първия учебен ден",
     promoSecondary: "Готово за 1–3 работни дни",
-    accentColor: "oklch(0.68 0.14 60)",
-    auraColor: "oklch(0.93 0.07 70)",
+    accentColor: "oklch(0.623 0.119 34)",
+    auraColor: "oklch(0.847 0.043 40)",
   },
   {
     name: "Ден на християнското семейство (21 ноември)",
@@ -213,8 +213,8 @@ export const DEFAULT_CAMPAIGNS = [
       "Постер с всички деца заедно и думичките, които всяко от тях казва по своему.",
     promoText: "Ден на християнското семейство — 21 ноември",
     promoSecondary: "До 3 деца на един постер",
-    accentColor: "oklch(0.62 0.13 20)",
-    auraColor: "oklch(0.9 0.055 20)",
+    accentColor: "oklch(0.60 0.075 25)",
+    auraColor: "oklch(0.88 0.038 30)",
   },
   {
     name: "Коледа",
@@ -232,8 +232,8 @@ export const DEFAULT_CAMPAIGNS = [
     seoTitle: "Коледен подарък за дете и за баба — персонализиран постер",
     seoDescription:
       "Коледен подарък, който се пази: снимката на детето, превърната в илюстрация, със смешните думички, които казва.",
-    accentColor: "oklch(0.58 0.16 25)",
-    auraColor: "oklch(0.89 0.06 25)",
+    accentColor: "oklch(0.46 0.045 158)",
+    auraColor: "oklch(0.89 0.028 150)",
   },
 ] as const;
 

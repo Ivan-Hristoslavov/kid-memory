@@ -8,9 +8,11 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  /* Serif headings against a grotesk body — the pairing a print shop uses,
-     and the single biggest break from the rounded nursery lettering. */
-  --font-heading: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+  /* Playfair Display over Manrope, per the brand spec: an editorial serif for
+     short headlines and quotes, a grotesk for everything the eye has to work
+     through. Both are loaded with a Cyrillic subset — the previous pairing was
+     chosen for the same reason and this one must not regress on it. */
+  --font-heading: var(--font-playfair), ui-serif, Georgia, serif;
   --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -50,8 +52,15 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* Brand pastels */
+  /* MENTY brand colours. The first five are the palette from the brand spec;
+     the rest are legacy names kept because ~80 call sites reference them, now
+     remapped onto the new palette so nothing has to be renamed at once. */
+  --color-ivory: var(--ivory);
   --color-blush: var(--blush);
+  --color-sage: var(--sage);
+  --color-terracotta: var(--terracotta);
+  --color-charcoal: var(--charcoal);
+
   --color-peach: var(--peach);
   --color-lavender: var(--lavender);
   --color-sky: var(--sky);
@@ -62,96 +71,130 @@
 }
 
 :root {
-  /* Gallery palette. The shop sells framed prints for any occasion, so the site
-     is the wall the print hangs on, not the thing being looked at: warm paper,
-     ink, and exactly one accent. The artwork supplies the colour. */
-  --background: oklch(0.977 0.006 85);
-  --foreground: oklch(0.24 0.012 60);
-  --card: oklch(0.995 0.003 85);
-  --card-foreground: oklch(0.24 0.012 60);
-  --popover: oklch(0.995 0.003 85);
-  --popover-foreground: oklch(0.24 0.012 60);
-  /* Terracotta — a печатарско accent, warm but not sweet. */
-  --primary: oklch(0.55 0.115 40);
-  --primary-foreground: oklch(0.985 0.006 85);
-  --secondary: oklch(0.935 0.008 80);
-  --secondary-foreground: oklch(0.34 0.015 60);
-  --muted: oklch(0.945 0.007 82);
-  --muted-foreground: oklch(0.48 0.012 62);
-  --accent: oklch(0.925 0.014 60);
-  --accent-foreground: oklch(0.32 0.02 50);
-  --destructive: oklch(0.55 0.2 27);
-  --border: oklch(0.885 0.008 78);
-  --input: oklch(0.885 0.008 78);
-  --ring: oklch(0.55 0.115 40);
-  --chart-1: oklch(0.55 0.115 40);
-  --chart-2: oklch(0.62 0.055 210);
-  --chart-3: oklch(0.68 0.06 145);
-  --chart-4: oklch(0.72 0.075 85);
-  --chart-5: oklch(0.5 0.05 300);
-  /* Square-ish. The nursery look leaned on very round corners. */
-  --radius: 0.625rem;
-  --sidebar: oklch(0.962 0.006 85);
-  --sidebar-foreground: oklch(0.24 0.012 60);
-  --sidebar-primary: oklch(0.55 0.115 40);
-  --sidebar-primary-foreground: oklch(0.985 0.006 85);
-  --sidebar-accent: oklch(0.925 0.014 60);
-  --sidebar-accent-foreground: oklch(0.32 0.02 50);
-  --sidebar-border: oklch(0.885 0.008 78);
-  --sidebar-ring: oklch(0.55 0.115 40);
+  /* MENTY palette, from the brand spec.
+     Ivory #F8F5EF · Blush #E7C4B8 · Sage #687F73 · Terracotta #C46A56 · charcoal.
+     The spec's fifth swatch carries no hex label, so the charcoal below is read
+     off that swatch — a warm, very slightly green near-black that sits in the
+     same family as the sage. Correct this one token if the source value differs.
 
-  /* Retuned from nursery pastels to muted archival tints. The names are kept
-     because ~80 call sites reference them; only the values moved. */
-  --blush: oklch(0.9 0.028 35);
-  --peach: oklch(0.915 0.03 62);
-  --lavender: oklch(0.905 0.022 295);
-  --sky: oklch(0.905 0.024 225);
-  --mint: oklch(0.915 0.025 165);
-  --sun: oklch(0.93 0.04 92);
-  --cream: oklch(0.977 0.006 85);
-  --plum: oklch(0.24 0.012 60);
+     Ratio the spec asks for: 80% neutrals, 15% sage/charcoal, 5% blush and
+     terracotta accent. That is why terracotta is NOT the primary any more —
+     the primary is charcoal, and terracotta is reserved for the small accents
+     that are allowed to shout. */
+  --ivory: oklch(0.971 0.009 85);
+  --blush: oklch(0.847 0.043 40);
+  --sage: oklch(0.574 0.032 162);
+  --terracotta: oklch(0.623 0.119 34);
+  --charcoal: oklch(0.282 0.011 145);
+
+  --background: var(--ivory);
+  --foreground: var(--charcoal);
+  /* Product photography has to dominate, so a card is plain white against the
+     ivory page rather than another tinted surface. */
+  --card: oklch(1 0 0);
+  --card-foreground: var(--charcoal);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--charcoal);
+
+  /* Charcoal fill, per the design system table. */
+  --primary: var(--charcoal);
+  --primary-foreground: oklch(0.985 0.006 85);
+  --secondary: oklch(0.938 0.013 82);
+  --secondary-foreground: oklch(0.34 0.012 140);
+  --muted: oklch(0.945 0.011 83);
+  --muted-foreground: oklch(0.526 0.014 80);
+  /* Blush is the accent surface; terracotta is the accent INK. */
+  --accent: var(--blush);
+  --accent-foreground: oklch(0.34 0.02 40);
+  --destructive: oklch(0.55 0.2 27);
+  --border: oklch(0.903 0.015 81);
+  --input: oklch(0.903 0.015 81);
+  --ring: var(--sage);
+
+  --chart-1: var(--terracotta);
+  --chart-2: var(--sage);
+  --chart-3: oklch(0.72 0.05 85);
+  --chart-4: oklch(0.68 0.06 250);
+  --chart-5: oklch(0.5 0.03 300);
+
+  /* Buttons 12–14px, cards 16–20px. With the scale below (lg = 1x, xl = 1.4x)
+     a 14px base puts `rounded-lg` at 14 and `rounded-xl` at ~20 — exactly the
+     two numbers the spec asks for, so components pick the right corner by
+     using the ordinary Tailwind step. */
+  --radius: 0.875rem;
+
+  --sidebar: oklch(0.962 0.009 85);
+  --sidebar-foreground: var(--charcoal);
+  --sidebar-primary: var(--charcoal);
+  --sidebar-primary-foreground: oklch(0.985 0.006 85);
+  --sidebar-accent: var(--blush);
+  --sidebar-accent-foreground: oklch(0.34 0.02 40);
+  --sidebar-border: oklch(0.903 0.015 81);
+  --sidebar-ring: var(--sage);
+
+  /* Legacy tint names, remapped onto the MENTY palette. They are referenced in
+     roughly eighty places; renaming every call site is a separate pass, and
+     leaving the old nursery pastels live would have kept the old look alive
+     underneath the new tokens. */
+  --peach: oklch(0.925 0.026 50);
+  --lavender: oklch(0.918 0.012 300);
+  --sky: oklch(0.918 0.013 230);
+  --mint: oklch(0.918 0.018 165);
+  --sun: oklch(0.94 0.028 90);
+  --cream: var(--ivory);
+  --plum: var(--charcoal);
 }
 
 .dark {
-  --background: oklch(0.19 0.008 60);
+  --ivory: oklch(0.955 0.006 85);
+  --blush: oklch(0.42 0.035 40);
+  --sage: oklch(0.66 0.035 162);
+  --terracotta: oklch(0.7 0.115 36);
+  --charcoal: oklch(0.19 0.008 145);
+
+  --background: var(--charcoal);
   --foreground: oklch(0.95 0.006 85);
-  --card: oklch(0.235 0.009 60);
+  --card: oklch(0.235 0.009 145);
   --card-foreground: oklch(0.95 0.006 85);
-  --popover: oklch(0.235 0.009 60);
+  --popover: oklch(0.235 0.009 145);
   --popover-foreground: oklch(0.95 0.006 85);
-  --primary: oklch(0.68 0.12 42);
-  --primary-foreground: oklch(0.17 0.008 60);
-  --secondary: oklch(0.29 0.01 60);
+
+  /* Charcoal on charcoal is invisible, so on a dark ground the primary becomes
+     the ivory it was contrasting against and the fill/text swap over. */
+  --primary: oklch(0.95 0.006 85);
+  --primary-foreground: oklch(0.19 0.008 145);
+  --secondary: oklch(0.29 0.01 145);
   --secondary-foreground: oklch(0.92 0.006 85);
-  --muted: oklch(0.27 0.009 60);
-  --muted-foreground: oklch(0.72 0.01 70);
-  --accent: oklch(0.31 0.018 50);
-  --accent-foreground: oklch(0.92 0.012 60);
+  --muted: oklch(0.27 0.009 145);
+  --muted-foreground: oklch(0.72 0.01 80);
+  --accent: oklch(0.32 0.03 40);
+  --accent-foreground: oklch(0.92 0.012 40);
   --destructive: oklch(0.7 0.19 22);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.68 0.12 42);
-  --chart-1: oklch(0.68 0.12 42);
-  --chart-2: oklch(0.66 0.06 210);
-  --chart-3: oklch(0.7 0.06 145);
-  --chart-4: oklch(0.76 0.075 85);
-  --chart-5: oklch(0.6 0.05 300);
-  --sidebar: oklch(0.235 0.009 60);
-  --sidebar-foreground: oklch(0.95 0.006 85);
-  --sidebar-primary: oklch(0.68 0.12 42);
-  --sidebar-primary-foreground: oklch(0.17 0.008 60);
-  --sidebar-accent: oklch(0.31 0.018 50);
-  --sidebar-accent-foreground: oklch(0.92 0.012 60);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.68 0.12 42);
+  --ring: var(--sage);
 
-  --blush: oklch(0.33 0.03 35);
-  --peach: oklch(0.34 0.032 62);
-  --lavender: oklch(0.32 0.025 295);
-  --sky: oklch(0.32 0.026 225);
-  --mint: oklch(0.33 0.026 165);
-  --sun: oklch(0.36 0.04 92);
-  --cream: oklch(0.19 0.008 60);
+  --chart-1: var(--terracotta);
+  --chart-2: var(--sage);
+  --chart-3: oklch(0.76 0.05 85);
+  --chart-4: oklch(0.7 0.06 250);
+  --chart-5: oklch(0.6 0.04 300);
+
+  --sidebar: oklch(0.235 0.009 145);
+  --sidebar-foreground: oklch(0.95 0.006 85);
+  --sidebar-primary: oklch(0.95 0.006 85);
+  --sidebar-primary-foreground: oklch(0.19 0.008 145);
+  --sidebar-accent: oklch(0.32 0.03 40);
+  --sidebar-accent-foreground: oklch(0.92 0.012 40);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: var(--sage);
+
+  --peach: oklch(0.34 0.03 50);
+  --lavender: oklch(0.32 0.02 300);
+  --sky: oklch(0.32 0.022 230);
+  --mint: oklch(0.33 0.024 165);
+  --sun: oklch(0.36 0.035 90);
+  --cream: oklch(0.19 0.008 145);
   --plum: oklch(0.95 0.006 85);
 }
 
