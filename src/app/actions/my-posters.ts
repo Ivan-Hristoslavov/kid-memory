@@ -71,6 +71,24 @@ export interface CustomerOrder {
   status: string;
   createdAt: Date;
   previewUrl: string | null;
+  /**
+   * Print-quality file, for orders that have actually been paid for. Null on
+   * everything else — every product includes the digital file, so handing it
+   * over before the money is in would let a customer take the poster and then
+   * refuse the parcel.
+   */
+  downloadUrl: string | null;
+}
+
+/**
+ * Whether this customer has paid for the file yet.
+ *
+ * Cash on delivery only settles on the doorstep, and nothing stamps that except
+ * the parcel arriving — so DELIVERED is the honest signal there. A card order
+ * carries its own proof.
+ */
+function hasPaidFor(order: { status: string; paymentStatus: string }): boolean {
+  return order.paymentStatus === "PAID" || order.status === "DELIVERED";
 }
 
 /** Resolves a token to its orders, or null if it is unknown or expired. */
@@ -90,16 +108,21 @@ export async function ordersForToken(
       status: true,
       createdAt: true,
       previewImage: true,
+      finalImage: true,
+      paymentStatus: true,
     },
     take: 50,
   });
 
   const { storage } = await import("@/lib/storage");
-  const thumbs = await storage()
-    .signedUrls(
-      orders.map((o) => o.previewImage).filter((k): k is string => Boolean(k)),
-      30 * 60
-    )
+  // One batched signing call for both sets of keys — signing 50 previews and
+  // 50 finals one at a time would be 100 round trips to storage.
+  const keys = [
+    ...orders.map((o) => o.previewImage),
+    ...orders.filter(hasPaidFor).map((o) => o.finalImage),
+  ].filter((k): k is string => Boolean(k));
+  const urls = await storage()
+    .signedUrls(keys, 30 * 60)
     .catch(() => ({}) as Record<string, string>);
 
   return {
@@ -110,7 +133,9 @@ export async function ordersForToken(
       childName: o.childName,
       status: o.status,
       createdAt: o.createdAt,
-      previewUrl: o.previewImage ? (thumbs[o.previewImage] ?? null) : null,
+      previewUrl: o.previewImage ? (urls[o.previewImage] ?? null) : null,
+      downloadUrl:
+        hasPaidFor(o) && o.finalImage ? (urls[o.finalImage] ?? null) : null,
     })),
   };
 }

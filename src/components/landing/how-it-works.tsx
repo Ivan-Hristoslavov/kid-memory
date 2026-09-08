@@ -70,6 +70,25 @@ export function HowItWorks() {
             </motion.div>
           ))}
         </div>
+
+        {/* Carried over from the section that used to sit above this one and
+            said the same four things in different words. This line is the part
+            that was worth keeping. */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="mt-16 text-center"
+        >
+          <p className="font-heading text-2xl font-bold sm:text-3xl">
+            Виждаш готовия постер, преди да платиш.
+          </p>
+          <p className="mt-2 text-lg text-muted-foreground">
+            Без карта, без абонамент. Не ти хареса —{" "}
+            <span className="text-gradient-warm">не поръчваш.</span>
+          </p>
+        </motion.div>
       </div>
     </section>
   );

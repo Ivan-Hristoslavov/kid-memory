@@ -341,10 +341,28 @@ export default async function AdminPage({
                         line up on the decimal and can be scanned. */}
                     <TableCell className="text-right font-heading font-bold tabular-nums">
                       {order.priceEUR ? formatPrice(Number(order.priceEUR)) : "—"}
+                      {/* Whether the money is already in decides how the order
+                          is handled — a paid one carries no refusal risk and
+                          needs no confirmation call. */}
+                      <div
+                        className={`text-xs font-semibold ${
+                          order.paymentStatus === "PAID"
+                            ? "text-emerald-600"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {order.paymentStatus === "PAID"
+                          ? "платено"
+                          : order.paymentMethod === "STRIPE"
+                            ? "чака плащане"
+                            : "нал. платеж"}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-sm">
-                      {order.courier ? (
+                      {order.productType === "DIGITAL" ? (
+                        <span className="text-muted-foreground">по имейл</span>
+                      ) : order.courier ? (
                         <>
                           <div className="flex items-center gap-1.5">
                             <Truck className="size-3.5 text-muted-foreground" />

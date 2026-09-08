@@ -121,11 +121,23 @@ export const checkoutSchema = z
       .transform((v) => v.replace(/[\s-]/g, ""))
       .pipe(z.string().regex(bgPhoneRegex, "Невалиден български телефонен номер")),
     email: z.string().trim().email("Невалиден имейл адрес").max(120),
-    city: z.string().trim().min(2, "Въведи град").max(60),
+    /**
+     * Delivery details are optional at the shape level and required in the
+     * refinement below, for physical products only. A digital order ships by
+     * email — asking it for a courier office would fail validation on a field
+     * the form never showed.
+     */
+    city: z.string().trim().max(60).optional().or(z.literal("")),
     address: z.string().trim().max(200).optional().or(z.literal("")),
-    courier: z.enum(["ECONT", "SPEEDY"]),
-    deliveryMethod: z.enum(["OFFICE", "ADDRESS", "LOCKER"]),
+    courier: z.enum(["ECONT", "SPEEDY"]).optional().or(z.literal("")),
+    deliveryMethod: z.enum(["OFFICE", "ADDRESS", "LOCKER"]).optional().or(z.literal("")),
     courierOffice: z.string().trim().max(200).optional().or(z.literal("")),
+    /**
+     * How the customer pays. Cash on delivery is the default because it is the
+     * one method that is always available; card is only offered when the
+     * merchant account is configured.
+     */
+    paymentMethod: z.enum(["COD", "STRIPE"]).default("COD"),
     /** Consent must be explicit — an unticked box is a "no", never an omission. */
     marketingOptIn: z.coerce.boolean().default(false),
     /** Optional; drives the yearly birthday reminder. */
@@ -138,8 +150,39 @@ export const checkoutSchema = z
       .refine((d) => d === null || !Number.isNaN(d.getTime()), "Невалидна дата"),
   })
   .superRefine((data, ctx) => {
-    // Digital product needs no physical delivery details
-    if (data.productType === "DIGITAL") return;
+    // Digital product needs no physical delivery details, but it does need the
+    // money up front: a courier cannot collect cash for a file.
+    if (data.productType === "DIGITAL") {
+      if (data.paymentMethod !== "STRIPE") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["paymentMethod"],
+          message: "Дигиталният файл се плаща онлайн с карта",
+        });
+      }
+      return;
+    }
+    if (!data.city) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["city"],
+        message: "Въведи град",
+      });
+    }
+    if (!data.courier) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["courier"],
+        message: "Избери куриер",
+      });
+    }
+    if (!data.deliveryMethod) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["deliveryMethod"],
+        message: "Избери начин на доставка",
+      });
+    }
     if (data.deliveryMethod === "ADDRESS" && !data.address) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

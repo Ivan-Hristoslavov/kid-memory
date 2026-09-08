@@ -22,6 +22,10 @@ enum ProductType {
   POSTER_A4
   POSTER_A3
   PREMIUM
+  /// Personalised book, delivered as a print-ready PDF.
+  BOOK_PDF
+  /// Personalised book, printed and shipped. The primary book product.
+  BOOK_PRINTED
 }
 
 enum Courier {
@@ -113,6 +117,13 @@ model Order {
   priceEUR      Decimal?      @db.Decimal(10, 2) // total incl. add-ons
   paymentMethod PaymentMethod @default(COD)
   paymentStatus PaymentStatus @default(PENDING)
+  /// Provider-side reference — the Stripe Checkout Session id. Unique, so a
+  /// webhook Stripe retries (it retries on any non-2xx, and on timeouts it may
+  /// deliver twice regardless) cannot be applied to the order a second time.
+  paymentRef    String?       @unique
+  /// When the money actually arrived. Null for every unpaid order, including
+  /// COD orders in transit — those are only paid once the courier settles.
+  paidAt        DateTime?
 
   /// Captured before generation so an abandoned poster can be recovered.
   leadEmail    String?
@@ -155,6 +166,14 @@ model Order {
   deliveryMethod DeliveryMethod?
   courierOffice  String?
   trackingNumber String?
+
+  /// Set when this order sells a personalised book rather than a poster.
+  /// Nullable and unique: every existing poster order keeps `null`, and a book
+  /// can only be sold once. The poster columns above stay filled on a book
+  /// order too (childName holds the characters' names, style the art style),
+  /// so admin, emails and the courier flow need no book-specific branch.
+  bookId String? @unique
+  book   Book?   @relation(fields: [bookId], references: [id])
 
   // Generated assets (private storage keys, never public URLs)
   previewImage String?
@@ -299,4 +318,249 @@ model SiteSetting {
   key       String   @id
   value     Json
   updatedAt DateTime @updatedAt
+}
+
+/* ------------------------------------------------------------------ *
+ * Personalised children's books
+ *
+ * The second product line. A book shares almost everything with a poster —
+ * the photo upload, the vision pre-pass, the image provider, private storage,
+ * checkout, delivery, payment and the admin queue — and differs in exactly two
+ * places: it needs a written story before any picture exists, and it needs
+ * twenty-odd illustrations of the SAME child instead of one.
+ *
+ * That second difference is why a book is its own aggregate rather than a
+ * `PosterTemplate` variant: a poster is one synchronous generation inside a
+ * request, a book is a long-running job with per-page state that has to survive
+ * a serverless function ending. Everything downstream of "the artwork exists"
+ * is deliberately NOT duplicated — an ordered book creates a normal `Order`
+ * row, so checkout, couriers, payments, emails and the admin panel keep
+ * working with no book-specific branches.
+ * ------------------------------------------------------------------ */
+
+enum BookStatus {
+  /// Being filled in by the customer; nothing generated yet.
+  DRAFT
+  /// Story and/or illustrations in flight. See BookGeneration for progress.
+  GENERATING
+  /// Every page has artwork. The customer can flip through and order.
+  READY
+  /// An Order has been placed against it.
+  ORDERED
+  PRINTING
+  SHIPPED
+  COMPLETED
+  /// Generation failed in a way the customer cannot retry past.
+  FAILED
+}
+
+/// What a page is, so the PDF and the previewer can lay it out without
+/// guessing from the page number.
+enum BookPageKind {
+  COVER
+  DEDICATION
+  STORY
+  BACK_COVER
+}
+
+enum BookPageStatus {
+  PENDING
+  GENERATING
+  READY
+  FAILED
+}
+
+enum BookAgeGroup {
+  AGE_3_5
+  AGE_5_7
+  AGE_7_9
+}
+
+enum BookMood {
+  FUNNY
+  MAGICAL
+  ADVENTUROUS
+  CALM
+  EDUCATIONAL
+}
+
+/// Which half of the pipeline a job is running, so a resumed worker knows
+/// whether it still owes a story or only pictures.
+enum BookJobKind {
+  STORY
+  ILLUSTRATIONS
+  /// A single page the customer asked to redraw.
+  PAGE
+  PDF
+}
+
+enum BookJobStatus {
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+}
+
+model Book {
+  id         String     @id @default(cuid())
+  bookNumber Int        @unique @default(autoincrement())
+  status     BookStatus @default(DRAFT)
+
+  // ---- What the customer asked for -------------------------------------
+  /// Catalog id from lib/books/catalog.ts. A String rather than an enum
+  /// because adventures grow with the seasons, exactly like poster `style`.
+  adventure  String
+  /// Free-text "my own idea", used verbatim in the story prompt when set.
+  customIdea String?
+  ageGroup   BookAgeGroup @default(AGE_5_7)
+  mood       BookMood     @default(MAGICAL)
+  /// "баба", "кучето Боби", "морето" — things the story must contain.
+  mustInclude String[]
+  /// Catalog id from lib/books/catalog.ts. Fixed for the whole book: every
+  /// page has to be drawn in one visual universe.
+  artStyle   String
+  /// How the children relate to one another, in the parent's own words. Only
+  /// meaningful with more than one character, and genuinely used by the story
+  /// prompt rather than merely stored.
+  relationships String?
+  /// Printed on its own page near the front.
+  dedication String?
+
+  // ---- What the AI produced --------------------------------------------
+  title    String?
+  subtitle String?
+  /// The structured story exactly as the model returned it, before it was
+  /// split into BookPage rows. Kept so a story can be re-split or audited
+  /// without a second paid generation.
+  story    Json?
+
+  // ---- Assets (private storage keys, never public URLs) -----------------
+  coverImage String?
+  finalPdf   String?
+
+  /// Guest-first, like the poster shop: no accounts, an emailed AccessToken
+  /// is how a customer returns to their own books. See the AccessToken model.
+  leadEmail String?
+
+  /// What this book actually cost us in AI, and how many generations it took
+  /// including regenerations — a book is ~24 images, so per-unit margin has to
+  /// be visible or a fussy customer quietly eats the whole of it.
+  aiCostEUR Decimal? @db.Decimal(10, 4)
+  aiRuns    Int      @default(0)
+
+  characters  BookCharacter[]
+  pages       BookPage[]
+  generations BookGeneration[]
+  order       Order?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([leadEmail])
+}
+
+/// One child starring in a book.
+///
+/// `referenceSheet` is the whole reason a book looks like one child rather than
+/// twenty cousins: the vision pre-pass writes the face down once, and every
+/// page prompt spends that same description alongside the same source photo.
+model BookCharacter {
+  id     String @id @default(cuid())
+  bookId String
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  /// Position in the wizard, so pages can refer to "character 1" stably.
+  ordinal Int
+
+  name        String
+  age         Float?
+  gender      Gender?
+  /// The parent's own words: "Мартин е на 5, обича динозаври, пази сестра си."
+  description String?
+  interests   String?
+  favouriteToy    String?
+  favouriteAnimal String?
+
+  /// Private storage key of the uploaded photo.
+  photoKey String?
+  /// The written character sheet — appearance, hair, eyes, face, clothing,
+  /// personality — produced from the photo and reused on every page prompt.
+  /// Same shape discipline as Order.photoDescription: model-written text that
+  /// reaches an image prompt, so it is never accepted from the browser.
+  referenceSheet Json?
+  /// Optional generated turnaround/reference image, if one was rendered.
+  referenceImage String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([bookId, ordinal])
+  @@index([bookId])
+}
+
+model BookPage {
+  id     String @id @default(cuid())
+  bookId String
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  /// 1-based, covering every printed leaf including cover and dedication.
+  pageNumber Int
+  kind       BookPageKind   @default(STORY)
+  status     BookPageStatus @default(PENDING)
+
+  /// The story text for this page, in Bulgarian.
+  text String?
+  /// What the illustrator was asked to draw. Kept so a single page can be
+  /// redrawn without regenerating the story around it.
+  imagePrompt String?
+  /// Private storage key.
+  imageKey String?
+
+  /// Why this page failed, for the admin queue.
+  error String?
+  /// Counts regenerations of this page alone.
+  attempts Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([bookId, pageNumber])
+  @@index([bookId, pageNumber])
+  @@index([status])
+}
+
+/// One unit of long-running work on a book.
+///
+/// Twenty-four illustrations cannot be produced inside one HTTP request — the
+/// poster's single image already takes most of a minute. A worker route claims
+/// a job, does as much as it can inside its own time budget, writes progress
+/// here and re-triggers itself; a cron sweeps anything left RUNNING by a
+/// function that died. The customer's browser polls this row, which is what
+/// "Генерираме илюстрация 7 от 24" is actually reading.
+model BookGeneration {
+  id     String @id @default(cuid())
+  bookId String
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  kind   BookJobKind
+  status BookJobStatus @default(QUEUED)
+
+  /// For a PAGE job, which page. Null for whole-book jobs.
+  pageNumber Int?
+
+  /// Progress, for the customer-facing message.
+  done  Int @default(0)
+  total Int @default(0)
+
+  /// Set while a worker holds the job, so a sweep can tell "in flight" from
+  /// "abandoned by a function that timed out".
+  claimedAt DateTime?
+  error     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([bookId, kind])
 }

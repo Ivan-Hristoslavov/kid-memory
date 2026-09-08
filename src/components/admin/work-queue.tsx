@@ -19,13 +19,20 @@ export async function WorkQueue() {
       take: 8,
     }),
     prisma.order.findMany({
-      where: { status: "CONFIRMED", confirmedAt: { not: null } },
+      // The digital product has nothing to print and nothing to ship — it is
+      // delivered by email the moment it is paid. Leaving it in these queues
+      // would mean the owner keeps picking up orders that need no work.
+      where: {
+        status: "CONFIRMED",
+        confirmedAt: { not: null },
+        productType: { not: "DIGITAL" },
+      },
       select: { id: true, orderNumber: true, childName: true, priceEUR: true },
       orderBy: { confirmedAt: "asc" },
       take: 8,
     }),
     prisma.order.findMany({
-      where: { status: "PRINTING" },
+      where: { status: "PRINTING", productType: { not: "DIGITAL" } },
       select: { id: true, orderNumber: true, childName: true, city: true },
       orderBy: { updatedAt: "asc" },
       take: 8,
@@ -47,7 +54,7 @@ export async function WorkQueue() {
         tone="amber"
         title="Чакат потвърждение"
         empty="Няма чакащи."
-        hint="Не печатай тези — клиентът още не е потвърдил от имейла."
+        hint="Не печатай тези — клиентът още не е потвърдил от имейла. Платените с карта не минават оттук."
         items={awaitingConfirm.map((o) => ({
           id: o.id,
           label: `№${o.orderNumber} · ${o.childName}`,

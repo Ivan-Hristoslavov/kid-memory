@@ -18,7 +18,7 @@ const STATUS_LABELS: Record<string, { title: string; text: string }> = {
   CONFIRMED: { title: "Потвърдена", text: "Подготвяме постера за печат." },
   PRINTING: { title: "В печат", text: "Постерът се отпечатва в момента." },
   SHIPPED: { title: "Изпратена", text: "Пратката пътува към теб." },
-  DELIVERED: { title: "Доставена", text: "Пратката е получена. Приятни спомени! ❤️" },
+  DELIVERED: { title: "Доставена", text: "Пратката е получена. Приятно окачване! ❤️" },
   CANCELLED: { title: "Отменена", text: "Поръчката е отменена." },
 };
 

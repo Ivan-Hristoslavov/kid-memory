@@ -24,3 +24,17 @@ export function isTestMode(): boolean {
 export function aiBakesText(): boolean {
   return process.env.AI_TEXT_MODE === "bake";
 }
+
+/**
+ * Whether the shop offers card payment at all.
+ *
+ * Public rather than server-only because the storefront has to know: the price
+ * cards, the digital product and the checkout form all render on the client and
+ * must agree with what the server will accept. The secret keys stay server-side
+ * — this flag only says the merchant account exists.
+ *
+ * Cash on delivery is never behind this. It is the fallback that always works.
+ */
+export function cardPaymentsOffered(): boolean {
+  return process.env.NEXT_PUBLIC_STRIPE_ENABLED === "true";
+}

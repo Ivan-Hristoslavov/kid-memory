@@ -79,11 +79,25 @@ export interface OrderReceivedEmailData extends OrderEmailData {
   /** What the courier actually collects. */
   totalEUR: number;
   deliveryDays: string;
-  /** One-click confirmation link; printing waits for it. */
-  confirmUrl: string;
+  /**
+   * One-click confirmation link; printing waits for it. Only meaningful for
+   * cash on delivery — a paid order has nothing left to confirm.
+   */
+  confirmUrl?: string;
   trackUrl: string;
+  /** True when the money is already in. Changes the whole message, not a line. */
+  paid?: boolean;
 }
 
+/**
+ * The "we have your order" mail, in two versions.
+ *
+ * Cash on delivery has to ask for a confirmation click, because a personalised
+ * parcel refused at the door is a total loss and the click is the only thing
+ * standing between us and printing one. A card order is already paid, so asking
+ * the same customer to confirm again reads as doubt and adds a step where the
+ * only honest message is "it's done, we're making it".
+ */
 export async function sendOrderReceivedEmail(data: OrderReceivedEmailData): Promise<void> {
   const product = PRODUCTS[data.productType];
   const addonRows = data.addons
@@ -93,31 +107,85 @@ export async function sendOrderReceivedEmail(data: OrderReceivedEmailData): Prom
     })
     .join("");
 
+  const isDigital = data.productType === "DIGITAL";
+  const paid = Boolean(data.paid);
+
+  const moneyBlock = paid
+    ? `<div style="background:#f2f6f1;border-radius:16px;padding:18px 20px;margin:20px 0;">
+         <p style="margin:0;font-size:15px;color:#6b7d68;">Платено с карта</p>
+         <p style="margin:4px 0 0;font-size:28px;font-weight:700;">${formatPrice(data.totalEUR)}</p>
+         <p style="margin:8px 0 0;font-size:14px;color:#6b7d68;">Няма какво да плащаш при получаване.</p>
+       </div>`
+    : `<div style="background:#fdf3f5;border-radius:16px;padding:18px 20px;margin:20px 0;">
+         <p style="margin:0;font-size:15px;color:#8a7d99;">За плащане на куриера</p>
+         <p style="margin:4px 0 0;font-size:28px;font-weight:700;">${formatPrice(data.totalEUR)}</p>
+         <p style="margin:8px 0 0;font-size:14px;color:#8a7d99;">Наложен платеж — плащаш в брой или с карта при получаване.</p>
+       </div>`;
+
+  const callToAction =
+    paid || !data.confirmUrl
+      ? `<p style="font-size:16px;line-height:1.6;">${
+          isDigital
+            ? "Файлът пристига с отделен имейл до няколко минути."
+            : `Пускаме го за печат веднага. Изработка и доставка за ${esc(data.deliveryDays)}.`
+        }</p>
+         <p style="font-size:14px;line-height:1.6;color:#8a7d99;">Ако нещо в поръчката не е наред — отговори на този имейл и ще го оправим, преди да е отпечатано.</p>`
+      : `<p style="font-size:16px;line-height:1.6;">Постерът е персонализиран, затова не го пускаме за печат, преди ти да кажеш „да“:</p>
+         ${button(data.confirmUrl, "Потвърждавам поръчката")}
+         <p style="font-size:14px;line-height:1.6;color:#8a7d99;">След потвърждението изработваме и изпращаме за ${esc(data.deliveryDays)}.
+         Ако нещо в поръчката не е наред — просто отговори на този имейл.</p>`;
+
   await deliver(
     data.email,
-    `Поръчка №${data.orderNumber} — потвърди я, за да я пуснем за печат`,
+    paid
+      ? `Поръчка №${data.orderNumber} — платена, започваме работа`
+      : `Поръчка №${data.orderNumber} — потвърди я, за да я пуснем за печат`,
     shell(
-      "Получихме твоята поръчка ❤️",
+      paid ? "Плащането мина ❤️" : "Получихме твоята поръчка ❤️",
       `<p style="font-size:16px;line-height:1.6;">Здравей, ${esc(data.customerName)}!</p>
        <p style="font-size:16px;line-height:1.6;">Спомен №<strong>${esc(data.orderNumber)}</strong> за <strong>${esc(data.childName)}</strong> вече е при нас.</p>
 
        <table style="width:100%;font-size:15px;margin:20px 0;border-collapse:collapse;">
          ${row(product.name, formatPrice(product.priceEUR))}
          ${addonRows}
-         ${row("Доставка", data.deliveryEUR === 0 ? "безплатна" : formatPrice(data.deliveryEUR))}
+         ${isDigital ? "" : row("Доставка", data.deliveryEUR === 0 ? "безплатна" : formatPrice(data.deliveryEUR))}
        </table>
 
-       <div style="background:#fdf3f5;border-radius:16px;padding:18px 20px;margin:20px 0;">
-         <p style="margin:0;font-size:15px;color:#8a7d99;">За плащане на куриера</p>
-         <p style="margin:4px 0 0;font-size:28px;font-weight:700;">${formatPrice(data.totalEUR)}</p>
-         <p style="margin:8px 0 0;font-size:14px;color:#8a7d99;">Наложен платеж — плащаш в брой или с карта при получаване.</p>
-       </div>
+       ${moneyBlock}
 
-       <p style="font-size:16px;line-height:1.6;">Постерът е персонализиран, затова не го пускаме за печат, преди ти да кажеш „да“:</p>
-       ${button(data.confirmUrl, "Потвърждавам поръчката")}
-       <p style="font-size:14px;line-height:1.6;color:#8a7d99;">След потвърждението изработваме и изпращаме за ${esc(data.deliveryDays)}.
-       Ако нещо в поръчката не е наред — просто отговори на този имейл.</p>
+       ${callToAction}
        <p style="font-size:14px;line-height:1.6;color:#8a7d99;">Проследяване по всяко време: <a href="${esc(data.trackUrl)}" style="color:#e07189;">${esc(data.trackUrl)}</a></p>`
+    )
+  );
+}
+
+/**
+ * Delivery for the digital product: a time-limited link to the print-quality
+ * file. The link is deliberately not permanent — it is signed storage access,
+ * not a public URL — so the mail says how long it lives and points at `/moite`,
+ * which mints a fresh one whenever the customer needs it again.
+ */
+export async function sendDigitalDeliveryEmail(data: {
+  orderNumber: number;
+  customerName: string;
+  email: string;
+  childName: string;
+  downloadUrl: string;
+  /** How long the link above stays valid, in words. */
+  validFor: string;
+  myOrdersUrl: string;
+}): Promise<void> {
+  await deliver(
+    data.email,
+    `Постерът на ${data.childName} е готов за изтегляне`,
+    shell(
+      "Файлът е готов ❤️",
+      `<p style="font-size:16px;line-height:1.6;">Здравей, ${esc(data.customerName)}!</p>
+       <p style="font-size:16px;line-height:1.6;">Ето постера от поръчка №<strong>${esc(data.orderNumber)}</strong> в пълно качество, готов за печат.</p>
+       ${button(data.downloadUrl, "Изтегли постера")}
+       <p style="font-size:14px;line-height:1.6;color:#8a7d99;">Линкът е активен ${esc(data.validFor)}. Ако изтече, вземи нов от
+       <a href="${esc(data.myOrdersUrl)}" style="color:#e07189;">${esc(data.myOrdersUrl)}</a> — файлът остава твой.</p>
+       <p style="font-size:14px;line-height:1.6;color:#8a7d99;">Съвет за печат: занеси файла в копирен център и поискай матова хартия 250 г или по-плътна.</p>`
     )
   );
 }

@@ -2,11 +2,17 @@
  * Product catalog, poster styles and animal options.
  * Single source of truth shared by wizard, checkout, admin and emails.
  */
+import { cardPaymentsOffered } from "@/lib/config";
 
 /**
  * `available: false` keeps a product resolvable for past orders, admin and
- * emails, but hides it from the storefront. DIGITAL is off while the shop is
- * cash-on-delivery only — a courier can't collect payment for a file.
+ * emails, but hides it from the storefront.
+ *
+ * DIGITAL follows card payment exactly: a courier cannot collect cash for a
+ * file, so with cash on delivery as the only method the product is unsellable
+ * and must not be shown. The moment cards are on it is the best margin in the
+ * catalog — no print, no packaging, no courier, and nothing to refuse at the
+ * door.
  */
 export const PRODUCTS = {
   DIGITAL: {
@@ -14,7 +20,7 @@ export const PRODUCTS = {
     name: "Дигитален файл",
     description: "Файл в 4K качество за печат у дома или споделяне.",
     priceEUR: 12.9,
-    available: false,
+    available: cardPaymentsOffered(),
     features: ["4K дигитален файл", "Готов за печат навсякъде", "Доставка по имейл до минути"],
   },
   POSTER_A4: {

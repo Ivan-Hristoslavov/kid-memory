@@ -1,29 +1,21 @@
 import "server-only";
-import type { PaymentIntent, PaymentProvider } from "./types";
+import { StripeProvider, stripeConfigured } from "./stripe";
+import type {
+  PaymentIntent,
+  PaymentMethodId,
+  PaymentProvider,
+  PaymentRequest,
+} from "./types";
 
 export * from "./types";
+export { stripeConfigured } from "./stripe";
 
 /** Cash on delivery — collected by the courier, no online step. */
 class CashOnDeliveryProvider implements PaymentProvider {
   readonly id = "COD" as const;
 
-  async createPayment(orderId: string): Promise<PaymentIntent> {
-    return { id: `cod_${orderId}`, status: "PENDING" };
-  }
-}
-
-/** Stripe Checkout — wire in when card payments launch. */
-class StripeProvider implements PaymentProvider {
-  readonly id = "STRIPE" as const;
-
-  async createPayment(): Promise<PaymentIntent> {
-    // Planned: stripe.checkout.sessions.create with EUR price, success/cancel URLs.
-    throw new Error("Stripe payments are not enabled yet");
-  }
-
-  async handleWebhook(): Promise<{ orderId: string; paid: boolean }> {
-    // Planned: verify STRIPE_WEBHOOK_SECRET signature, read checkout.session.completed.
-    throw new Error("Stripe payments are not enabled yet");
+  async createPayment(req: PaymentRequest): Promise<PaymentIntent> {
+    return { id: `cod_${req.orderId}`, status: "PENDING" };
   }
 }
 
@@ -37,12 +29,23 @@ class RevolutProvider implements PaymentProvider {
   }
 }
 
-const providers: Record<"COD" | "STRIPE" | "REVOLUT", PaymentProvider> = {
+const providers: Record<PaymentMethodId, PaymentProvider> = {
   COD: new CashOnDeliveryProvider(),
   STRIPE: new StripeProvider(),
   REVOLUT: new RevolutProvider(),
 };
 
-export function payments(id: "COD" | "STRIPE" | "REVOLUT" = "COD"): PaymentProvider {
+export function payments(id: PaymentMethodId = "COD"): PaymentProvider {
   return providers[id];
+}
+
+/**
+ * Which methods a customer may actually pick, in display order.
+ *
+ * Cash on delivery is always offered. Card is offered only once the merchant
+ * account exists, so a half-configured deployment shows one working option
+ * rather than two, one of which errors at the worst possible moment.
+ */
+export function enabledPaymentMethods(): readonly PaymentMethodId[] {
+  return stripeConfigured() ? (["STRIPE", "COD"] as const) : (["COD"] as const);
 }

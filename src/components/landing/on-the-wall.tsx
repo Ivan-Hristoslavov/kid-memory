@@ -38,10 +38,10 @@ export function OnTheWall() {
         >
           <motion.div style={{ y: imageY }} className="scale-110">
             <Image
-              src="/samples/wall.webp"
+              src="/samples/wall-sofa.webp"
               alt="Персонализиран илюстрован постер в рамка на стена"
-              width={1200}
-              height={800}
+              width={1590}
+              height={1067}
               sizes="(max-width: 1024px) 92vw, 560px"
               className="w-full"
             />
@@ -56,7 +56,7 @@ export function OnTheWall() {
         >
           <Eyebrow>На стената</Eyebrow>
           <h2 className="mt-5 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Спомен, който се вижда всеки ден
+            Подарък, който се вижда всеки ден
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             Не е файл, който потъва в телефона. Виси на стената и връща усмивката
@@ -79,7 +79,7 @@ export function OnTheWall() {
             size="lg"
             className="mt-9 h-13 rounded-full px-8 text-base shadow-lg shadow-primary/25"
           >
-            <Link href="/create">Създай своя постер</Link>
+            <Link href="/create">Създай постер</Link>
           </Button>
         </motion.div>
       </div>

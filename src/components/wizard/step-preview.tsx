@@ -176,7 +176,7 @@ export function StepPreview() {
             >
               <p className="flex items-center justify-center gap-2 font-heading text-xl font-bold">
                 <Sparkles className="size-5 text-primary" />
-                Спомeнът на {displayName} е готов!
+                Постерът на {displayName} е готов!
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
                 {testMode
@@ -229,7 +229,7 @@ export function StepPreview() {
                   router.push(`/order?orderId=${wizard.orderId}`);
                 }}
               >
-                Поръчай спомена ❤️
+                Поръчай постера
               </Button>
             </div>
 

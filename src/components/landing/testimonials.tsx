@@ -33,7 +33,7 @@ export async function Testimonials({ heading }: { heading?: string }) {
             <StarRating value={avg} className="size-3.5" /> {avg} / 5
           </Eyebrow>
           <h2 className="mt-5 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-            {heading ?? "Родители, които вече пазят спомена"}
+            {heading ?? "Клиенти, които вече го окачиха"}
           </h2>
           <p className="mt-4 max-w-xl text-lg text-muted-foreground">
             Истински отзиви от наши клиенти.

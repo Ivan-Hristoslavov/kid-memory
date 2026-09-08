@@ -14,7 +14,7 @@ const POINTS = [
   {
     icon: Wallet,
     title: "Плащане при доставка",
-    text: "Плащаш чак когато спомeнът е в ръцете ти. Без карта, без предплащане.",
+    text: "Плащаш чак когато подаръкът е в ръцете ти. Без карта, без предплащане.",
   },
   {
     icon: RefreshCw,
@@ -65,7 +65,7 @@ export function Guarantee() {
               size="lg"
               className="h-13 rounded-full px-8 text-base shadow-lg shadow-primary/25"
             >
-              <Link href="/create">Създай своя спомен днес</Link>
+              <Link href="/create">Създай постер</Link>
             </Button>
           </div>
         </div>

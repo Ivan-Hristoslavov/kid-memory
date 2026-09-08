@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Heart, Mail, PackageSearch, Printer, Star, Truck } from "lucide-react";
+import {
+  Clock,
+  Heart,
+  Mail,
+  PackageSearch,
+  Printer,
+  ShieldCheck,
+  Star,
+  Truck,
+} from "lucide-react";
 import { SiteHeader } from "@/components/site/site-header";
 import { Footer } from "@/components/site/footer";
 import { Button } from "@/components/ui/button";
@@ -30,7 +39,14 @@ export default async function SuccessPage({
     ? await prisma.order
         .findUnique({
           where: { id },
-          select: { id: true, orderNumber: true, priceEUR: true },
+          select: {
+            id: true,
+            orderNumber: true,
+            priceEUR: true,
+            productType: true,
+            paymentMethod: true,
+            paymentStatus: true,
+          },
         })
         .catch(() => null)
     : null;
@@ -38,12 +54,26 @@ export default async function SuccessPage({
   const total = record?.priceEUR ? Number(record.priceEUR) : null;
   const orderNumber = record?.orderNumber ?? (order ? Number(order) : null);
 
+  const isCard = record?.paymentMethod === "STRIPE";
+  const isPaid = record?.paymentStatus === "PAID";
+  const isDigital = record?.productType === "DIGITAL";
+  /**
+   * A card customer can land here before Stripe's webhook does — the redirect
+   * and the webhook are two independent races back to us. Saying "paid" while
+   * the order still reads PENDING would be a promise the admin queue does not
+   * yet back, so this in-between state gets its own honest message.
+   */
+  const awaitingPayment = isCard && !isPaid;
+
   return (
     <>
       <SiteHeader />
       <main className="bg-dreamy relative flex-1 overflow-hidden px-6 pt-12 pb-20">
         <SuccessConfetti />
-        {record && total !== null && (
+        {/* Only report a sale that actually is one. A card order that has not
+            settled yet would otherwise be counted, and every ad platform would
+            optimise toward abandoned payments. */}
+        {record && total !== null && !awaitingPayment && (
           <PurchaseTracker orderId={record.id} valueEUR={total} />
         )}
 
@@ -52,7 +82,11 @@ export default async function SuccessPage({
             <Heart className="size-8 fill-current" />
           </span>
           <h1 className="mt-6 font-heading text-3xl font-extrabold tracking-tight">
-            Получихме твоята поръчка ❤️
+            {isPaid
+              ? "Плащането мина ❤️"
+              : awaitingPayment
+                ? "Почти готово..."
+                : "Получихме твоята поръчка ❤️"}
           </h1>
           {orderNumber && (
             <p className="mt-3 font-heading text-lg font-bold text-primary">
@@ -60,38 +94,86 @@ export default async function SuccessPage({
             </p>
           )}
 
-          {/* Nothing moves until they confirm, so this outranks everything else
-              on the page. */}
-          <div className="mt-7 rounded-2xl border-2 border-primary/40 bg-primary/5 p-5 text-left">
-            <p className="flex items-center gap-2 font-heading font-bold">
-              <Mail className="size-5 text-primary" />
-              Провери пощата си сега
-            </p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Изпратихме ти имейл с бутон „Потвърждавам поръчката“. Постерът е
-              персонализиран, затова го пускаме за печат едва след твоето
-              потвърждение. Ако имейлът не е там — виж папка „Спам“.
-            </p>
-          </div>
+          {/* The single most important thing on the page differs per payment
+              method: cash on delivery is blocked on a confirmation click, a
+              settled card order is blocked on nothing. */}
+          {awaitingPayment ? (
+            <div className="mt-7 rounded-2xl border-2 border-primary/40 bg-primary/5 p-5 text-left">
+              <p className="flex items-center gap-2 font-heading font-bold">
+                <Clock className="size-5 text-primary" />
+                Обработваме плащането
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Банката потвърждава превода в рамките на минута. Щом мине, получаваш
+                имейл и поръчката тръгва — не е нужно да правиш нищо повече.
+              </p>
+            </div>
+          ) : isPaid ? (
+            <div className="mt-7 rounded-2xl border-2 border-emerald-500/40 bg-emerald-500/5 p-5 text-left">
+              <p className="flex items-center gap-2 font-heading font-bold">
+                <ShieldCheck className="size-5 text-emerald-600" />
+                Плащането е прието
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {isDigital
+                  ? "Изпращаме ти линк за сваляне на файла в пълно качество. Ако не е в пощата до няколко минути — виж папка „Спам“."
+                  : "Пускаме постера за печат веднага. При получаване не дължиш нищо на куриера."}
+              </p>
+            </div>
+          ) : (
+            <div className="mt-7 rounded-2xl border-2 border-primary/40 bg-primary/5 p-5 text-left">
+              <p className="flex items-center gap-2 font-heading font-bold">
+                <Mail className="size-5 text-primary" />
+                Провери пощата си сега
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Изпратихме ти имейл с бутон „Потвърждавам поръчката“. Постерът е
+                персонализиран, затова го пускаме за печат едва след твоето
+                потвърждение. Ако имейлът не е там — виж папка „Спам“.
+              </p>
+            </div>
+          )}
 
           <ol className="mt-8 space-y-4 text-left">
-            <Step icon={Printer} title="Потвърждаваш и печатаме">
-              Изработваме постера точно както го видя на екрана.
-            </Step>
-            <Step icon={Truck} title={`Изпращаме за ${settings.deliveryDays}`}>
-              Пишем ти номера на товарителницата, щом пратката тръгне.
-            </Step>
-            <Step icon={Heart} title="Плащаш при получаване">
-              {total !== null ? (
-                <>
-                  Приготви{" "}
-                  <strong className="text-foreground">{formatPrice(total)}</strong> за
-                  куриера — крайна сума с доставката, без скрити такси.
-                </>
-              ) : (
-                "Наложен платеж — плащаш на куриера, нищо предварително."
-              )}
-            </Step>
+            {isDigital ? (
+              <>
+                <Step icon={Printer} title="Файлът е готов">
+                  Пращаме ти го в 4K качество — за печат навсякъде.
+                </Step>
+                <Step icon={Mail} title="Линк в пощата">
+                  Валиден 24 часа; нов можеш да си вземеш по всяко време от „Моите
+                  поръчки“.
+                </Step>
+              </>
+            ) : (
+              <>
+                <Step
+                  icon={Printer}
+                  title={isPaid ? "Печатаме веднага" : "Потвърждаваш и печатаме"}
+                >
+                  Изработваме постера точно както го видя на екрана.
+                </Step>
+                <Step icon={Truck} title={`Изпращаме за ${settings.deliveryDays}`}>
+                  Пишем ти номера на товарителницата, щом пратката тръгне.
+                </Step>
+                <Step
+                  icon={Heart}
+                  title={isPaid ? "Нищо за доплащане" : "Плащаш при получаване"}
+                >
+                  {isPaid ? (
+                    "Сумата е платена онлайн — просто приемаш пратката."
+                  ) : total !== null ? (
+                    <>
+                      Приготви{" "}
+                      <strong className="text-foreground">{formatPrice(total)}</strong> за
+                      куриера — крайна сума с доставката, без скрити такси.
+                    </>
+                  ) : (
+                    "Наложен платеж — плащаш на куриера, нищо предварително."
+                  )}
+                </Step>
+              </>
+            )}
           </ol>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:justify-center">

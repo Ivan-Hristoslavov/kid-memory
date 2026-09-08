@@ -30,9 +30,28 @@ import {
   type AddonId,
   type ProductId,
 } from "@/lib/catalog";
-import { Copy, Frame, Gift, Layers } from "lucide-react";
+import { Banknote, Copy, CreditCard, Frame, Gift, Layers, ShieldCheck } from "lucide-react";
 
 const ADDON_ICONS = { Frame, Layers, Gift, Copy } as const;
+
+/** Card payment is optional per environment — see `enabledPaymentMethods()`. */
+export type CheckoutPaymentMethod = "COD" | "STRIPE";
+
+const PAYMENT_LABELS: Record<
+  CheckoutPaymentMethod,
+  { name: string; description: string; icon: typeof Banknote }
+> = {
+  COD: {
+    name: "Наложен платеж",
+    description: "Плащаш на куриера при получаване — в брой или с карта.",
+    icon: Banknote,
+  },
+  STRIPE: {
+    name: "Онлайн с карта",
+    description: "Visa, Mastercard, Apple Pay и Google Pay. Сигурно, през Stripe.",
+    icon: CreditCard,
+  },
+};
 
 interface Office {
   id: string;
@@ -44,10 +63,17 @@ export function CheckoutForm({
   orderId,
   childName,
   previewUrl,
+  paymentMethods,
 }: {
   orderId: string;
   childName: string;
   previewUrl: string | null;
+  /**
+   * Which methods the server will actually accept, in display order. Passed in
+   * rather than read here so the form can never offer a card button that the
+   * action then rejects because the merchant account isn't configured.
+   */
+  paymentMethods: readonly CheckoutPaymentMethod[];
 }) {
   const [state, action, pending] = useActionState<CheckoutFormState, FormData>(
     confirmOrder,
@@ -65,7 +91,18 @@ export function CheckoutForm({
   const [offices, setOffices] = useState<Office[]>([]);
   const [officesLoading, setOfficesLoading] = useState(false);
 
+  // Cash on delivery stays the default where it is offered: it is what this
+  // market expects, and making the familiar option the one you have to go
+  // looking for costs more orders than card payments save in refusals.
+  const [payment, setPayment] = useState<CheckoutPaymentMethod>(
+    paymentMethods.includes("COD") ? "COD" : paymentMethods[0]
+  );
+
   const isDigital = product === "DIGITAL";
+  // Nobody can hand a courier cash for a file, so the digital product forces
+  // the card regardless of what was selected before it was picked.
+  const effectivePayment: CheckoutPaymentMethod = isDigital ? "STRIPE" : payment;
+  const isCard = effectivePayment === "STRIPE";
   const needsOffice = !isDigital && (delivery === "OFFICE" || delivery === "LOCKER");
   const offeredAddons = availableAddons(product);
   const activeAddons = addons.filter((id) => offeredAddons.includes(id));
@@ -365,11 +402,82 @@ export function CheckoutForm({
           </div>
         </section>
 
-        {isDigital && (
-          <input type="hidden" name="city" value={city || "—"} />
-        )}
-        {isDigital && <input type="hidden" name="courier" value="ECONT" />}
-        {isDigital && <input type="hidden" name="deliveryMethod" value="OFFICE" />}
+        {/* Payment */}
+        <section className="glass rounded-2xl p-7">
+          <h2 className="font-heading text-xl font-bold">Плащане</h2>
+
+          {isDigital ? (
+            <>
+              <input type="hidden" name="paymentMethod" value="STRIPE" />
+              <div className="mt-5 flex items-start gap-4 rounded-2xl border-2 border-primary bg-primary/5 p-4">
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
+                  <CreditCard className="size-5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-heading font-bold">
+                    {PAYMENT_LABELS.STRIPE.name}
+                  </span>
+                  <span className="block text-sm text-muted-foreground">
+                    Дигиталният файл се плаща онлайн — куриер не участва, а линкът за
+                    сваляне пристига веднага след плащането.
+                  </span>
+                </span>
+              </div>
+            </>
+          ) : (
+            <RadioGroup
+              name="paymentMethod"
+              value={payment}
+              onValueChange={(v) => setPayment(v as CheckoutPaymentMethod)}
+              className="mt-5 grid gap-3"
+            >
+              {paymentMethods.map((id) => {
+                const m = PAYMENT_LABELS[id];
+                const Icon = m.icon;
+                const selected = payment === id;
+                return (
+                  <label
+                    key={id}
+                    className={`flex cursor-pointer items-center gap-4 rounded-2xl border-2 p-4 transition-all ${
+                      selected
+                        ? "border-primary bg-primary/5"
+                        : "border-border bg-card hover:border-primary/40"
+                    }`}
+                  >
+                    <RadioGroupItem value={id} id={`payment-${id}`} />
+                    <span
+                      className={`grid size-11 shrink-0 place-items-center rounded-xl transition-colors ${
+                        selected
+                          ? "bg-primary/15 text-primary"
+                          : "bg-secondary text-secondary-foreground"
+                      }`}
+                    >
+                      <Icon className="size-5" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-heading font-bold">{m.name}</span>
+                      <span className="block text-sm text-muted-foreground">
+                        {m.description}
+                      </span>
+                    </span>
+                  </label>
+                );
+              })}
+            </RadioGroup>
+          )}
+
+          {err("paymentMethod") && (
+            <p className="mt-3 text-sm text-destructive">{err("paymentMethod")}</p>
+          )}
+
+          {isCard && (
+            <p className="mt-4 flex items-start gap-2 text-xs text-muted-foreground">
+              <ShieldCheck className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+              Не виждаме и не пазим данните на картата ти — въвеждаш ги в защитената
+              страница на Stripe.
+            </p>
+          )}
+        </section>
       </div>
 
       {/* Summary */}
@@ -417,8 +525,17 @@ export function CheckoutForm({
               </span>
             </div>
             <p className="text-sm text-muted-foreground">
-              Плащаш <strong className="text-foreground">{formatPrice(total)}</strong> на
-              куриера при получаване. Няма скрити такси.
+              {isCard ? (
+                <>
+                  Плащаш <strong className="text-foreground">{formatPrice(total)}</strong>{" "}
+                  сега с карта. При получаване не дължиш нищо.
+                </>
+              ) : (
+                <>
+                  Плащаш <strong className="text-foreground">{formatPrice(total)}</strong>{" "}
+                  на куриера при получаване. Няма скрити такси.
+                </>
+              )}
             </p>
             {missingForFreeDelivery > 0 && (
               <p className="rounded-2xl bg-secondary/60 p-3 text-center text-sm">
@@ -493,14 +610,19 @@ export function CheckoutForm({
         >
           {pending ? (
             <>
-              <Loader2 className="size-5 animate-spin" /> Изпращаме...
+              <Loader2 className="size-5 animate-spin" />{" "}
+              {isCard ? "Отваряме плащането..." : "Изпращаме..."}
             </>
+          ) : isCard ? (
+            `Плати ${formatPrice(total)} с карта`
           ) : (
             "Потвърди поръчката ❤️"
           )}
         </Button>
         <p className="text-center text-xs text-muted-foreground">
-          Ще получиш имейл с потвърждение веднага след поръчката.
+          {isCard
+            ? "Продължаваш към защитената страница на Stripe. Поръчката се потвърждава след плащането."
+            : "Ще получиш имейл с потвърждение веднага след поръчката."}
         </p>
       </aside>
     </form>

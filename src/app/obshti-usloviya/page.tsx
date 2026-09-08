@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { LegalLayout } from "@/components/site/legal-layout";
 import { COMPANY } from "@/lib/legal";
-import { PRODUCTS, formatPrice } from "@/lib/catalog";
+import { AVAILABLE_PRODUCTS, PRODUCTS, formatPrice } from "@/lib/catalog";
 import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
@@ -29,21 +29,35 @@ export default function TermsPage() {
       <h2>3. Поръчка и цени</h2>
       <ul>
         <li>Всички цени са в евро (€) с включен ДДС, ако е приложим.</li>
+        {/* Listing a price for something that cannot be bought is the kind of
+            mismatch a consumer-protection complaint is made of — the list
+            follows what the storefront actually sells. */}
         <li>
-          Цени: {PRODUCTS.DIGITAL.name} {formatPrice(PRODUCTS.DIGITAL.priceEUR)},{" "}
-          {PRODUCTS.POSTER_A4.name} {formatPrice(PRODUCTS.POSTER_A4.priceEUR)},{" "}
-          {PRODUCTS.POSTER_A3.name} {formatPrice(PRODUCTS.POSTER_A3.priceEUR)},{" "}
-          {PRODUCTS.PREMIUM.name} {formatPrice(PRODUCTS.PREMIUM.priceEUR)}. Допълненията се
-          заплащат отделно и се показват преди потвърждаване.
+          Цени:{" "}
+          {AVAILABLE_PRODUCTS.map(
+            (id) => `${PRODUCTS[id].name} ${formatPrice(PRODUCTS[id].priceEUR)}`
+          ).join(", ")}
+          . Допълненията се заплащат отделно и се показват преди потвърждаване.
         </li>
         <li>Договорът се счита за сключен при потвърждаване на поръчката от ваша страна.</li>
       </ul>
 
       <h2>4. Плащане</h2>
-      <p>
-        Плащането е при доставка (наложен платеж) към куриера. Цената за доставка се
-        заплаща от клиента, освен ако не е обявено друго.
-      </p>
+      <ul>
+        <li>
+          <strong>Наложен платеж</strong> — заплащате крайната сума на куриера при
+          получаване, в брой или с карта.
+        </li>
+        <li>
+          <strong>Онлайн с карта</strong> — плащането се обработва от Stripe Payments
+          Europe, Ltd. Данните на картата се въвеждат на страница на Stripe; ние нито ги
+          виждаме, нито ги съхраняваме.
+        </li>
+        <li>Цената за доставка се заплаща от клиента, освен ако не е обявено друго.</li>
+        <li>
+          Дигиталният файл се заплаща само онлайн — куриер не участва в доставката му.
+        </li>
+      </ul>
 
       <h2>5. Изработка и доставка</h2>
       <ul>
@@ -53,6 +67,11 @@ export default function TermsPage() {
       </ul>
 
       <h2>6. Право на отказ</h2>
+      <p>
+        При дигиталния файл доставката започва веднага след плащането. С поръчката вие
+        давате изричното си съгласие за това и потвърждавате, че губите правото си на
+        отказ, след като файлът бъде предоставен.
+      </p>
       <p>
         Продуктите са изработени по индивидуална поръчка и по ваша персонализация. Съгласно
         чл. 57 от Закона за защита на потребителите правото на отказ от договор от разстояние

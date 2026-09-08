@@ -102,7 +102,7 @@ export function Showcase() {
             size="lg"
             className="h-13 rounded-full px-8 text-base shadow-lg shadow-primary/25"
           >
-            <Link href="/create">Създай своя — за 5 минути</Link>
+            <Link href="/create">Създай постер</Link>
           </Button>
         </div>
       </div>

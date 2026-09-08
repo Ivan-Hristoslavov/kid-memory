@@ -2,10 +2,21 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Magnetic } from "@/components/site/magnetic";
 
+/**
+ * The last thing on the page.
+ *
+ * It used to read "Децата растат толкова бързо. Днес чуваме техните смешни
+ * думи." — beautiful, and addressed to a parent, which is exactly the audience
+ * the shop stopped being only for. Somebody buying a leaving gift for a
+ * colleague reached the bottom of the page and was told the product is about
+ * their toddler.
+ *
+ * The replacement keeps the emotional shape — something passes, something
+ * stays — without naming who the visitor is.
+ */
 export function FinalCta() {
   return (
     <section className="bg-dreamy relative overflow-hidden py-24 sm:py-32">
@@ -16,28 +27,28 @@ export function FinalCta() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.8 }}
         >
-          <p className="font-heading text-2xl font-bold leading-relaxed sm:text-3xl">
-            Децата растат толкова бързо.
+          <p className="text-balance font-heading text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+            Поводът минава.
             <br />
-            Днес чуваме техните смешни думи.
-            <br />
-            Утре вече ги няма.
+            Подаръкът остава на стената.
           </p>
-          <p className="mt-6 text-xl text-muted-foreground">
-            Запази тези малки моменти завинаги ❤️
+          <p className="mx-auto mt-6 max-w-xl text-pretty text-lg text-muted-foreground">
+            След седмица никой не помни кой какво е подарил. Освен този подарък —
+            защото на него е неговото лице и неговите думи.
           </p>
-          <Magnetic className="mt-10">
-            <Button
-              asChild
-              size="lg"
-              className="h-14 rounded-full px-10 text-lg shadow-xl shadow-primary/30"
-            >
-              <Link href="/create">
-                Създай моя спомен
-                <Heart className="ml-1 size-5 fill-current" />
-              </Link>
-            </Button>
-          </Magnetic>
+          <Button
+            asChild
+            size="lg"
+            className="group mt-10 h-14 rounded-full px-10 text-lg shadow-xl shadow-primary/30"
+          >
+            <Link href="/create">
+              Създай постер
+              <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </Button>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Безплатно, без карта. Плащаш чак при доставка.
+          </p>
         </motion.div>
       </div>
     </section>

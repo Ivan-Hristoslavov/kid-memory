@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Heart, Mail, Phone } from "lucide-react";
+import { Frame, Mail, Phone } from "lucide-react";
 import { COMPANY } from "@/lib/legal";
 import { HashLink } from "./hash-link";
 import { getSettings } from "@/lib/settings";
@@ -34,14 +34,16 @@ export async function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2">
-              <span className="grid size-8 place-items-center rounded-full bg-primary/10 text-primary">
-                <Heart className="size-3.5 fill-current" />
+              {/* The same mark as the navbar. A heart here and a frame up
+                  there read as two different shops. */}
+              <span className="grid size-8 place-items-center rounded-md bg-primary/10 text-primary">
+                <Frame className="size-3.5" />
               </span>
               <span className="font-heading font-bold">{COMPANY.brand}</span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              Малките неща си отиват тихо. Ние ги превръщаме в постер, който остава на
-              стената — и в сърцето — завинаги.
+              Превръщаме една снимка в илюстрован постер за всеки повод — за дете,
+              за колега, за двойка или за любимеца.
             </p>
             <div className="mt-5 space-y-1.5 text-sm">
               <a

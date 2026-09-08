@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PackageSearch, Sparkles } from "lucide-react";
+import { Download, PackageSearch, Sparkles } from "lucide-react";
 import { SiteHeader } from "@/components/site/site-header";
 import { Footer } from "@/components/site/footer";
 import { Button } from "@/components/ui/button";
@@ -95,6 +95,18 @@ export default async function MyPostersPage({
                         {o.status === "PREVIEW_READY" && (
                           <Button asChild size="sm" className="rounded-full">
                             <Link href={`/order?orderId=${o.id}`}>Завърши</Link>
+                          </Button>
+                        )}
+                        {/* Every product includes the digital file, so a paid
+                            customer can take it whenever they need it — the
+                            emailed link expires, this page always mints a new
+                            one. Plain anchor, not Link: it points at signed
+                            storage, not at a route. */}
+                        {o.downloadUrl && (
+                          <Button asChild size="sm" className="rounded-full">
+                            <a href={o.downloadUrl} download>
+                              <Download className="size-4" /> Свали файла
+                            </a>
                           </Button>
                         )}
                         <Button asChild size="sm" variant="outline" className="rounded-full">

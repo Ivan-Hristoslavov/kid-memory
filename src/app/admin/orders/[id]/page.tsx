@@ -69,12 +69,44 @@ export default async function AdminOrderPage({
                 minute: "2-digit",
               })}
             </span>
+          ) : order.paymentMethod === "STRIPE" ? (
+            /* A card order without `confirmedAt` is not waiting on a customer
+               click — it is waiting on money. Saying "confirm by email" here
+               would send the owner chasing a confirmation that was never
+               asked for. */
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-900">
+              <Clock className="size-4" />
+              Чака плащане с карта — не печатай още
+            </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-900">
               <Clock className="size-4" />
               Чака потвърждение — не печатай още
             </span>
           )}
+
+          {/* How this one gets paid, so the operator knows before opening the
+              parcel details whether the courier collects anything. */}
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${
+              order.paymentStatus === "PAID"
+                ? "bg-emerald-100 text-emerald-800"
+                : "bg-muted text-muted-foreground"
+            }`}
+          >
+            {order.paymentStatus === "PAID"
+              ? `Платено с карта${
+                  order.paidAt
+                    ? ` · ${order.paidAt.toLocaleDateString("bg-BG", {
+                        day: "numeric",
+                        month: "short",
+                      })}`
+                    : ""
+                }`
+              : order.paymentMethod === "STRIPE"
+                ? "Карта — неплатена"
+                : "Наложен платеж"}
+          </span>
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">

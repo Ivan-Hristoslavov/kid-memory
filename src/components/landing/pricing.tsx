@@ -2,12 +2,31 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, ShieldCheck } from "lucide-react";
+import { Check, Eye, RefreshCw, ShieldCheck, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AVAILABLE_PRODUCTS, DELIVERY, PRODUCTS, formatPrice } from "@/lib/catalog";
 import { Eyebrow } from "./shared";
 import { AddonsStrip } from "./addons-strip";
+
+/** Why buying here carries no risk. Shown directly under the prices. */
+const RISK = [
+  {
+    icon: Eye,
+    title: "Виждаш го, преди да платиш",
+    text: "Създаваш постера безплатно. Не ти хареса — просто не поръчваш.",
+  },
+  {
+    icon: Wallet,
+    title: "Плащане при доставка",
+    text: "Плащаш чак когато подаръкът е в ръцете ти. Без карта, без предплащане.",
+  },
+  {
+    icon: RefreshCw,
+    title: "Безплатна корекция",
+    text: "Не си доволен от илюстрацията? Прегенерираме я, докато стане както искаш.",
+  },
+];
 
 const TAGLINE: Partial<Record<keyof typeof PRODUCTS, string>> = {
   POSTER_A3: "Най-избиран",
@@ -27,7 +46,7 @@ export function Pricing() {
         >
           <Eyebrow>Прозрачни цени</Eyebrow>
           <h2 className="mt-5 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Избери своя спомен
+            Избери своя формат
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
             Виждаш готовия постер, преди да платиш. Плащаш чак при доставка.
@@ -85,6 +104,33 @@ export function Pricing() {
               </motion.div>
             );
           })}
+        </div>
+
+        {/* Absorbed from the standalone "Поръчваш без никакъв риск" section.
+            Three reassurances in their own full-width panel, one screen below
+            the prices, was the same argument told twice — it belongs here, next
+            to the number it is reassuring the visitor about. */}
+        <div className="mt-14 grid gap-4 sm:grid-cols-3">
+          {RISK.map((r, i) => (
+            <motion.div
+              key={r.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              className="elevate-sm flex items-start gap-3 rounded-2xl bg-card p-5"
+            >
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                <r.icon className="size-4.5" />
+              </span>
+              <span className="min-w-0">
+                <span className="block font-heading font-bold leading-tight">
+                  {r.title}
+                </span>
+                <span className="mt-1 block text-sm text-muted-foreground">{r.text}</span>
+              </span>
+            </motion.div>
+          ))}
         </div>
 
         <AddonsStrip />

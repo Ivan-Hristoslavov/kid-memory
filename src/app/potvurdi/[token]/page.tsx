@@ -81,7 +81,7 @@ export default async function ConfirmPage({
       }
     >
       <p className="mt-4 text-muted-foreground">
-        Спомен №<strong className="text-foreground">{order.orderNumber}</strong> за{" "}
+        Поръчка №<strong className="text-foreground">{order.orderNumber}</strong> за{" "}
         <strong className="text-foreground">{order.childName}</strong> е потвърден.
       </p>
 

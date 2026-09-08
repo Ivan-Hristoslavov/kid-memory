@@ -5,7 +5,11 @@ import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
 import { SiteHeader } from "@/components/site/site-header";
 import { Footer } from "@/components/site/footer";
-import { CheckoutForm } from "@/components/checkout/checkout-form";
+import {
+  CheckoutForm,
+  type CheckoutPaymentMethod,
+} from "@/components/checkout/checkout-form";
+import { enabledPaymentMethods } from "@/lib/payments";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
@@ -34,10 +38,10 @@ export default async function OrderPage({
               Тази поръчка вече е потвърдена ❤️
             </h1>
             <p className="mt-3 text-muted-foreground">
-              Ако искаш нов постер, създай нов спомен.
+              Ако искаш още един, създай нов постер.
             </p>
             <Button asChild className="mt-6 rounded-full">
-              <Link href="/create">Създай нов спомен</Link>
+              <Link href="/create">Създай постер</Link>
             </Button>
           </div>
         </main>
@@ -50,21 +54,28 @@ export default async function OrderPage({
     ? await storage().signedUrl(order.previewImage, 30 * 60)
     : null;
 
+  // Resolved on the server so the form never renders a payment option the
+  // action would reject.
+  const methods = enabledPaymentMethods() as readonly CheckoutPaymentMethod[];
+
   return (
     <>
       <SiteHeader />
       <main className="bg-dreamy flex-1 pt-12 pb-20">
         <div className="mx-auto max-w-5xl px-6">
           <h1 className="text-center font-heading text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Последна стъпка до спомена на {order.childName}
+            Последна стъпка до постера на {order.childName}
           </h1>
           <p className="mt-3 text-center text-muted-foreground">
-            Плащане при доставка — без карта, без риск.
+            {methods.includes("STRIPE")
+              ? "Плащаш с карта или при доставка — както ти е удобно."
+              : "Плащане при доставка — без карта, без риск."}
           </p>
           <CheckoutForm
             orderId={order.id}
             childName={order.childName}
             previewUrl={previewUrl}
+            paymentMethods={methods}
           />
         </div>
       </main>

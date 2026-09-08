@@ -23,7 +23,7 @@ export function AnnouncementBar({
   if (!visible) return null;
 
   return (
-    <div className="relative bg-gradient-to-r from-primary via-primary to-plum text-primary-foreground">
+    <div className="relative bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
       <div className="mx-auto flex max-w-6xl items-center justify-center gap-x-6 gap-y-1 px-10 py-2 text-center text-sm font-semibold">
         <span className="inline-flex items-center gap-1.5">
           <Truck className="size-4" /> {text}
