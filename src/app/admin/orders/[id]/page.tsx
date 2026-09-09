@@ -25,8 +25,24 @@ export default async function AdminOrderPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const order = await prisma.order.findUnique({ where: { id } });
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: { lines: { orderBy: { createdAt: "asc" } } },
+  });
   if (!order) notFound();
+
+  // A catalogue order has lines; a poster order has none. That is the whole
+  // discriminator — see the `lines` comment on the Order model.
+  const isShopOrder = order.lines.length > 0;
+
+  // Batched, like the orders table: signing one key per line one at a time
+  // would be a round trip per item on an order that may have a dozen.
+  const linePhotoUrls = isShopOrder
+    ? await storage().signedUrls(
+        order.lines.map((l) => l.photoKey).filter((k): k is string => Boolean(k)),
+        15 * 60
+      )
+    : {};
 
   const previewUrl = order.previewImage
     ? await storage().signedUrl(order.previewImage, 15 * 60)
@@ -111,6 +127,77 @@ export default async function AdminOrderPage({
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="space-y-6">
+            {isShopOrder ? (
+              <section className="glass rounded-3xl p-7">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h2 className="font-heading text-lg font-bold">Артикули</h2>
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
+                    {order.lines.length}{" "}
+                    {order.lines.length === 1 ? "артикул" : "артикула"}
+                  </span>
+                </div>
+
+                <ul className="mt-4 divide-y divide-border">
+                  {order.lines.map((line) => {
+                    const photo = line.photoKey ? linePhotoUrls[line.photoKey] : null;
+                    const variants = Object.entries(
+                      (line.variants ?? {}) as Record<string, string>
+                    );
+                    return (
+                      <li key={line.id} className="flex gap-4 py-4">
+                        {/* The operator has to see WHICH photograph belongs to
+                            which item before anything is printed. */}
+                        {photo ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={photo}
+                            alt=""
+                            className="size-16 shrink-0 rounded-xl object-cover ring-1 ring-black/10"
+                          />
+                        ) : (
+                          <span className="grid size-16 shrink-0 place-items-center rounded-xl bg-muted text-xs text-muted-foreground">
+                            без
+                            <br />
+                            снимка
+                          </span>
+                        )}
+
+                        <div className="min-w-0 flex-1 text-sm">
+                          <p className="font-semibold">
+                            {line.quantity} × {line.title}
+                          </p>
+                          <p className="text-muted-foreground">
+                            <span className="font-mono text-xs">{line.productId}</span>
+                            {variants.length > 0 && (
+                              <>
+                                {" · "}
+                                {variants.map(([k, v]) => `${k}: ${v}`).join(" · ")}
+                              </>
+                            )}
+                          </p>
+                          {line.text && (
+                            <p className="mt-1">
+                              Текст: <strong>„{line.text}“</strong>
+                            </p>
+                          )}
+                          {line.giftWrap && (
+                            <p className="mt-1 font-semibold text-primary">
+                              Подаръчна опаковка
+                            </p>
+                          )}
+                        </div>
+
+                        <p className="shrink-0 text-sm font-semibold tabular-nums">
+                          {formatPrice(
+                            Math.round(Number(line.unitPriceEUR) * line.quantity * 100) / 100
+                          )}
+                        </p>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ) : (
             <section className="glass rounded-3xl p-7">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="font-heading text-lg font-bold">Постер</h2>
@@ -174,6 +261,7 @@ export default async function AdminOrderPage({
                 </div>
               </dl>
             </section>
+            )}
 
             <section className="glass rounded-3xl p-7">
               <h2 className="font-heading text-lg font-bold">Клиент и доставка</h2>
@@ -203,9 +291,11 @@ export default async function AdminOrderPage({
                 <div>
                   <dt className="text-muted-foreground">Продукт</dt>
                   <dd className="font-semibold">
-                    {order.productType
-                      ? `${PRODUCTS[order.productType as ProductId].name} · ${formatPrice(Number(order.priceEUR))}`
-                      : "—"}
+                    {isShopOrder
+                      ? `Каталог · ${formatPrice(Number(order.priceEUR))}`
+                      : order.productType
+                        ? `${PRODUCTS[order.productType as ProductId].name} · ${formatPrice(Number(order.priceEUR))}`
+                        : "—"}
                   </dd>
                 </div>
                 <div>

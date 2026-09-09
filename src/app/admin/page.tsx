@@ -85,7 +85,17 @@ export default async function AdminPage({
   const today = startOfDay(new Date());
 
   const [orders, counts, revenue, todayAgg] = await Promise.all([
-    prisma.order.findMany({ where, orderBy: { createdAt: "desc" }, take: 200 }),
+    prisma.order.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      take: 200,
+      include: {
+        // One line is enough for the thumbnail; the count tells the operator
+        // how many items the parcel holds.
+        lines: { take: 1, orderBy: { createdAt: "asc" } },
+        _count: { select: { lines: true } },
+      },
+    }),
     prisma.order.groupBy({ by: ["status"], _count: true }),
     prisma.order.aggregate({ _sum: { priceEUR: true }, where: { status: { in: paidStatuses } } }),
     prisma.order.aggregate({
@@ -95,10 +105,15 @@ export default async function AdminPage({
     }),
   ]);
 
-  // One batched signing call rather than one per row.
+  // One batched signing call rather than one per row. Catalogue orders have no
+  // poster preview, so their first line's uploaded photo stands in — the point
+  // of the column is to catch a bad image before printing, and that applies to
+  // a mug just as much as to a poster.
   const thumbs = await storage()
     .signedUrls(
-      orders.map((o) => o.previewImage).filter((k): k is string => Boolean(k)),
+      orders
+        .flatMap((o) => [o.previewImage, o.lines[0]?.photoKey])
+        .filter((k): k is string => Boolean(k)),
       15 * 60
     )
     .catch(() => ({}) as Record<string, string>);
@@ -265,18 +280,34 @@ export default async function AdminPage({
                         caught by scanning the list, not by opening every order. */}
                     <TableCell>
                       <OrderThumb
-                        url={order.previewImage ? thumbs[order.previewImage] : undefined}
+                        url={
+                          order.previewImage
+                            ? thumbs[order.previewImage]
+                            : order.lines[0]?.photoKey
+                              ? thumbs[order.lines[0].photoKey]
+                              : undefined
+                        }
                         href={`/admin/orders/${order.id}`}
-                        alt={`Постер на ${order.childName}`}
+                        alt={order.childName}
                       />
                     </TableCell>
 
                     <TableCell>
                       <div className="font-semibold">{order.childName}</div>
-                      {/* Which product this is — a pet poster and a birth
-                          announcement need different handling at print. */}
+                      {/* What this order actually is, because a pet poster, a
+                          birth announcement and a box of mugs need different
+                          handling at print.
+
+                          A catalogue order carries the DEFAULT poster template
+                          in that column, since nothing ever set it — labelling
+                          it "Бисерите на детето" would be actively wrong, so
+                          the line count is the discriminator. */}
                       <div className="text-xs font-semibold text-primary">
-                        {getTemplate(order.template).name}
+                        {order._count.lines > 0
+                          ? `Каталог · ${order._count.lines} ${
+                              order._count.lines === 1 ? "артикул" : "артикула"
+                            }`
+                          : getTemplate(order.template).name}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {kids.length > 1
