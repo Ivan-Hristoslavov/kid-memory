@@ -1,0 +1,63 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import { Sparkles } from "lucide-react";
+import { hasImages, type MentyProduct } from "@/lib/shop/products";
+
+/**
+ * The gallery: one large image with thumbnails beside it on a desktop and
+ * beneath it on a phone, as the reference lays the page out.
+ *
+ * A product with a single photograph shows no thumbnail rail at all rather than
+ * a rail of one — a control that cannot do anything is worse than none.
+ */
+export function ProductGallery({ product }: { product: MentyProduct }) {
+  const [active, setActive] = useState(0);
+
+  if (!hasImages(product)) {
+    return (
+      <div className="flex aspect-square w-full flex-col items-center justify-center gap-3 rounded-xl bg-sand ring-1 ring-border">
+        <Sparkles className="size-8 text-forest/30" strokeWidth={1.5} />
+        <p className="px-6 text-center text-sm text-muted-foreground">
+          Снимката на този продукт се подготвя
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col-reverse gap-3 sm:flex-row">
+      {product.images.length > 1 && (
+        <ul className="flex gap-3 sm:flex-col">
+          {product.images.map((src, i) => (
+            <li key={src}>
+              <button
+                type="button"
+                onClick={() => setActive(i)}
+                aria-label={`Изглед ${i + 1}`}
+                aria-current={i === active}
+                className={`relative block size-16 overflow-hidden rounded-lg ring-1 transition-colors sm:size-20 ${
+                  i === active ? "ring-foreground" : "ring-border hover:ring-foreground/40"
+                }`}
+              >
+                <Image src={src} alt="" fill sizes="80px" className="object-cover" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="relative aspect-square flex-1 overflow-hidden rounded-xl bg-sand ring-1 ring-border">
+        <Image
+          src={product.images[active]}
+          alt={product.title}
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 560px"
+          className="object-cover"
+        />
+      </div>
+    </div>
+  );
+}

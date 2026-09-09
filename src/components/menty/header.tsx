@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
+import { cartCount, useCart } from "@/lib/store/cart";
 import { Logo } from "./logo";
 
 /**
@@ -23,6 +24,19 @@ const NAV = [
 
 export function MentyHeader() {
   const [open, setOpen] = useState(false);
+  const count = useCart((s) => cartCount(s.lines));
+
+  // The basket lives in localStorage, so the server renders a count of zero and
+  // the client may know better. Subscribing to the store's own hydration is the
+  // honest way to say "not known yet": the server snapshot is always false, so
+  // the first paint matches on both sides, and the badge appears the moment the
+  // persisted state is actually available. A mount flag set in an effect would
+  // do the same thing one cascading render later.
+  const hydrated = useSyncExternalStore(
+    useCart.persist.onFinishHydration,
+    useCart.persist.hasHydrated,
+    () => false
+  );
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
@@ -55,8 +69,13 @@ export function MentyHeader() {
           <IconButton label="Профил" className="hidden sm:inline-flex">
             <User className="size-5" />
           </IconButton>
-          <IconButton label="Количка">
+          <IconButton label="Количка" className="relative">
             <ShoppingBag className="size-5" />
+            {hydrated && count > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 grid min-w-[1.15rem] place-items-center rounded-full bg-clay px-1 text-[0.65rem] font-bold leading-[1.15rem] text-ivory">
+                {count}
+              </span>
+            )}
           </IconButton>
           <button
             type="button"
