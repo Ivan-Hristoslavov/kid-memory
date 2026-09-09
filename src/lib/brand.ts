@@ -73,7 +73,16 @@ export const GIFT_OCCASIONS = [
  * needed. Kept here so no component holds an image path of its own.
  */
 export const LIFESTYLE = {
-  personalize: "/moments/personalize.webp",
+  /** The hero scene: a mug, branded boxes, room on the left for the headline. */
+  hero: "/brand/hero.webp",
+  /** The personalisation banner: a flat-lay of the things you customise. */
+  personalize: "/brand/personalize.webp",
+  /** Branded packaging — the box, the hang tag, the tissue, the embroidery. */
+  box: "/brand/box.webp",
+  tag: "/brand/tag.webp",
+  tissue: "/brand/tissue.webp",
+  embroidery: "/brand/embroidery.webp",
+  /** Warm scenes from the moments sheet, for editorial blocks. */
   giftWrap: "/moments/gift-wrap.webp",
   family: "/moments/family.webp",
   packaging: "/moments/packaging.webp",

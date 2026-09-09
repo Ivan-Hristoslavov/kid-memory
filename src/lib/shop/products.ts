@@ -17,12 +17,13 @@
  * ─────────────────────────────────────────────────────────────────────────
  * IMAGES ARE NOT SUPPLIED HERE.
  *
- * `images` holds local paths under /public/products/. They are intentionally
- * empty until the real PrintFactory assets are placed there: the brief allows
- * their product imagery "where permitted and authorized", which is a
- * relationship between the shop and the supplier, not something to be taken
- * unilaterally. `hasImages()` tells the UI which state to render, so a missing
- * asset degrades to a branded, labelled frame rather than a grey box.
+ * `images` holds local paths under /public/products/. Four of them are filled
+ * by scripts/gen-brand-assets.ts, which renders a stand-in shot of each item.
+ * Those are stand-ins, generated at the owner's instruction: the brief wants
+ * the supplier's own photography, and the picture on a card must match the
+ * parcel at the door, so they are to be replaced before launch. The rest stay
+ * empty; `hasImages()` tells the UI which state to render, so a missing asset
+ * degrades to a branded, labelled frame rather than a grey box.
  * ─────────────────────────────────────────────────────────────────────────
  */
 
@@ -116,7 +117,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     sourceUrl: "https://printfactory.bg/print-on-demand-ceramic-mug",
     priceEUR: 12.9,
     priceReferenceBGN: 24.9,
-    images: [],
+    images: ["/products/photo-mug-330.webp"],
     variants: [{ label: "Цвят", options: ["Бяла"] }],
     personalization: ["PHOTO", "TEXT"],
     bestsellerRank: 1,
@@ -149,7 +150,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
       "https://printfactory.bg/stanley-stella-organic-creator-print-on-demand-balgaria",
     priceEUR: 20.9,
     priceReferenceBGN: 39.9,
-    images: [],
+    images: ["/products/premium-tee-stanley-stella.webp"],
     variants: [
       { label: "Размер", options: ["XS", "S", "M", "L", "XL", "XXL"] },
       { label: "Цвят", options: ["Бяла", "Черна", "Бежова", "Тъмнозелена"] },
@@ -168,7 +169,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
       "https://printfactory.bg/uniseks-suichar-ot-organichen-pamuck-print-on-demand",
     priceEUR: 30.9,
     priceReferenceBGN: 59.9,
-    images: [],
+    images: ["/products/organic-hoodie.webp"],
     variants: [
       { label: "Размер", options: ["S", "M", "L", "XL", "XXL"] },
       { label: "Цвят", options: ["Тъмнозелен", "Черен", "Бежов", "Сив"] },
@@ -186,7 +187,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     sourceUrl: "https://printfactory.bg/kojen-kliuchodarjatel-sas-snimka",
     priceEUR: 10.9,
     priceReferenceBGN: 19.9,
-    images: [],
+    images: ["/products/photo-leather-keychain.webp"],
     variants: [{ label: "Цвят", options: ["Кафяв", "Черен"] }],
     personalization: ["PHOTO", "TEXT"],
     bestsellerRank: 5,

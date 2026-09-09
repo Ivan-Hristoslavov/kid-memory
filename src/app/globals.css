@@ -55,11 +55,15 @@
   /* MENTY brand colours. The first five are the palette from the brand spec;
      the rest are legacy names kept because ~80 call sites reference them, now
      remapped onto the new palette so nothing has to be renamed at once. */
-  --color-ivory: var(--ivory);
+  --color-forest: var(--forest);
   --color-blush: var(--blush);
+  --color-sand: var(--sand);
+  --color-clay: var(--clay);
+  --color-charcoal: var(--charcoal);
+  --color-ivory: var(--ivory);
+  /* V1 names, kept resolving so nothing that already uses them breaks. */
   --color-sage: var(--sage);
   --color-terracotta: var(--terracotta);
-  --color-charcoal: var(--charcoal);
 
   --color-peach: var(--peach);
   --color-lavender: var(--lavender);
@@ -71,131 +75,136 @@
 }
 
 :root {
-  /* MENTY palette, from the brand spec.
-     Ivory #F8F5EF · Blush #E7C4B8 · Sage #687F73 · Terracotta #C46A56 · charcoal.
-     The spec's fifth swatch carries no hex label, so the charcoal below is read
-     off that swatch — a warm, very slightly green near-black that sits in the
-     same family as the sage. Correct this one token if the source value differs.
+  /* MENTY palette — exact values from the brand identity sheet.
+     Forest #1F2F28 · Blush #D4A59A · Sand #F6EFE9 · Clay #C77D6B ·
+     Charcoal #2B2B2B · Ivory #FEFCF8.
 
-     Ratio the spec asks for: 80% neutrals, 15% sage/charcoal, 5% blush and
-     terracotta accent. That is why terracotta is NOT the primary any more —
-     the primary is charcoal, and terracotta is reserved for the small accents
-     that are allowed to shout. */
-  --ivory: oklch(0.971 0.009 85);
-  --blush: oklch(0.847 0.043 40);
-  --sage: oklch(0.574 0.032 162);
-  --terracotta: oklch(0.623 0.119 34);
-  --charcoal: oklch(0.282 0.011 145);
+     These supersede the looser V1 values: the identity sheet names Forest
+     rather than a mid sage, a deeper blush, and Clay rather than terracotta.
+     Forest is the brand's dark — the logo, the embroidered hoodie and the
+     signage all use it — so it, not the neutral charcoal, is the primary.
+
+     Ratio the brief asks for: 80% neutrals (ivory/sand), 15% forest, 5% blush
+     and clay accent. */
+  --forest: oklch(0.288 0.025 166);
+  --blush: oklch(0.762 0.058 33);
+  --sand: oklch(0.956 0.011 63);
+  --clay: oklch(0.663 0.097 34);
+  --charcoal: oklch(0.289 0 90);
+  --ivory: oklch(0.991 0.006 85);
 
   --background: var(--ivory);
-  --foreground: var(--charcoal);
-  /* Product photography has to dominate, so a card is plain white against the
-     ivory page rather than another tinted surface. */
+  --foreground: var(--forest);
+  /* Product photography dominates, so a card is plain white on the ivory page
+     rather than yet another tinted surface. */
   --card: oklch(1 0 0);
-  --card-foreground: var(--charcoal);
+  --card-foreground: var(--forest);
   --popover: oklch(1 0 0);
-  --popover-foreground: var(--charcoal);
+  --popover-foreground: var(--forest);
 
-  /* Charcoal fill, per the design system table. */
-  --primary: var(--charcoal);
-  --primary-foreground: oklch(0.985 0.006 85);
-  --secondary: oklch(0.938 0.013 82);
-  --secondary-foreground: oklch(0.34 0.012 140);
-  --muted: oklch(0.945 0.011 83);
-  --muted-foreground: oklch(0.526 0.014 80);
-  /* Blush is the accent surface; terracotta is the accent INK. */
+  --primary: var(--forest);
+  --primary-foreground: var(--ivory);
+  --secondary: oklch(0.941 0.012 68);
+  --secondary-foreground: oklch(0.34 0.02 160);
+  --muted: oklch(0.941 0.012 68);
+  --muted-foreground: oklch(0.521 0.012 68);
+  /* Blush is the accent SURFACE, clay the accent INK. */
   --accent: var(--blush);
-  --accent-foreground: oklch(0.34 0.02 40);
+  --accent-foreground: oklch(0.32 0.03 33);
   --destructive: oklch(0.55 0.2 27);
-  --border: oklch(0.903 0.015 81);
-  --input: oklch(0.903 0.015 81);
-  --ring: var(--sage);
+  --border: oklch(0.908 0.016 68);
+  --input: oklch(0.908 0.016 68);
+  --ring: var(--forest);
 
-  --chart-1: var(--terracotta);
-  --chart-2: var(--sage);
-  --chart-3: oklch(0.72 0.05 85);
-  --chart-4: oklch(0.68 0.06 250);
-  --chart-5: oklch(0.5 0.03 300);
+  --chart-1: var(--clay);
+  --chart-2: var(--forest);
+  --chart-3: var(--blush);
+  --chart-4: oklch(0.7 0.05 90);
+  --chart-5: oklch(0.55 0.04 250);
 
-  /* Buttons 12–14px, cards 16–20px. With the scale below (lg = 1x, xl = 1.4x)
-     a 14px base puts `rounded-lg` at 14 and `rounded-xl` at ~20 — exactly the
-     two numbers the spec asks for, so components pick the right corner by
-     using the ordinary Tailwind step. */
+  /* Buttons 12–14px, cards 16–20px: with the scale below (lg = 1x, xl = 1.4x)
+     a 14px base puts `rounded-lg` at 14 and `rounded-xl` at ~20. */
   --radius: 0.875rem;
 
-  --sidebar: oklch(0.962 0.009 85);
-  --sidebar-foreground: var(--charcoal);
-  --sidebar-primary: var(--charcoal);
-  --sidebar-primary-foreground: oklch(0.985 0.006 85);
+  --sidebar: var(--sand);
+  --sidebar-foreground: var(--forest);
+  --sidebar-primary: var(--forest);
+  --sidebar-primary-foreground: var(--ivory);
   --sidebar-accent: var(--blush);
-  --sidebar-accent-foreground: oklch(0.34 0.02 40);
-  --sidebar-border: oklch(0.903 0.015 81);
-  --sidebar-ring: var(--sage);
+  --sidebar-accent-foreground: oklch(0.32 0.03 33);
+  --sidebar-border: oklch(0.908 0.016 68);
+  --sidebar-ring: var(--forest);
 
-  /* Legacy tint names, remapped onto the MENTY palette. They are referenced in
-     roughly eighty places; renaming every call site is a separate pass, and
-     leaving the old nursery pastels live would have kept the old look alive
-     underneath the new tokens. */
-  --peach: oklch(0.925 0.026 50);
-  --lavender: oklch(0.918 0.012 300);
-  --sky: oklch(0.918 0.013 230);
-  --mint: oklch(0.918 0.018 165);
-  --sun: oklch(0.94 0.028 90);
-  --cream: var(--ivory);
-  --plum: var(--charcoal);
+  /* Legacy tint names, remapped onto the MENTY palette. Around eighty call
+     sites still reference them; renaming those is a separate pass, and leaving
+     the old nursery pastels live would keep the previous look alive underneath
+     the new tokens. */
+  --peach: oklch(0.93 0.024 45);
+  --lavender: oklch(0.92 0.012 300);
+  --sky: oklch(0.92 0.013 230);
+  --mint: oklch(0.92 0.016 165);
+  --sun: oklch(0.945 0.024 85);
+  --cream: var(--sand);
+  --plum: var(--forest);
+  /* Kept so the V1 token names still resolve. */
+  --sage: var(--forest);
+  --terracotta: var(--clay);
 }
 
 .dark {
-  --ivory: oklch(0.955 0.006 85);
-  --blush: oklch(0.42 0.035 40);
-  --sage: oklch(0.66 0.035 162);
-  --terracotta: oklch(0.7 0.115 36);
-  --charcoal: oklch(0.19 0.008 145);
+  --forest: oklch(0.72 0.045 166);
+  --blush: oklch(0.45 0.045 33);
+  --sand: oklch(0.24 0.008 160);
+  --clay: oklch(0.72 0.095 34);
+  --charcoal: oklch(0.18 0 90);
+  --ivory: oklch(0.96 0.006 85);
 
-  --background: var(--charcoal);
+  --background: oklch(0.185 0.008 165);
   --foreground: oklch(0.95 0.006 85);
-  --card: oklch(0.235 0.009 145);
+  --card: oklch(0.232 0.009 165);
   --card-foreground: oklch(0.95 0.006 85);
-  --popover: oklch(0.235 0.009 145);
+  --popover: oklch(0.232 0.009 165);
   --popover-foreground: oklch(0.95 0.006 85);
 
-  /* Charcoal on charcoal is invisible, so on a dark ground the primary becomes
-     the ivory it was contrasting against and the fill/text swap over. */
+  /* Forest on forest is invisible, so on a dark ground the fill and the text
+     swap: the primary becomes the ivory it was contrasting against. */
   --primary: oklch(0.95 0.006 85);
-  --primary-foreground: oklch(0.19 0.008 145);
-  --secondary: oklch(0.29 0.01 145);
+  --primary-foreground: oklch(0.185 0.008 165);
+  --secondary: oklch(0.285 0.01 165);
   --secondary-foreground: oklch(0.92 0.006 85);
-  --muted: oklch(0.27 0.009 145);
-  --muted-foreground: oklch(0.72 0.01 80);
-  --accent: oklch(0.32 0.03 40);
-  --accent-foreground: oklch(0.92 0.012 40);
+  --muted: oklch(0.265 0.009 165);
+  --muted-foreground: oklch(0.72 0.01 70);
+  --accent: oklch(0.33 0.03 33);
+  --accent-foreground: oklch(0.92 0.012 33);
   --destructive: oklch(0.7 0.19 22);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 16%);
-  --ring: var(--sage);
+  --ring: oklch(0.72 0.045 166);
 
-  --chart-1: var(--terracotta);
-  --chart-2: var(--sage);
-  --chart-3: oklch(0.76 0.05 85);
-  --chart-4: oklch(0.7 0.06 250);
-  --chart-5: oklch(0.6 0.04 300);
+  --chart-1: var(--clay);
+  --chart-2: oklch(0.72 0.045 166);
+  --chart-3: var(--blush);
+  --chart-4: oklch(0.74 0.05 90);
+  --chart-5: oklch(0.62 0.04 250);
 
-  --sidebar: oklch(0.235 0.009 145);
+  --sidebar: oklch(0.232 0.009 165);
   --sidebar-foreground: oklch(0.95 0.006 85);
   --sidebar-primary: oklch(0.95 0.006 85);
-  --sidebar-primary-foreground: oklch(0.19 0.008 145);
-  --sidebar-accent: oklch(0.32 0.03 40);
-  --sidebar-accent-foreground: oklch(0.92 0.012 40);
+  --sidebar-primary-foreground: oklch(0.185 0.008 165);
+  --sidebar-accent: oklch(0.33 0.03 33);
+  --sidebar-accent-foreground: oklch(0.92 0.012 33);
   --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: var(--sage);
+  --sidebar-ring: oklch(0.72 0.045 166);
 
-  --peach: oklch(0.34 0.03 50);
-  --lavender: oklch(0.32 0.02 300);
-  --sky: oklch(0.32 0.022 230);
-  --mint: oklch(0.33 0.024 165);
-  --sun: oklch(0.36 0.035 90);
-  --cream: oklch(0.19 0.008 145);
+  --peach: oklch(0.33 0.028 45);
+  --lavender: oklch(0.31 0.02 300);
+  --sky: oklch(0.31 0.022 230);
+  --mint: oklch(0.32 0.024 165);
+  --sun: oklch(0.35 0.03 85);
+  --cream: oklch(0.232 0.009 165);
   --plum: oklch(0.95 0.006 85);
+  --sage: oklch(0.72 0.045 166);
+  --terracotta: var(--clay);
 }
 
 @layer base {
