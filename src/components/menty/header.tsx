@@ -72,14 +72,18 @@ export function MentyHeader() {
           <IconButton label="Профил" className="hidden sm:inline-flex">
             <User className="size-5" />
           </IconButton>
-          <IconButton label="Количка" className="relative">
+          <Link
+            href="/kolichka"
+            aria-label={count > 0 ? `Количка, ${count} артикула` : "Количка"}
+            className="relative grid size-10 place-items-center rounded-lg text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
+          >
             <ShoppingBag className="size-5" />
             {count > 0 && (
               <span className="absolute -right-0.5 -top-0.5 grid min-w-[1.15rem] place-items-center rounded-full bg-clay px-1 text-[0.65rem] font-bold leading-[1.15rem] text-ivory">
                 {count}
               </span>
             )}
-          </IconButton>
+          </Link>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}

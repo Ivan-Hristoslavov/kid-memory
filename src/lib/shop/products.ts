@@ -84,6 +84,15 @@ export interface MentyProduct {
   variants: readonly ProductVariantAxis[];
   personalization: readonly PersonalizationKind[];
 
+  /**
+   * Which collections this belongs to — ids from GIFT_AUDIENCES and
+   * GIFT_OCCASIONS in lib/brand.ts. A gift shop is browsed by recipient and
+   * occasion rather than by product family, so this is what the collection
+   * pages filter on. Assigned by hand: it is a merchandising decision, not
+   * something derivable from the product itself.
+   */
+  tags: readonly string[];
+
   /** Shown on the card and the product page. Real counts only, never invented. */
   rating?: { average: number; count: number };
   /** Drives the "Бестселъри" row, in this order. */
@@ -118,6 +127,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 12.9,
     priceReferenceBGN: 24.9,
     images: ["/products/photo-mug-330.webp"],
+    tags: ["for-her", "for-him", "for-parents", "birthday", "anniversary", "thank-you", "just-because", "love"],
     variants: [{ label: "Цвят", options: ["Бяла"] }],
     personalization: ["PHOTO", "TEXT"],
     bestsellerRank: 1,
@@ -134,6 +144,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 14.9,
     priceReferenceBGN: 28.9,
     images: [],
+    tags: ["for-her", "for-him", "birthday", "just-because"],
     variants: [
       { label: "Цвят", options: ["Черна", "Синя", "Червена", "Зелена", "Розова"] },
     ],
@@ -151,6 +162,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 20.9,
     priceReferenceBGN: 39.9,
     images: ["/products/premium-tee-stanley-stella.webp"],
+    tags: ["for-him", "for-her", "for-couples", "birthday", "just-because"],
     variants: [
       { label: "Размер", options: ["XS", "S", "M", "L", "XL", "XXL"] },
       { label: "Цвят", options: ["Бяла", "Черна", "Бежова", "Тъмнозелена"] },
@@ -170,6 +182,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 30.9,
     priceReferenceBGN: 59.9,
     images: ["/products/organic-hoodie.webp"],
+    tags: ["for-him", "for-her", "for-couples", "birthday", "anniversary"],
     variants: [
       { label: "Размер", options: ["S", "M", "L", "XL", "XXL"] },
       { label: "Цвят", options: ["Тъмнозелен", "Черен", "Бежов", "Сив"] },
@@ -188,6 +201,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 10.9,
     priceReferenceBGN: 19.9,
     images: ["/products/photo-leather-keychain.webp"],
+    tags: ["for-him", "for-couples", "anniversary", "love", "thank-you"],
     variants: [{ label: "Цвят", options: ["Кафяв", "Черен"] }],
     personalization: ["PHOTO", "TEXT"],
     bestsellerRank: 5,
@@ -204,6 +218,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 8.9,
     priceReferenceBGN: 16.9,
     images: [],
+    tags: ["for-him", "for-couples", "love", "just-because"],
     variants: [],
     personalization: ["PHOTO", "TEXT"],
   },
@@ -218,6 +233,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 15.9,
     priceReferenceBGN: 29.9,
     images: [],
+    tags: ["for-kids", "for-parents", "for-couples", "birthday", "love"],
     variants: [{ label: "Части", options: ["120"] }],
     personalization: ["PHOTO", "TEXT"],
   },
@@ -233,6 +249,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 13.9,
     priceReferenceBGN: 26.9,
     images: [],
+    tags: ["for-her", "for-parents", "thank-you", "just-because"],
     variants: [{ label: "Цвят", options: ["Натурална", "Черна"] }],
     personalization: ["PHOTO", "TEXT", "DESIGN"],
   },
@@ -248,6 +265,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 9.9,
     priceReferenceBGN: 18.9,
     images: [],
+    tags: ["for-him", "for-kids", "birthday", "just-because"],
     variants: [{ label: "Размер", options: ["36-40", "41-45"] }],
     personalization: ["PHOTO", "DESIGN"],
   },
@@ -262,6 +280,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 17.9,
     priceReferenceBGN: 34.9,
     images: [],
+    tags: ["for-him", "for-her", "birthday", "just-because"],
     variants: [{ label: "Цвят", options: ["Черна", "Бежова"] }],
     personalization: ["DESIGN", "TEXT"],
   },
@@ -289,6 +308,7 @@ export const OWN_PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 17.9,
     priceReferenceBGN: 34.9,
     images: ["/samples/hero-wall.webp"],
+    tags: ["for-parents", "for-couples", "for-kids", "new-baby", "anniversary", "love", "best-friend"],
     variants: [{ label: "Формат", options: ["A4", "A3"] }],
     personalization: ["PHOTO", "TEXT"],
     bestsellerRank: 3,
@@ -322,6 +342,16 @@ export function bestsellers(): readonly MentyProduct[] {
 
 export function byFamily(family: ProductFamily): readonly MentyProduct[] {
   return ALL_PRODUCTS.filter((p) => p.family === family);
+}
+
+/** Everything tagged for one audience or occasion id. */
+export function byTag(tag: string): readonly MentyProduct[] {
+  return ALL_PRODUCTS.filter((p) => p.tags.includes(tag));
+}
+
+/** Everything that can carry a photo, a name or a message. */
+export function personalizable(): readonly MentyProduct[] {
+  return ALL_PRODUCTS.filter((p) => p.personalization.length > 0);
 }
 
 /** How many of the catalogue's product images are still missing. */
