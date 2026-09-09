@@ -515,3 +515,31 @@ section[id],
     radial-gradient(44rem 32rem at 46% 112%, oklch(0.91 0.045 40 / 0.35), transparent 62%),
     var(--background);
 }
+
+
+/**
+ * Skeleton shimmer.
+ *
+ * A sweep rather than a pulse: a pulsing block reads as "broken", a sweep reads
+ * as "arriving". Drops out under prefers-reduced-motion via the global
+ * override further up, leaving a plain tinted block.
+ */
+@keyframes menty-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@utility shimmer {
+  background-image: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    color-mix(in oklch, var(--muted), var(--background) 60%) 50%,
+    var(--muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: menty-shimmer 1.4s linear infinite;
+}

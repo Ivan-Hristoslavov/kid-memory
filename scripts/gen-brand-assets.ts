@@ -145,6 +145,63 @@ seen from directly above, with ${LOGO} embroidered small on the left chest. Even
 ring, lying flat on a seamless ivory background, a soft photographic image printed on the leather. \
 Close, even studio light, gentle contact shadow. ${LOOK}`,
   },
+
+  // ── Hero carousel: real product mock-ups carrying example artwork ────────
+  // Not brand packaging. The hero has to show what a customer actually
+  // receives, so each of these is a finished product with a plausible design
+  // already on it, shot as a scene rather than on seamless white.
+  {
+    id: "hero-mug",
+    out: "hero/mug",
+    size: "1536x1024",
+    prompt: `A white ceramic photo mug on a pale oak kitchen counter, steam rising from the coffee. \
+Printed large on the side of the mug is a warm candid photograph of a smiling young family outdoors, \
+clearly reproduced as a photographic print on the ceramic. Soft morning light from a window, a linen \
+cloth and a small plant softly out of focus behind. ${LOOK}`,
+  },
+  {
+    id: "hero-tee",
+    out: "hero/tee",
+    size: "1536x1024",
+    prompt: `A white organic cotton t-shirt laid flat and neatly arranged on a pale oak surface, with a \
+soft rectangular photographic print of two children laughing across the chest. Beside it a folded \
+kraft gift box and a sprig of dried eucalyptus. Shot slightly from above. ${LOOK}`,
+  },
+  {
+    id: "hero-frame",
+    out: "hero/frame",
+    size: "1536x1024",
+    prompt: `A slim natural oak picture frame standing on a pale oak sideboard, holding a printed \
+photograph of a couple laughing together, with a wide white mat around it. A ceramic vase with dried \
+flowers beside it, warm plaster wall behind. ${LOOK}`,
+  },
+  {
+    id: "hero-tote",
+    out: "hero/tote",
+    size: "1536x1024",
+    prompt: `A natural cotton tote bag hanging from a wooden peg on a warm plaster wall, printed with a \
+soft photographic image of a dog. Beside it a linen jacket, softly out of focus. Warm daylight from \
+the side. ${LOOK}`,
+  },
+  {
+    id: "hero-puzzle",
+    out: "hero/puzzle",
+    size: "1536x1024",
+    prompt: `A rectangular photo jigsaw puzzle lying partly assembled on a pale oak table, the image on \
+it a warm family photograph, a few loose pieces beside it and two hands reaching in to place one. \
+Soft daylight, shallow depth of field. ${LOOK}`,
+  },
+
+  // ── Replacement: the couples category shot ───────────────────────────────
+  {
+    id: "couples",
+    out: "moments/for-couples",
+    size: "1024x1024",
+    prompt: `A man and a woman in their thirties standing close together, foreheads almost touching, \
+laughing quietly. He wears a plain sage shirt, she a soft oatmeal knit. Clearly one man and one woman. \
+Centred so the shot survives a circular crop. Clean warm-white interior background, softly out of \
+focus. ${LOOK}`,
+  },
 ];
 
 /** gpt-image-1 list price per image, in USD. */

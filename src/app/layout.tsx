@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Nunito, Playfair_Display } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/menty/theme-provider";
 import { BRAND } from "@/lib/brand";
 import { CookieConsent } from "@/components/site/cookie-consent";
 import { Analytics } from "@/components/site/analytics";
@@ -104,15 +105,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="bg" className="h-full">
+    <html lang="bg" className="h-full" suppressHydrationWarning>
       <body
         className={`${playfair.variable} ${manrope.variable} ${nunito.variable} grain min-h-full flex flex-col font-sans antialiased`}
       >
-        {children}
-        <HashScroll />
-        <Toaster position="top-center" richColors />
-        <CookieConsent />
-        <Analytics />
+        <ThemeProvider>
+          {children}
+          <HashScroll />
+          <Toaster position="top-center" richColors />
+          <CookieConsent />
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   );

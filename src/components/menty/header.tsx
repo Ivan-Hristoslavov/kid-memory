@@ -3,6 +3,8 @@
 import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
+import { SearchDialog } from "./search-dialog";
+import { ThemeToggle } from "./theme-toggle";
 import { cartCount, useCart } from "@/lib/store/cart";
 import { Logo } from "./logo";
 
@@ -24,6 +26,7 @@ const NAV = [
 
 export function MentyHeader() {
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   /**
    * The basket lives in localStorage, so the server has no idea what is in it.
    * Subscribing through useSyncExternalStore with a server snapshot of zero
@@ -66,12 +69,19 @@ export function MentyHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-1 lg:ml-0">
-          <IconButton label="Търсене">
+          <IconButton label="Търсене" onClick={() => setSearchOpen(true)}>
             <Search className="size-5" />
           </IconButton>
-          <IconButton label="Профил" className="hidden sm:inline-flex">
+          <ThemeToggle />
+          {/* Checkout is guest-only by design, so "account" means the
+              passwordless view of your own past orders rather than a login. */}
+          <Link
+            href="/moite"
+            aria-label="Моите поръчки"
+            className="hidden size-10 place-items-center rounded-lg text-foreground/70 transition-colors hover:bg-muted hover:text-foreground sm:grid"
+          >
             <User className="size-5" />
-          </IconButton>
+          </Link>
           <Link
             href="/kolichka"
             aria-label={count > 0 ? `Количка, ${count} артикула` : "Количка"}
@@ -113,6 +123,7 @@ export function MentyHeader() {
           </ul>
         </nav>
       )}
+      <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }
@@ -120,16 +131,19 @@ export function MentyHeader() {
 function IconButton({
   label,
   children,
+  onClick,
   className = "",
 }: {
   label: string;
   children: React.ReactNode;
+  onClick?: () => void;
   className?: string;
 }) {
   return (
     <button
       type="button"
       aria-label={label}
+      onClick={onClick}
       className={`grid size-10 place-items-center rounded-lg text-foreground/70 transition-colors hover:bg-muted hover:text-foreground ${className}`}
     >
       {children}

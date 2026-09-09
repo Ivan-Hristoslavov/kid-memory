@@ -72,6 +72,21 @@ export const GIFT_OCCASIONS = [
  * personalisation banner, the editorial block and anywhere a warm scene is
  * needed. Kept here so no component holds an image path of its own.
  */
+/**
+ * The hero carousel: real product mock-ups, each carrying an example design.
+ *
+ * Deliberately NOT the branded packaging shots. The hero has to answer "what do
+ * I actually get", and a photograph of our own gift box does not — a mug with
+ * somebody's family on it does. Order is the rotation order.
+ */
+export const HERO_SLIDES = [
+  { id: "mug", image: "/hero/mug.webp", label: "Чаша със снимка", href: "/produkt/photo-mug-330" },
+  { id: "frame", image: "/hero/frame.webp", label: "Постер в рамка", href: "/produkt/photo-poster-framed" },
+  { id: "tee", image: "/hero/tee.webp", label: "Тениска с печат", href: "/produkt/premium-tee-stanley-stella" },
+  { id: "puzzle", image: "/hero/puzzle.webp", label: "Фото пъзел", href: "/produkt/photo-puzzle-a4" },
+  { id: "tote", image: "/hero/tote.webp", label: "Памучна чанта", href: "/produkt/organic-tote" },
+] as const;
+
 export const LIFESTYLE = {
   /** The hero scene: a mug, branded boxes, room on the left for the headline. */
   hero: "/brand/hero.webp",

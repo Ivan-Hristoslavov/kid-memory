@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { BRAND, LIFESTYLE } from "@/lib/brand";
+import { BRAND } from "@/lib/brand";
+import { HeroCarousel } from "./hero-carousel";
 
 /**
  * The hero: a split composition, copy left, one large lifestyle photograph
@@ -23,16 +23,7 @@ export function MentyHero() {
             before a screenful of type; `order` returns it to the right-hand
             column from `lg` up. */}
         <div className="order-1 lg:order-2">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl lg:aspect-[3/2]">
-            <Image
-              src={LIFESTYLE.hero}
-              alt="Персонализирана чаша и подаръчни кутии Menty на маса"
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 640px"
-              className="object-cover"
-            />
-          </div>
+          <HeroCarousel />
         </div>
 
         <div className="order-2 lg:order-1">
