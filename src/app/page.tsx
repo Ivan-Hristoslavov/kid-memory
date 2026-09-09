@@ -1,89 +1,52 @@
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
-import { MobileCta } from "@/components/site/mobile-cta";
-import { Hero } from "@/components/landing/hero";
-import { WordMarquee } from "@/components/landing/word-marquee";
-import { Showcase } from "@/components/landing/showcase";
-import { HowItWorks } from "@/components/landing/how-it-works";
-import { Occasions } from "@/components/landing/occasions";
-import { OnTheWall } from "@/components/landing/on-the-wall";
-import { Testimonials } from "@/components/landing/testimonials";
-import { Pricing } from "@/components/landing/pricing";
-import { Faq } from "@/components/landing/faq";
-import { FinalCta } from "@/components/landing/final-cta";
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
-import { landingJsonLd } from "@/lib/seo";
-import { campaignStyle, getActiveCampaign } from "@/lib/campaigns";
-import { getSettings } from "@/lib/settings";
+import { BRAND } from "@/lib/brand";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyHero } from "@/components/menty/hero";
+import { TrustRow } from "@/components/menty/trust-row";
+import { CategoryStrip } from "@/components/menty/category-strip";
+import { PersonalizeBanner } from "@/components/menty/personalize-banner";
+import { Bestsellers } from "@/components/menty/bestsellers";
+import { Occasions } from "@/components/menty/occasions";
+import { HowItWorks } from "@/components/menty/how-it-works";
+import { Reviews } from "@/components/menty/reviews";
+import { MentyFooter } from "@/components/menty/footer";
 
-/**
- * Metadata follows the active campaign, so a search result for "подарък за
- * 8 март" lands on a page whose title says exactly that.
- */
-export async function generateMetadata(): Promise<Metadata> {
-  const campaign = await getActiveCampaign();
-  return {
-    alternates: { canonical: "/" },
-    ...(campaign?.seoTitle ? { title: campaign.seoTitle } : {}),
-    ...(campaign?.seoDescription ? { description: campaign.seoDescription } : {}),
-  };
-}
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  title: `${BRAND.name} — ${BRAND.promise}`,
+  description: BRAND.description,
+};
 
+/** Reviews are read per request, so the page cannot be prerendered stale. */
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
-  const settings = await getSettings();
-  const campaign = await getActiveCampaign();
-
-  // Ratings are only published as structured data when genuine approved
-  // reviews exist and are rendered on this same page.
-  const ratings = await prisma.review
-    .aggregate({
-      where: { status: "APPROVED" },
-      _avg: { rating: true },
-      _count: true,
-    })
-    .catch(() => null);
-
-  const reviewSummary =
-    settings.showReviews && ratings && ratings._count > 0 && ratings._avg.rating
-      ? {
-          count: ratings._count,
-          average: Math.round(ratings._avg.rating * 10) / 10,
-        }
-      : null;
-
+/**
+ * The MENTY storefront home page.
+ *
+ * Section order is taken from the V2 brief and its reference image, and is the
+ * part that must not drift: hero, category rail, personalisation banner,
+ * bestsellers, occasions, how it works, reviews, footer. The trust row sits
+ * between the hero and the categories because the reference puts it there.
+ *
+ * The previous poster landing page has not been deleted — its sections still
+ * live under components/landing and the wizard it fed is still at /create.
+ * The poster is one product in this catalogue now rather than the whole shop.
+ */
+export default function Home() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(landingJsonLd(reviewSummary)) }}
-      />
-      {/* Campaign colours are applied as CSS variables on a wrapper, so the
-          whole page re-tints without touching a single component. */}
-      <div style={campaignStyle(campaign)} className="contents">
-        <SiteHeader campaign={campaign} />
-        <main className="flex-1">
-          <Hero
-            title={campaign?.heroTitle ?? settings.heroTitle}
-            subtitle={campaign?.heroSubtitle ?? settings.heroSubtitle}
-            badge={campaign?.heroBadge}
-            template={campaign?.template ?? null}
-          />
-          <WordMarquee />
-          <Showcase />
-          <HowItWorks />
-          <OnTheWall />
-          {settings.showReviews && <Testimonials heading={settings.reviewsHeading} />}
-          <Occasions />
-          <Pricing />
-          <Faq />
-          <FinalCta />
-        </main>
-        <Footer />
-        <MobileCta />
-      </div>
+      <MentyHeader />
+      <main className="flex-1">
+        <MentyHero />
+        <TrustRow />
+        <CategoryStrip />
+        <PersonalizeBanner />
+        <Bestsellers />
+        <Occasions />
+        <HowItWorks />
+        <Reviews />
+      </main>
+      <MentyFooter />
     </>
   );
 }

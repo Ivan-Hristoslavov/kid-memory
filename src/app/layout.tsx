@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Playfair_Display } from "next/font/google";
+import { Manrope, Nunito, Playfair_Display } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { BRAND } from "@/lib/brand";
 import { CookieConsent } from "@/components/site/cookie-consent";
@@ -22,6 +22,22 @@ import "./globals.css";
 const playfair = Playfair_Display({
   subsets: ["latin", "cyrillic"],
   variable: "--font-playfair",
+  display: "swap",
+});
+
+/**
+ * The wordmark face, and nothing else.
+ *
+ * The logo is a rounded geometric sans, which neither Manrope nor Playfair is.
+ * Rather than ship the mark as a bitmap — which could not be recoloured for the
+ * light, dark and single-letter lockups the identity sheet specifies, and would
+ * blur on a retina header — it is set as live text in Nunito and paired with a
+ * drawn heart. One weight, Latin only, because the wordmark is "Menty".
+ */
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["800"],
+  variable: "--font-logo-face",
   display: "swap",
 });
 
@@ -90,7 +106,7 @@ export default function RootLayout({
   return (
     <html lang="bg" className="h-full">
       <body
-        className={`${playfair.variable} ${manrope.variable} grain min-h-full flex flex-col font-sans antialiased`}
+        className={`${playfair.variable} ${manrope.variable} ${nunito.variable} grain min-h-full flex flex-col font-sans antialiased`}
       >
         {children}
         <HashScroll />
