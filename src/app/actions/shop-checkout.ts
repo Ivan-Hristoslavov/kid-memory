@@ -11,8 +11,7 @@ import { isPhoneBlocked } from "@/lib/blocked-phones";
 import { finalizeConfirmedOrder } from "@/lib/orders/finalize";
 import { rateLimit } from "@/lib/rate-limit";
 import { shopCheckoutSchema } from "@/lib/validations";
-import { cartInput } from "@/lib/shop/pricing";
-import { cartLabel, priceCart } from "@/lib/shop/pricing";
+import { cartInput, cartLabel, priceCart } from "@/lib/shop/pricing";
 
 export interface ShopCheckoutState {
   error?: string;
@@ -145,6 +144,9 @@ export async function placeShopOrder(
           unitPriceEUR: l.unitPriceEUR,
           variants: l.variants as Prisma.InputJsonValue,
           photoKey: l.photoKey ?? null,
+          placement: l.photoKey
+            ? { x: l.placement.x, y: l.placement.y, scale: l.placement.scale }
+            : undefined,
           text: l.text ?? null,
           giftWrap: l.giftWrap,
         })),

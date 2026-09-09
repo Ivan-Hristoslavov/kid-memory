@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Check, ImagePlus, Loader2, Minus, Plus, ShoppingBag } from "lucide-react";
 import { formatPrice, ADDONS } from "@/lib/catalog";
 import { useCart } from "@/lib/store/cart";
+import { PhotoPlacer } from "./photo-placer";
+import { DEFAULT_PLACEMENT, type Placement } from "@/lib/shop/placement";
 import type { MentyProduct } from "@/lib/shop/products";
 
 /**
@@ -26,7 +28,9 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
     Object.fromEntries(product.variants.map((v) => [v.label, v.options[0]]))
   );
   const [photoKey, setPhotoKey] = useState<string>("");
+  const [photoUrl, setPhotoUrl] = useState<string>("");
   const [photoName, setPhotoName] = useState<string>("");
+  const [placement, setPlacement] = useState<Placement>(DEFAULT_PLACEMENT);
   const [uploading, setUploading] = useState(false);
   const [text, setText] = useState("");
   const [giftWrap, setGiftWrap] = useState(false);
@@ -42,18 +46,26 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
     try {
       const form = new FormData();
       form.append("photo", file);
+      // Printed as supplied, so it is not judged as a portrait: a pet, a
+      // landscape or a shot from behind are all valid on a mug.
+      form.append("purpose", "print");
       // The existing upload route already normalises, strips EXIF and refuses
       // unusable images, so a new product photo goes through exactly the same
       // door as a poster photo rather than a second, weaker one.
       const res = await fetch("/api/upload", { method: "POST", body: form });
       const data = (await res.json()) as {
         key?: string;
+        previewUrl?: string;
         error?: string;
         warnings?: string[];
       };
       if (!res.ok || !data.key) throw new Error(data.error ?? "Качването не успя");
       setPhotoKey(data.key);
+      setPhotoUrl(data.previewUrl ?? "");
       setPhotoName(file.name);
+      // A new photograph starts centred; keeping the previous crop would apply
+      // one picture's framing to a different one.
+      setPlacement(DEFAULT_PLACEMENT);
       data.warnings?.forEach((w) => toast.warning(w));
       toast.success("Снимката е готова");
     } catch (err) {
@@ -73,6 +85,7 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
       quantity,
       variants,
       photoKey: photoKey || undefined,
+      placement: photoKey ? placement : undefined,
       text: text.trim() || undefined,
       giftWrap,
     });
@@ -143,6 +156,17 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
             )}
           </button>
           <p className="mt-1.5 text-xs text-muted-foreground">JPG, PNG или HEIC, до 8 MB</p>
+
+          {photoKey && photoUrl && product.printArea && (
+            <div className="mt-5">
+              <PhotoPlacer
+                product={product}
+                photoUrl={photoUrl}
+                placement={placement}
+                onChange={setPlacement}
+              />
+            </div>
+          )}
         </div>
       )}
 

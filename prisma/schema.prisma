@@ -603,6 +603,11 @@ model OrderLine {
   variants Json @default("{}")
   /// Private storage key of the customer's uploaded photo, when there is one.
   photoKey String?
+  /// Where that photo sits inside the print area: { x, y, scale }.
+  /// Stored as a transform rather than a cropped file, so the print file is
+  /// rendered from the ORIGINAL upload at full resolution — cropping in the
+  /// browser would build it from a 1600px preview.
+  placement Json?
   /// The customer's own line of text.
   text     String?
   giftWrap Boolean @default(false)

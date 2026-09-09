@@ -45,6 +45,26 @@ export type ProductFamily =
   | "HOME"
   | "PACKAGING";
 
+/**
+ * Where artwork lands on a product, and how big that area really is.
+ *
+ * The rectangle is expressed as fractions of the product photograph, so the
+ * editor can draw the print window over the mock-up without knowing its pixel
+ * size. The millimetre figures are the physical print area, and they are what
+ * makes a resolution warning possible: a photo can look fine on screen and
+ * still be 80 DPI once it is 90mm wide on a mug.
+ */
+export interface PrintArea {
+  /** Fractions of the product image, 0..1, top-left origin. */
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  /** Physical print size. */
+  widthMm: number;
+  heightMm: number;
+}
+
 export interface ProductVariantAxis {
   /** "Цвят", "Размер" — shown as the control label. */
   label: string;
@@ -81,6 +101,8 @@ export interface MentyProduct {
 
   /** Local asset paths under /public/products/. Empty until supplied. */
   images: readonly string[];
+  /** Absent on products that take no artwork. */
+  printArea?: PrintArea;
   variants: readonly ProductVariantAxis[];
   personalization: readonly PersonalizationKind[];
 
@@ -127,6 +149,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 12.9,
     priceReferenceBGN: 24.9,
     images: ["/products/photo-mug-330.webp"],
+    printArea: { x: 0.3, y: 0.36, width: 0.36, height: 0.32, widthMm: 90, heightMm: 80 },
     tags: ["for-her", "for-him", "for-parents", "birthday", "anniversary", "thank-you", "just-because", "love"],
     variants: [{ label: "Цвят", options: ["Бяла"] }],
     personalization: ["PHOTO", "TEXT"],
@@ -144,6 +167,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 14.9,
     priceReferenceBGN: 28.9,
     images: [],
+    printArea: { x: 0.3, y: 0.36, width: 0.36, height: 0.32, widthMm: 90, heightMm: 80 },
     tags: ["for-her", "for-him", "birthday", "just-because"],
     variants: [
       { label: "Цвят", options: ["Черна", "Синя", "Червена", "Зелена", "Розова"] },
@@ -162,6 +186,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 20.9,
     priceReferenceBGN: 39.9,
     images: ["/products/premium-tee-stanley-stella.webp"],
+    printArea: { x: 0.34, y: 0.3, width: 0.32, height: 0.34, widthMm: 280, heightMm: 380 },
     tags: ["for-him", "for-her", "for-couples", "birthday", "just-because"],
     variants: [
       { label: "Размер", options: ["XS", "S", "M", "L", "XL", "XXL"] },
@@ -182,6 +207,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 30.9,
     priceReferenceBGN: 59.9,
     images: ["/products/organic-hoodie.webp"],
+    printArea: { x: 0.36, y: 0.3, width: 0.28, height: 0.24, widthMm: 250, heightMm: 300 },
     tags: ["for-him", "for-her", "for-couples", "birthday", "anniversary"],
     variants: [
       { label: "Размер", options: ["S", "M", "L", "XL", "XXL"] },
@@ -201,6 +227,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 10.9,
     priceReferenceBGN: 19.9,
     images: ["/products/photo-leather-keychain.webp"],
+    printArea: { x: 0.3, y: 0.34, width: 0.4, height: 0.3, widthMm: 50, heightMm: 30 },
     tags: ["for-him", "for-couples", "anniversary", "love", "thank-you"],
     variants: [{ label: "Цвят", options: ["Кафяв", "Черен"] }],
     personalization: ["PHOTO", "TEXT"],
@@ -218,6 +245,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 8.9,
     priceReferenceBGN: 16.9,
     images: [],
+    printArea: { x: 0.3, y: 0.34, width: 0.4, height: 0.3, widthMm: 50, heightMm: 30 },
     tags: ["for-him", "for-couples", "love", "just-because"],
     variants: [],
     personalization: ["PHOTO", "TEXT"],
@@ -233,6 +261,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 15.9,
     priceReferenceBGN: 29.9,
     images: [],
+    printArea: { x: 0.08, y: 0.08, width: 0.84, height: 0.84, widthMm: 210, heightMm: 297 },
     tags: ["for-kids", "for-parents", "for-couples", "birthday", "love"],
     variants: [{ label: "Части", options: ["120"] }],
     personalization: ["PHOTO", "TEXT"],
@@ -249,6 +278,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 13.9,
     priceReferenceBGN: 26.9,
     images: [],
+    printArea: { x: 0.3, y: 0.32, width: 0.4, height: 0.36, widthMm: 250, heightMm: 250 },
     tags: ["for-her", "for-parents", "thank-you", "just-because"],
     variants: [{ label: "Цвят", options: ["Натурална", "Черна"] }],
     personalization: ["PHOTO", "TEXT", "DESIGN"],
@@ -265,6 +295,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 9.9,
     priceReferenceBGN: 18.9,
     images: [],
+    printArea: { x: 0.34, y: 0.4, width: 0.32, height: 0.2, widthMm: 60, heightMm: 40 },
     tags: ["for-him", "for-kids", "birthday", "just-because"],
     variants: [{ label: "Размер", options: ["36-40", "41-45"] }],
     personalization: ["PHOTO", "DESIGN"],
@@ -308,6 +339,7 @@ export const OWN_PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 17.9,
     priceReferenceBGN: 34.9,
     images: ["/samples/hero-wall.webp"],
+    printArea: { x: 0.1, y: 0.08, width: 0.8, height: 0.84, widthMm: 210, heightMm: 297 },
     tags: ["for-parents", "for-couples", "for-kids", "new-baby", "anniversary", "love", "best-friend"],
     variants: [{ label: "Формат", options: ["A4", "A3"] }],
     personalization: ["PHOTO", "TEXT"],

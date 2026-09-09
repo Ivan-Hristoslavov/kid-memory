@@ -2,6 +2,7 @@ import "server-only";
 import { z } from "zod";
 import { ADDONS, DELIVERY, calcDeliveryEUR } from "@/lib/catalog";
 import { productById, type MentyProduct } from "./products";
+import { DEFAULT_PLACEMENT, type Placement } from "./placement";
 
 /**
  * Server-side pricing for a basket.
@@ -23,6 +24,15 @@ export const cartLineInput = z.object({
   quantity: z.number().int().min(1).max(20),
   variants: z.record(z.string().max(40), z.string().max(60)).default({}),
   photoKey: z.string().max(200).optional(),
+  /** Where the photo sits in the print area. Bounded so a posted value
+   *  cannot ask the print renderer for an absurd transform. */
+  placement: z
+    .object({
+      x: z.number().min(0).max(1),
+      y: z.number().min(0).max(1),
+      scale: z.number().min(1).max(3),
+    })
+    .optional(),
   text: z.string().max(60).optional(),
   giftWrap: z.boolean().default(false),
 });
@@ -36,6 +46,7 @@ export interface PricedLine {
   quantity: number;
   variants: Record<string, string>;
   photoKey?: string;
+  placement: Placement;
   text?: string;
   giftWrap: boolean;
   unitPriceEUR: number;
@@ -87,6 +98,9 @@ export function priceCart(input: CartLineInput[]): PricedCart | null {
       quantity: raw.quantity,
       variants,
       photoKey: raw.photoKey,
+      // A line with a photo always carries a placement, so the print renderer
+      // never has to guess: an absent one means "centred, no zoom".
+      placement: raw.placement ?? DEFAULT_PLACEMENT,
       text: raw.text?.trim() || undefined,
       giftWrap: raw.giftWrap,
       unitPriceEUR: unit,

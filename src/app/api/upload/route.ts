@@ -50,6 +50,14 @@ function isHeic(buf: Buffer, fileName: string, mimeType: string): boolean {
   );
 }
 
+/** Stands in for the pre-pass when it is deliberately not run. */
+const UNCHECKED_DESCRIPTION = {
+  faces: 0,
+  subjects: [],
+  blockers: [] as PhotoBlocker[],
+  checked: false,
+};
+
 function sameOrigin(req: Request): boolean {
   const origin = req.headers.get("origin");
   if (!origin) return true; // same-origin fetches may omit it
@@ -90,6 +98,21 @@ export async function POST(req: Request) {
   }
 
   const form = await req.formData();
+
+  /**
+   * What the photo is FOR, which decides how strictly it is judged.
+   *
+   * "poster" (the default, and every existing caller) is drawn as an
+   * illustrated portrait, so a photo with no visible face cannot produce one
+   * and is refused before it costs a paid generation.
+   *
+   * "print" is put on a mug, a puzzle or a keychain exactly as supplied. A dog,
+   * a mountain, a wedding shot from behind — all perfectly good, and refusing
+   * them would be refusing the customer's own choice of picture. The vision
+   * pre-pass is skipped entirely for these: its only remaining verdict would be
+   * blur, which the sharpness check below already measures without an API call.
+   */
+  const purpose = form.get("purpose") === "print" ? "print" : "poster";
   const file = form.get("photo");
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "Липсва файл" }, { status: 400 });
@@ -169,7 +192,8 @@ export async function POST(req: Request) {
   // features instead of only pointing at the photo, and it refuses the handful
   // of photos no illustrator could work from. It never throws, and when it
   // cannot run the upload continues exactly as it did before.
-  const description = await describePhoto(normalized);
+  const description =
+    purpose === "print" ? UNCHECKED_DESCRIPTION : await describePhoto(normalized);
 
   const blocker = BLOCKER_ORDER.find((b) => description.blockers.includes(b));
   if (blocker) {

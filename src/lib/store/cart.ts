@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { productById } from "@/lib/shop/products";
+import type { Placement } from "@/lib/shop/placement";
 
 /**
  * The basket.
@@ -29,6 +30,12 @@ export interface CartLine {
   variants: Record<string, string>;
   /** Storage key of an uploaded photo, when the product takes one. */
   photoKey?: string;
+  /**
+   * Where the customer put that photo inside the print area. Stored as a
+   * transform rather than a cropped file so the print can be re-rendered from
+   * the original upload at full resolution.
+   */
+  placement?: Placement;
   /** Customer's own line of text, when the product takes one. */
   text?: string;
   giftWrap: boolean;
@@ -40,10 +47,14 @@ function lineKey(input: Omit<CartLine, "key" | "quantity">): string {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([k, v]) => `${k}=${v}`)
     .join("|");
+  const placement = input.placement
+    ? `${input.placement.x.toFixed(3)},${input.placement.y.toFixed(3)},${input.placement.scale.toFixed(3)}`
+    : "";
   return [
     input.productId,
     variants,
     input.photoKey ?? "",
+    placement,
     input.text ?? "",
     input.giftWrap ? "wrap" : "",
   ].join("::");
