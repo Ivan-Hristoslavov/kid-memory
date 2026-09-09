@@ -99,21 +99,13 @@ export function CartView() {
             </p>
           )}
 
-          <button
-            type="button"
-            disabled
-            title="Плащането се разработва"
-            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-foreground/85 disabled:cursor-not-allowed disabled:opacity-50"
+          <Link
+            href="/plashtane"
+            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-foreground/85"
           >
             Към плащане
             <ArrowRight className="size-4" />
-          </button>
-          {/* Honest rather than a button that goes nowhere: checkout for the
-              catalogue is not built yet, and the poster flow's own checkout
-              cannot price a basket of mugs. */}
-          <p className="mt-2 text-center text-xs text-muted-foreground">
-            Плащането за каталога още се разработва.
-          </p>
+          </Link>
         </div>
       </aside>
     </div>

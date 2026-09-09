@@ -204,6 +204,71 @@ export const checkoutSchema = z
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 
+/**
+ * Catalogue checkout.
+ *
+ * The same customer, delivery and payment rules as `checkoutSchema`, minus
+ * everything that belongs to a poster: there is no single `productType` to
+ * choose, no add-on list (gift wrapping is chosen per line in the basket), and
+ * no child's birthday. The basket itself is validated and priced separately in
+ * lib/shop/pricing.ts, because a list of products is not a form field.
+ *
+ * Every catalogue item is physical, so delivery details are unconditionally
+ * required here — there is no digital branch to exempt.
+ */
+export const shopCheckoutSchema = z
+  .object({
+    customerName: z.string().trim().min(3, "Въведи име и фамилия").max(80),
+    phone: z
+      .string()
+      .trim()
+      .transform((v) => v.replace(/[\s-]/g, ""))
+      .pipe(z.string().regex(bgPhoneRegex, "Невалиден български телефонен номер")),
+    email: z.string().trim().email("Невалиден имейл адрес").max(120),
+    city: z.string().trim().max(60).optional().or(z.literal("")),
+    address: z.string().trim().max(200).optional().or(z.literal("")),
+    courier: z.enum(["ECONT", "SPEEDY"]).optional().or(z.literal("")),
+    deliveryMethod: z.enum(["OFFICE", "ADDRESS", "LOCKER"]).optional().or(z.literal("")),
+    courierOffice: z.string().trim().max(200).optional().or(z.literal("")),
+    paymentMethod: z.enum(["COD", "STRIPE"]).default("COD"),
+    /** Consent must be explicit — an unticked box is a "no", never an omission. */
+    marketingOptIn: z.coerce.boolean().default(false),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.city) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["city"], message: "Въведи град" });
+    }
+    if (!data.courier) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["courier"], message: "Избери куриер" });
+    }
+    if (!data.deliveryMethod) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["deliveryMethod"],
+        message: "Избери начин на доставка",
+      });
+    }
+    if (data.deliveryMethod === "ADDRESS" && !data.address) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["address"],
+        message: "Въведи адрес за доставка",
+      });
+    }
+    if (
+      (data.deliveryMethod === "OFFICE" || data.deliveryMethod === "LOCKER") &&
+      !data.courierOffice
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["courierOffice"],
+        message: "Избери офис или автомат",
+      });
+    }
+  });
+
+export type ShopCheckoutInput = z.infer<typeof shopCheckoutSchema>;
+
 export const adminStatusSchema = z.object({
   orderId: z.string().cuid(),
   status: z.enum([

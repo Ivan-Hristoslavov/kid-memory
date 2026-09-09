@@ -167,6 +167,14 @@ model Order {
   courierOffice  String?
   trackingNumber String?
 
+  /// Catalogue lines. Empty on a poster order, which sells exactly one made-to
+  /// -order item described by the columns above; non-empty on a shop order,
+  /// where `productType`, `addons` and the poster columns are placeholders and
+  /// the lines are the truth. Checking `lines.length` is how the two are told
+  /// apart — deliberately not a discriminator column, so every existing order
+  /// keeps its meaning with no backfill.
+  lines OrderLine[]
+
   /// Set when this order sells a personalised book rather than a poster.
   /// Nullable and unique: every existing poster order keeps `null`, and a book
   /// can only be sold once. The poster columns above stay filled on a book
@@ -563,4 +571,43 @@ model BookGeneration {
 
   @@index([status, createdAt])
   @@index([bookId, kind])
+}
+
+
+/// One catalogue product in a shop order.
+///
+/// A line records what was bought AND what was chosen on it, because a
+/// personalised item is not interchangeable with another of the same SKU: two
+/// mugs with different photographs are two lines, and the print shop needs to
+/// see which artwork belongs to which.
+///
+/// `unitPriceEUR` is written at checkout rather than read back from the
+/// catalogue later. The catalogue is a code constant that changes with a
+/// deploy, and an order must always say what the customer was actually charged
+/// — not what the same product happens to cost next month.
+model OrderLine {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  /// Menty catalogue id, e.g. "photo-mug-330".
+  productId String
+  /// Title as shown at the time of purchase, so an order reads correctly even
+  /// after the catalogue is renamed.
+  title     String
+  quantity  Int    @default(1)
+
+  unitPriceEUR Decimal @db.Decimal(10, 2)
+
+  /// Chosen variant options: { "Цвят": "Бяла", "Размер": "M" }.
+  variants Json @default("{}")
+  /// Private storage key of the customer's uploaded photo, when there is one.
+  photoKey String?
+  /// The customer's own line of text.
+  text     String?
+  giftWrap Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
 }

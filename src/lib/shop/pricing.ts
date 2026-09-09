@@ -1,0 +1,132 @@
+import "server-only";
+import { z } from "zod";
+import { ADDONS, DELIVERY, calcDeliveryEUR } from "@/lib/catalog";
+import { productById, type MentyProduct } from "./products";
+
+/**
+ * Server-side pricing for a basket.
+ *
+ * The client's basket is a suggestion, never an amount. Everything below is
+ * recomputed from the catalogue: a posted price, a posted total, or a variant
+ * the catalogue does not list is discarded rather than trusted. This matters
+ * more here than it does for a poster — a poster order is one product and one
+ * number, a basket is an arbitrary list somebody can hand-edit before posting.
+ *
+ * The quoted total must also match what the courier collects. A cash-on-
+ * delivery parcel quoted at one number and charged another gets refused at the
+ * door, and a personalised parcel that comes back is a total loss.
+ */
+
+/** What the browser may send. Deliberately no prices. */
+export const cartLineInput = z.object({
+  productId: z.string().min(1).max(64),
+  quantity: z.number().int().min(1).max(20),
+  variants: z.record(z.string().max(40), z.string().max(60)).default({}),
+  photoKey: z.string().max(200).optional(),
+  text: z.string().max(60).optional(),
+  giftWrap: z.boolean().default(false),
+});
+
+export const cartInput = z.array(cartLineInput).min(1).max(30);
+
+export type CartLineInput = z.infer<typeof cartLineInput>;
+
+export interface PricedLine {
+  product: MentyProduct;
+  quantity: number;
+  variants: Record<string, string>;
+  photoKey?: string;
+  text?: string;
+  giftWrap: boolean;
+  unitPriceEUR: number;
+  lineTotalEUR: number;
+}
+
+export interface PricedCart {
+  lines: PricedLine[];
+  goodsEUR: number;
+  giftWrapEUR: number;
+  deliveryEUR: number;
+  totalEUR: number;
+}
+
+function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+/**
+ * Prices a basket, dropping anything the catalogue does not recognise.
+ *
+ * Returns null when nothing survives — an empty basket is not an order, and
+ * saying so beats creating a zero-value row.
+ */
+export function priceCart(input: CartLineInput[]): PricedCart | null {
+  const lines: PricedLine[] = [];
+
+  for (const raw of input) {
+    const product = productById(raw.productId);
+    if (!product) continue;
+
+    // Keep only options the catalogue actually offers on this product, so a
+    // hand-edited "Цвят: Златна" cannot reach the print shop.
+    const variants: Record<string, string> = {};
+    for (const axis of product.variants) {
+      const chosen = raw.variants[axis.label];
+      variants[axis.label] = axis.options.includes(chosen as string)
+        ? (chosen as string)
+        : axis.options[0];
+    }
+
+    // A product that requires a photo has to have one; without it there is
+    // nothing to print.
+    if (product.personalization.includes("PHOTO") && !raw.photoKey) continue;
+
+    const unit = product.priceEUR;
+    lines.push({
+      product,
+      quantity: raw.quantity,
+      variants,
+      photoKey: raw.photoKey,
+      text: raw.text?.trim() || undefined,
+      giftWrap: raw.giftWrap,
+      unitPriceEUR: unit,
+      lineTotalEUR: round2(unit * raw.quantity),
+    });
+  }
+
+  if (lines.length === 0) return null;
+
+  const goodsEUR = round2(lines.reduce((s, l) => s + l.lineTotalEUR, 0));
+  const giftWrapEUR = round2(
+    lines.reduce(
+      (s, l) => (l.giftWrap ? s + ADDONS.GIFT_WRAP.priceEUR * l.quantity : s),
+      0
+    )
+  );
+  const subtotal = round2(goodsEUR + giftWrapEUR);
+  // Every catalogue item is a physical thing, so the physical rate applies;
+  // POSTER_A4 stands in for "not the digital product" in the shared helper.
+  const deliveryEUR = calcDeliveryEUR("POSTER_A4", subtotal);
+
+  return {
+    lines,
+    goodsEUR,
+    giftWrapEUR,
+    deliveryEUR,
+    totalEUR: round2(subtotal + deliveryEUR),
+  };
+}
+
+/** Free-delivery threshold, for the message under the summary. */
+export const FREE_DELIVERY_ABOVE = DELIVERY.freeAboveEUR;
+
+/**
+ * A short label for the order — what the admin list, the emails and the
+ * courier's manifest show instead of a poster's child name.
+ */
+export function cartLabel(cart: PricedCart): string {
+  const [first] = cart.lines;
+  const others = cart.lines.length - 1;
+  if (others <= 0) return first.product.title;
+  return `${first.product.title} и още ${others}`;
+}
