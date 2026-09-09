@@ -10,8 +10,8 @@ import {
   Star,
   Truck,
 } from "lucide-react";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import { Button } from "@/components/ui/button";
 import { SuccessConfetti } from "@/components/checkout/success-confetti";
 import { PurchaseTracker } from "@/components/checkout/purchase-tracker";
@@ -67,7 +67,7 @@ export default async function SuccessPage({
 
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="bg-dreamy relative flex-1 overflow-hidden px-6 pt-12 pb-20">
         <SuccessConfetti />
         {/* Only report a sale that actually is one. A card order that has not
@@ -204,7 +204,7 @@ export default async function SuccessPage({
           </Button>
         </div>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

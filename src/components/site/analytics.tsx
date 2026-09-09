@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Script from "next/script";
+import { useConsent } from "@/lib/hooks/use-client-value";
+// The hook is for rendering; `tags()` below is called imperatively from the
+// tracking helpers, where a hook cannot go.
 import { getConsent } from "./cookie-consent";
 
 /**
@@ -9,15 +11,9 @@ import { getConsent } from "./cookie-consent";
  * the corresponding env var is configured. Nothing runs without both.
  */
 export function Analytics() {
-  const [allowed, setAllowed] = useState(false);
-
-  useEffect(() => {
-    setAllowed(getConsent() === "all");
-    const onConsent = (e: Event) =>
-      setAllowed((e as CustomEvent<string>).detail === "all");
-    window.addEventListener("biserite:consent", onConsent);
-    return () => window.removeEventListener("biserite:consent", onConsent);
-  }, []);
+  // Reads the stored choice and follows it live, without a render pass
+  // spent flipping a flag in an effect.
+  const allowed = useConsent() === "all";
 
   const ga = process.env.NEXT_PUBLIC_GA_ID;
   const pixel = process.env.NEXT_PUBLIC_META_PIXEL_ID;

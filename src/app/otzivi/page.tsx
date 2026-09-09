@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import { ReviewForm } from "@/components/reviews/review-form";
 import { Avatar, StarRating } from "@/components/landing/shared";
 import { Quote } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Отзиви от родители",
+  title: "Отзиви",
   description:
-    "Прочети какво споделят родителите за персонализираните детски постери и остави своя отзив.",
+    "Прочети какво споделят клиентите ни за персонализираните подаръци и остави своя отзив.",
   alternates: { canonical: "/otzivi" },
 };
 
@@ -31,12 +31,12 @@ export default async function ReviewsPage() {
 
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="bg-dreamy flex-1 pt-10 pb-20">
         <div className="mx-auto max-w-4xl px-6">
           <div className="text-center">
             <h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
-              Отзиви от родители
+              Какво казват клиентите
             </h1>
             {avg !== null ? (
               <div className="mt-4 flex flex-col items-center gap-2">
@@ -87,7 +87,7 @@ export default async function ReviewsPage() {
           </div>
         </div>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

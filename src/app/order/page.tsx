@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { storage } from "@/lib/storage";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import {
   CheckoutForm,
   type CheckoutPaymentMethod,
@@ -31,7 +31,7 @@ export default async function OrderPage({
   if (order.status !== "PREVIEW_READY") {
     return (
       <>
-        <SiteHeader />
+        <MentyHeader />
         <main className="bg-dreamy flex flex-1 items-center justify-center px-6 pt-12 pb-20">
           <div className="glass max-w-md rounded-3xl p-10 text-center">
             <h1 className="font-heading text-2xl font-bold">
@@ -45,7 +45,7 @@ export default async function OrderPage({
             </Button>
           </div>
         </main>
-        <Footer />
+        <MentyFooter />
       </>
     );
   }
@@ -60,7 +60,7 @@ export default async function OrderPage({
 
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="bg-dreamy flex-1 pt-12 pb-20">
         <div className="mx-auto max-w-5xl px-6">
           <h1 className="text-center font-heading text-3xl font-extrabold tracking-tight sm:text-4xl">
@@ -79,7 +79,7 @@ export default async function OrderPage({
           />
         </div>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

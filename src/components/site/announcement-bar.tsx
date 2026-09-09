@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useReducer } from "react";
+import { useSessionFlag } from "@/lib/hooks/use-client-value";
 import { Sparkles, Truck, X } from "lucide-react";
 
 /**
  * Slim promo strip at the very top — a marketing hook (free shipping / speed).
  * Dismissible; the choice is remembered for the session.
  */
+const DISMISSED_KEY = "biserite-promo-dismissed";
+
 export function AnnouncementBar({
   text,
   secondary,
@@ -14,13 +17,12 @@ export function AnnouncementBar({
   text: string;
   secondary: string;
 }) {
-  const [visible, setVisible] = useState(true);
+  // The dismissal lives in sessionStorage, so the server cannot know it and
+  // assumes the bar is shown. `bump` re-reads after the close button writes.
+  const [, bump] = useReducer((n: number) => n + 1, 0);
+  const dismissed = useSessionFlag(DISMISSED_KEY);
 
-  useEffect(() => {
-    setVisible(sessionStorage.getItem("biserite-promo-dismissed") !== "1");
-  }, []);
-
-  if (!visible) return null;
+  if (dismissed) return null;
 
   return (
     <div className="relative bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
@@ -35,8 +37,9 @@ export function AnnouncementBar({
       <button
         type="button"
         onClick={() => {
-          sessionStorage.setItem("biserite-promo-dismissed", "1");
-          setVisible(false);
+          sessionStorage.setItem(DISMISSED_KEY, "1");
+          // sessionStorage writes fire no event in this tab, so nudge the read.
+          bump();
         }}
         aria-label="Затвори"
         className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 opacity-80 transition hover:bg-white/15 hover:opacity-100"

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useConsent } from "@/lib/hooks/use-client-value";
+
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Cookie } from "lucide-react";
@@ -22,15 +23,13 @@ export function getConsent(): ConsentValue | null {
  * the visitor accepts — declining is exactly one click, same as accepting.
  */
 export function CookieConsent() {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!getConsent()) setVisible(true);
-  }, []);
+  // Derived rather than stored: the banner is visible exactly while no choice
+  // has been made, and `choose` below dispatches the event this reads.
+  const consent = useConsent();
+  const visible = consent === null;
 
   function choose(value: ConsentValue) {
     localStorage.setItem(KEY, value);
-    setVisible(false);
     window.dispatchEvent(new CustomEvent("biserite:consent", { detail: value }));
   }
 

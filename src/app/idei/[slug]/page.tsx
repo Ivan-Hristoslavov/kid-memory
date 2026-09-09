@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import { Button } from "@/components/ui/button";
 import { ARTICLES, getArticle } from "@/lib/articles";
 import { COMPANY } from "@/lib/legal";
@@ -81,7 +81,7 @@ export default async function ArticlePage({
           ),
         }}
       />
-      <SiteHeader />
+      <MentyHeader />
       <main className="aura flex-1 px-6 pt-10 pb-24">
         <article className="mx-auto max-w-3xl">
           <Link
@@ -158,7 +158,7 @@ export default async function ArticlePage({
           )}
         </article>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

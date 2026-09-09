@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { SiteHeader } from "./site-header";
-import { Footer } from "./footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 
 /** Shared shell for the legal pages: readable column, consistent typography. */
 export function LegalLayout({
@@ -15,7 +15,7 @@ export function LegalLayout({
 }) {
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="bg-dreamy flex-1 pt-10 pb-20">
         <div className="mx-auto max-w-3xl px-6">
           <Link
@@ -38,7 +38,7 @@ export function LegalLayout({
           </div>
         </div>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

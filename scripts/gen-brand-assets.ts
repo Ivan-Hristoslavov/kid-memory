@@ -202,6 +202,58 @@ laughing quietly. He wears a plain sage shirt, she a soft oatmeal knit. Clearly 
 Centred so the shot survives a circular crop. Clean warm-white interior background, softly out of \
 focus. ${LOOK}`,
   },
+
+  // ── The rest of the catalogue. Same note as above: stand-ins for supplier
+  //    photography, describing the real item forms. ────────────────────────
+  {
+    id: "product-color-mug",
+    out: "products/color-handle-mug",
+    size: "1024x1024",
+    prompt: `Product photograph of a white glossy ceramic mug with a deep forest green handle and a \
+matching green glazed interior, standard straight-sided 330ml shape, standing centred on a seamless \
+ivory background. A soft photographic image printed on its white outer side. Even studio light, gentle \
+contact shadow. ${LOOK}`,
+  },
+  {
+    id: "product-metal-keychain",
+    out: "products/metal-keychain-2sided",
+    size: "1024x1024",
+    prompt: `Product photograph of a small rectangular brushed-metal keychain with rounded corners and a \
+split metal ring, lying flat on a seamless ivory background, a soft photographic image printed across \
+its face. Close, even studio light, gentle contact shadow. ${LOOK}`,
+  },
+  {
+    id: "product-puzzle",
+    out: "products/photo-puzzle-a4",
+    size: "1024x1024",
+    prompt: `Product photograph of a rectangular A4 cardboard jigsaw puzzle lying flat and fully \
+assembled on a seamless ivory background, a soft photographic image printed across it, the die-cut \
+piece edges faintly visible. Two loose pieces resting beside it. Even studio light. ${LOOK}`,
+  },
+  {
+    id: "product-tote",
+    out: "products/organic-tote",
+    size: "1024x1024",
+    prompt: `Product photograph of a natural undyed cotton tote bag with long shoulder handles, laid \
+flat and neatly arranged on a seamless ivory background, seen from directly above, a soft photographic \
+print centred on the front panel. Even studio light. ${LOOK}`,
+  },
+  {
+    id: "product-socks",
+    out: "products/printed-socks",
+    size: "1024x1024",
+    prompt: `Product photograph of a folded pair of white cotton crew socks on a seamless ivory \
+background, seen from above, with a small repeating printed pattern across them. Even studio light, \
+gentle contact shadow. ${LOOK}`,
+  },
+  {
+    id: "product-waistpack",
+    out: "products/studio-waistpack",
+    size: "1024x1024",
+    prompt: `Product photograph of a compact black fabric belt bag — a waistpack with a zipped front \
+pocket and an adjustable webbing strap coiled beside it — lying on a seamless ivory background, seen \
+from slightly above. Even studio light, gentle contact shadow. ${LOOK}`,
+  },
 ];
 
 /** gpt-image-1 list price per image, in USD. */

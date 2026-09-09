@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Download, PackageSearch, Sparkles } from "lucide-react";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import { Button } from "@/components/ui/button";
 import { AccessRequestForm } from "@/components/site/access-request-form";
 import { ordersForToken } from "@/app/actions/my-posters";
@@ -36,7 +36,7 @@ export default async function MyPostersPage({
 
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="aura flex-1 px-6 pt-14 pb-24">
         <div className="mx-auto max-w-3xl">
           <h1 className="text-center font-heading text-4xl font-extrabold tracking-tight">
@@ -136,7 +136,7 @@ export default async function MyPostersPage({
           )}
         </div>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

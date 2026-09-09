@@ -114,11 +114,11 @@ export function CheckoutForm({
     ? 0
     : Math.max(0, Math.round((DELIVERY.freeAboveEUR - subtotal) * 100) / 100);
 
+  // The reset used to be a synchronous setState in the effect body, which cost
+  // a second render pass on every keystroke. What the list should show is
+  // derivable — see `shownOffices` below — so the effect now only fetches.
   useEffect(() => {
-    if (!needsOffice || city.trim().length < 2) {
-      setOffices([]);
-      return;
-    }
+    if (!needsOffice || city.trim().length < 2) return;
     const timer = setTimeout(async () => {
       setOfficesLoading(true);
       try {
@@ -138,6 +138,15 @@ export function CheckoutForm({
     }, 500);
     return () => clearTimeout(timer);
   }, [city, courier, delivery, needsOffice]);
+
+  /**
+   * Offices are only meaningful once a courier office is being chosen AND the
+   * city is long enough to have been searched for. Deriving it here means a
+   * stale list from a previous city can never flash on screen while the new
+   * search is still debouncing.
+   */
+  const shownOffices =
+    needsOffice && city.trim().length >= 2 ? offices : [];
 
   const err = (field: string) => state.fieldErrors?.[field];
 
@@ -317,13 +326,13 @@ export function CheckoutForm({
                       <Loader2 className="ml-2 inline size-3.5 animate-spin" />
                     )}
                   </Label>
-                  {offices.length > 0 ? (
+                  {shownOffices.length > 0 ? (
                     <Select name="courierOffice">
                       <SelectTrigger className="h-12 w-full rounded-2xl">
                         <SelectValue placeholder="Избери от списъка" />
                       </SelectTrigger>
                       <SelectContent>
-                        {offices.map((o) => (
+                        {shownOffices.map((o) => (
                           <SelectItem key={o.id} value={`${o.id} — ${o.name}`}>
                             {o.name} · {o.address}
                           </SelectItem>

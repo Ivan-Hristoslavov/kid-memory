@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Check } from "lucide-react";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import { Button } from "@/components/ui/button";
 import { unsubscribeEmail } from "@/app/actions/campaigns";
 
@@ -28,7 +28,7 @@ export default async function UnsubscribePage({
 
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="bg-dreamy flex flex-1 items-center justify-center px-6 py-24">
         <div className="glass max-w-md rounded-3xl p-10 text-center">
           {done ? (
@@ -56,7 +56,7 @@ export default async function UnsubscribePage({
           </Button>
         </div>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

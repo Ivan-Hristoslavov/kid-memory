@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import { TrackForm } from "@/components/site/track-form";
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default async function TrackPage({
 
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="bg-dreamy flex-1 px-6 pt-14 pb-24">
         <div className="mx-auto max-w-lg text-center">
           <h1 className="font-heading text-4xl font-extrabold tracking-tight">
@@ -33,7 +33,7 @@ export default async function TrackPage({
           <TrackForm defaultOrderNumber={order} />
         </div>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

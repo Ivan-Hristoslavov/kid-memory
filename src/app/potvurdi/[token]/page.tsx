@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BadgeCheck, Clock, Truck } from "lucide-react";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/lib/settings";
@@ -136,14 +136,14 @@ function Step({
 function Shell({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="bg-dreamy relative flex flex-1 items-center justify-center px-6 pt-12 pb-20">
         <div className="glass w-full max-w-lg rounded-3xl p-9 text-center sm:p-12">
           <h1 className="font-heading text-3xl font-extrabold tracking-tight">{title}</h1>
           {children}
         </div>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

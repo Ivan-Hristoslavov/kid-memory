@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import { Wizard } from "@/components/wizard/wizard";
 import { isTemplateId, type TemplateId } from "@/lib/templates";
 
 export const metadata: Metadata = {
   title: "Създай персонализиран постер",
   description:
-    "Създай персонализиран постер по снимка — за дете, колега, двойка или любимец. Виждаш дизайна за минути, плащане при доставка.",
+    "Създай илюстрован постер по снимка — за дете, колега, двойка или любимец. Виждаш дизайна за минути, плащане при доставка.",
   alternates: { canonical: "/create" },
 };
 
@@ -29,11 +29,11 @@ export default async function CreatePage({
 
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="bg-dreamy flex-1 pt-12 pb-20">
         <Wizard initialTemplate={initialTemplate} />
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }

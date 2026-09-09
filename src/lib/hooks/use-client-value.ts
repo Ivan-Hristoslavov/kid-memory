@@ -42,3 +42,57 @@ export function usePrefersReducedMotion(): boolean {
     () => false
   );
 }
+
+/**
+ * The visitor's cookie choice, live.
+ *
+ * Three components need it — the analytics loader, the banner itself and the
+ * sticky mobile bar — and all three previously read it with a `useState`
+ * flipped inside a `useEffect`, plus their own copy of the event listener.
+ * Here it is once. The server snapshot is null, which is the honest answer:
+ * consent lives in `localStorage` and the server has never seen it.
+ *
+ * `subscribe` listens for the same custom event `choose()` already dispatches,
+ * so accepting in the banner updates every reader in the same tick.
+ */
+export function useConsent(): "all" | "essential" | null {
+  return useSyncExternalStore(
+    (cb) => {
+      window.addEventListener("biserite:consent", cb);
+      window.addEventListener("storage", cb);
+      return () => {
+        window.removeEventListener("biserite:consent", cb);
+        window.removeEventListener("storage", cb);
+      };
+    },
+    () => {
+      const v = localStorage.getItem("biserite-consent");
+      return v === "all" || v === "essential" ? v : null;
+    },
+    () => null
+  );
+}
+
+/** Whether the page is scrolled past `y`. Server assumes not. */
+export function useScrolledPast(y: number): boolean {
+  return useSyncExternalStore(
+    (cb) => {
+      window.addEventListener("scroll", cb, { passive: true });
+      return () => window.removeEventListener("scroll", cb);
+    },
+    () => window.scrollY > y,
+    () => false
+  );
+}
+
+/** A sessionStorage flag, read live. Server assumes it is unset. */
+export function useSessionFlag(key: string): boolean {
+  return useSyncExternalStore(
+    (cb) => {
+      window.addEventListener("storage", cb);
+      return () => window.removeEventListener("storage", cb);
+    },
+    () => sessionStorage.getItem(key) === "1",
+    () => false
+  );
+}

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Clock } from "lucide-react";
-import { SiteHeader } from "@/components/site/site-header";
-import { Footer } from "@/components/site/footer";
+import { MentyHeader } from "@/components/menty/header";
+import { MentyFooter } from "@/components/menty/footer";
 import { ARTICLES } from "@/lib/articles";
 import { Eyebrow } from "@/components/landing/shared";
 
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function ArticlesPage() {
   return (
     <>
-      <SiteHeader />
+      <MentyHeader />
       <main className="aura flex-1 px-6 pt-14 pb-24">
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-col items-center text-center">
@@ -58,7 +58,7 @@ export default function ArticlesPage() {
           </div>
         </div>
       </main>
-      <Footer />
+      <MentyFooter />
     </>
   );
 }
