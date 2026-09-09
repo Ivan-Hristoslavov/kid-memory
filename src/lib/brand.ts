@@ -39,22 +39,42 @@ export const BRAND = {
  *
  * People shop for gifts by recipient and by occasion, not by product type —
  * somebody arrives knowing it is their mother's birthday, not knowing they
- * want a mug. `href` stays a plain string because the collection routes are
- * built in a later pass; nothing renders a dead link until they exist.
+ * want a mug. The reference runs these as eight circular photographs directly
+ * under the hero, so each carries its own image; `id` becomes the collection
+ * route once those pages exist.
  */
 export const GIFT_AUDIENCES = [
-  { id: "for-her", label: "За нея" },
-  { id: "for-him", label: "За него" },
-  { id: "for-couples", label: "За двойки" },
-  { id: "for-parents", label: "За родители" },
-  { id: "for-kids", label: "За деца" },
+  { id: "for-her", label: "За нея", image: "/moments/for-her.webp" },
+  { id: "for-him", label: "За него", image: "/moments/for-him.webp" },
+  { id: "for-couples", label: "За двойки", image: "/moments/for-couples.webp" },
+  { id: "for-parents", label: "За родители", image: "/moments/for-parents.webp" },
+  { id: "for-kids", label: "За деца", image: "/moments/for-kids.webp" },
+  { id: "birthday", label: "Рожден ден", image: "/moments/birthday.webp" },
+  { id: "anniversary", label: "Годишнина", image: "/moments/anniversary.webp" },
+  { id: "just-because", label: "Просто така", image: "/moments/just-because.webp" },
 ] as const;
 
+/**
+ * The occasion tiles. The reference runs these as a six-up row of photographs
+ * under the bestsellers, in this order.
+ */
 export const GIFT_OCCASIONS = [
-  { id: "birthday", label: "Рожден ден" },
-  { id: "anniversary", label: "Годишнина" },
-  { id: "new-baby", label: "Ново бебе" },
-  { id: "thank-you", label: "Благодаря" },
-  { id: "love", label: "Обичам те" },
-  { id: "just-because", label: "Просто така" },
+  { id: "birthday", label: "Рожден ден", image: "/moments/birthday.webp" },
+  { id: "anniversary", label: "Годишнина", image: "/moments/anniversary.webp" },
+  { id: "new-baby", label: "Ново бебе", image: "/moments/new-baby.webp" },
+  { id: "best-friend", label: "За най-добър приятел", image: "/moments/best-friend.webp" },
+  { id: "thank-you", label: "Благодаря", image: "/moments/thank-you.webp" },
+  { id: "love", label: "Обичам те", image: "/moments/love.webp" },
 ] as const;
+
+/**
+ * Lifestyle photography that is not tied to a category or an occasion — the
+ * personalisation banner, the editorial block and anywhere a warm scene is
+ * needed. Kept here so no component holds an image path of its own.
+ */
+export const LIFESTYLE = {
+  personalize: "/moments/personalize.webp",
+  giftWrap: "/moments/gift-wrap.webp",
+  family: "/moments/family.webp",
+  packaging: "/moments/packaging.webp",
+} as const;
