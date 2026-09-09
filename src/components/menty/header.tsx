@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { SearchDialog } from "./search-dialog";
 import { ThemeToggle } from "./theme-toggle";
@@ -27,6 +28,32 @@ const NAV = [
 export function MentyHeader() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const pathname = usePathname();
+
+  /**
+   * At the very top the header sits on the hero's own sand and needs no line;
+   * once the page moves under it, it has to separate itself from whatever is
+   * passing beneath.
+   *
+   * Watched with an IntersectionObserver on a sentinel rather than by reading
+   * `window.scrollY`. Which element actually scrolls depends on the page's
+   * overflow — here `html` is `height: 100%` and the body overflows it — and a
+   * scrollY read silently returns 0 whenever it guesses the wrong one. The
+   * observer just asks whether the top of the document is still on screen,
+   * which is true regardless of who is doing the scrolling.
+   */
+  const sentinel = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const el = sentinel.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setScrolled(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   /**
    * The basket lives in localStorage, so the server has no idea what is in it.
    * Subscribing through useSyncExternalStore with a server snapshot of zero
@@ -45,7 +72,14 @@ export function MentyHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
+    <>
+      {/* Zero-height marker at the very top of the document. */}
+      <div ref={sentinel} aria-hidden className="absolute top-0 h-px w-full" />
+      <header
+      className={`sticky top-0 z-50 bg-background/90 backdrop-blur-md transition-shadow duration-300 ${
+        scrolled ? "border-b border-border shadow-sm" : "border-b border-transparent"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:h-20 sm:px-6 lg:px-8">
         <Link
           href="/"
@@ -57,15 +91,29 @@ export function MentyHeader() {
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-8 lg:flex">
-          {NAV.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="relative py-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
-            >
-              {l.label}
-            </Link>
-          ))}
+          {NAV.map((l) => {
+            const active = pathname === l.href || pathname.startsWith(`${l.href}/`);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={active ? "page" : undefined}
+                className={`relative py-2 text-sm transition-colors ${
+                  active
+                    ? "font-semibold text-foreground"
+                    : "font-medium text-foreground/70 hover:text-foreground"
+                }`}
+              >
+                {l.label}
+                {/* A rule under the current section rather than a coloured
+                    pill — the page already tells you where you are, this only
+                    has to confirm it. */}
+                {active && (
+                  <span className="absolute -bottom-px left-0 h-0.5 w-full rounded-full bg-clay" />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="ml-auto flex items-center gap-1 lg:ml-0">
@@ -114,7 +162,12 @@ export function MentyHeader() {
                 <Link
                   href={l.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-2 py-3 text-base font-medium text-foreground/85 transition-colors hover:bg-muted"
+                  aria-current={pathname === l.href ? "page" : undefined}
+                  className={`block rounded-lg px-2 py-3 text-base transition-colors hover:bg-muted ${
+                    pathname === l.href
+                      ? "font-semibold text-foreground"
+                      : "font-medium text-foreground/85"
+                  }`}
                 >
                   {l.label}
                 </Link>
@@ -123,8 +176,9 @@ export function MentyHeader() {
           </ul>
         </nav>
       )}
-      <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
-    </header>
+        <SearchDialog open={searchOpen} onClose={() => setSearchOpen(false)} />
+      </header>
+    </>
   );
 }
 

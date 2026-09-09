@@ -23,9 +23,9 @@ export function ReviewForm() {
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="glass rounded-2xl p-10 text-center"
+        className="rounded-xl bg-sand p-10 text-center ring-1 ring-border"
       >
-        <span className="mx-auto grid size-14 place-items-center rounded-full bg-mint/60 text-foreground/70">
+        <span className="mx-auto grid size-14 place-items-center rounded-full bg-forest/10 text-forest">
           <CircleCheck className="size-7" />
         </span>
         <h2 className="mt-5 font-heading text-2xl font-bold">Благодарим ти! ❤️</h2>
@@ -37,7 +37,7 @@ export function ReviewForm() {
   }
 
   return (
-    <form action={action} className="glass space-y-6 rounded-2xl p-8">
+    <form action={action} className="space-y-6 rounded-xl bg-sand p-6 ring-1 ring-border sm:p-8">
       {/* rating */}
       <div className="space-y-2">
         <Label>Твоята оценка</Label>
@@ -56,8 +56,8 @@ export function ReviewForm() {
               <Star
                 className={`size-8 ${
                   n <= (hover || rating)
-                    ? "fill-amber-400 text-amber-400"
-                    : "fill-muted text-muted"
+                    ? "fill-clay text-clay"
+                    : "fill-border text-border"
                 }`}
               />
             </button>
@@ -72,7 +72,7 @@ export function ReviewForm() {
             id="authorName"
             name="authorName"
             placeholder="напр. Мария И."
-            className="h-12 rounded-2xl border-2"
+            className="h-12 rounded-lg"
           />
           {err("authorName") && (
             <p className="text-sm text-destructive">{err("authorName")}</p>
@@ -84,7 +84,7 @@ export function ReviewForm() {
             id="city"
             name="city"
             placeholder="напр. София"
-            className="h-12 rounded-2xl border-2"
+            className="h-12 rounded-lg"
           />
         </div>
       </div>
@@ -95,8 +95,8 @@ export function ReviewForm() {
           id="text"
           name="text"
           rows={5}
-          placeholder="Как ти се стори постерът? Хареса ли се на детето?"
-          className="rounded-2xl border-2"
+          placeholder="Как мина поръчката? Хареса ли се подаръкът?"
+          className="rounded-lg"
         />
         {err("text") && <p className="text-sm text-destructive">{err("text")}</p>}
       </div>
@@ -108,7 +108,7 @@ export function ReviewForm() {
           name="orderNumber"
           inputMode="numeric"
           placeholder="напр. 128"
-          className="h-12 rounded-2xl border-2 sm:max-w-48"
+          className="h-12 rounded-lg sm:max-w-48"
         />
         <p className="text-xs text-muted-foreground">
           Помага ни да отбележим отзива като потвърдена покупка.
@@ -116,7 +116,7 @@ export function ReviewForm() {
       </div>
 
       {state.error && (
-        <p className="rounded-2xl bg-destructive/10 p-4 text-sm text-destructive">
+        <p className="rounded-lg bg-destructive/10 p-4 text-sm text-destructive">
           {state.error}
         </p>
       )}
@@ -125,7 +125,7 @@ export function ReviewForm() {
         type="submit"
         size="lg"
         disabled={pending}
-        className="h-13 w-full rounded-full text-base shadow-lg shadow-primary/25"
+        className="h-12 w-full rounded-lg text-sm font-semibold"
       >
         {pending ? (
           <>
@@ -136,7 +136,7 @@ export function ReviewForm() {
         )}
       </Button>
       <p className="text-center text-xs text-muted-foreground">
-        Отзивите се публикуват след преглед. Не публикувай лични данни на детето.
+        Отзивите се публикуват след преглед. Не публикувай лични данни.
       </p>
     </form>
   );
