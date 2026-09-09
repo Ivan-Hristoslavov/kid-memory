@@ -24,18 +24,21 @@ const NAV = [
 
 export function MentyHeader() {
   const [open, setOpen] = useState(false);
-  const count = useCart((s) => cartCount(s.lines));
-
-  // The basket lives in localStorage, so the server renders a count of zero and
-  // the client may know better. Subscribing to the store's own hydration is the
-  // honest way to say "not known yet": the server snapshot is always false, so
-  // the first paint matches on both sides, and the badge appears the moment the
-  // persisted state is actually available. A mount flag set in an effect would
-  // do the same thing one cascading render later.
-  const hydrated = useSyncExternalStore(
-    useCart.persist.onFinishHydration,
-    useCart.persist.hasHydrated,
-    () => false
+  /**
+   * The basket lives in localStorage, so the server has no idea what is in it.
+   * Subscribing through useSyncExternalStore with a server snapshot of zero
+   * makes that explicit: the first paint matches on both sides, and the badge
+   * appears as soon as the client store is readable.
+   *
+   * Deliberately the core store API rather than `useCart.persist` — the persist
+   * handle is not attached during prerendering, which failed the build with
+   * "Cannot read properties of undefined (reading 'onFinishHydration')".
+   * `subscribe` and `getState` always exist.
+   */
+  const count = useSyncExternalStore(
+    useCart.subscribe,
+    () => cartCount(useCart.getState().lines),
+    () => 0
   );
 
   return (
@@ -71,7 +74,7 @@ export function MentyHeader() {
           </IconButton>
           <IconButton label="Количка" className="relative">
             <ShoppingBag className="size-5" />
-            {hydrated && count > 0 && (
+            {count > 0 && (
               <span className="absolute -right-0.5 -top-0.5 grid min-w-[1.15rem] place-items-center rounded-full bg-clay px-1 text-[0.65rem] font-bold leading-[1.15rem] text-ivory">
                 {count}
               </span>
