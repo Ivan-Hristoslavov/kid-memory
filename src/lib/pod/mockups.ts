@@ -177,9 +177,71 @@ export const MOCKUPS: Readonly<Record<string, readonly Mockup[]>> = {
   ],
 };
 
-/** Every view of one blank, front first. Empty when they supply no mock-up. */
+
+/**
+ * Our own garment renders, used instead of the supplier's where we have one.
+ *
+ * The supplier's files are 458px photographs of a creased shirt. Upscaling them
+ * made the creases sharper, not the shirt better, and a product page selling a
+ * premium tee cannot open on a crumpled one. These are generated clean and
+ * pressed at 1024px, then processed into the same greyscale-over-colour format
+ * — see `scripts/mockup-alpha.ts` — so nothing else in the compositor changes.
+ *
+ * ── THE PRINT RECTANGLE IS OURS TOO, AND THAT IS THE POINT TO BE CAREFUL AT ──
+ * On a supplier render the rectangle is theirs, derived from their editor's own
+ * layout. On ours it is a decision: measured from the silhouette, the torso
+ * runs x 0.202–0.779, and the field below is 62% of that width starting clear
+ * of the collar. It is a PICTURE of where the print goes.
+ *
+ * What gets manufactured is the millimetre figure from `printAreaMm`, which
+ * still comes from the supplier's canvas index and is unaffected. If those two
+ * ever disagree about proportions — and at 377 x 571 mm the supplier's number
+ * is the one under suspicion, see docs/printondemand-panel.md — the millimetres
+ * win and this rectangle is what should be adjusted.
+ */
+/** Their view names, so ours line up with the supplier's in the switcher. */
+const F = "Отпред";
+const B = "Отзад";
+
+const OWN_TEE_PRINT = { x: 0.312, y: 0.322, width: 0.357, height: 0.477 };
+
+const own = (image: string, print = OWN_TEE_PRINT): Mockup => ({
+  name: F,
+  image,
+  aspect: 1,
+  print,
+});
+
+/**
+ * Which blanks get one, and which do not.
+ *
+ * A zip hoodie has a zip and a crop top is cropped: substituting a plain render
+ * for either would show the customer a garment that is not the one arriving.
+ * Only shapes that genuinely match are replaced.
+ */
+const OWN_MOCKUPS: Readonly<Record<string, readonly Mockup[]>> = {
+  c: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],
+  ce: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],
+  iidf: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],
+  gddfd: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],
+  ge: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],
+  ca: [own("/mockups/own-hoodie-front.png", { x: 0.312, y: 0.4, width: 0.357, height: 0.33 })],
+  eaccd: [own("/mockups/own-hoodie-front.png", { x: 0.312, y: 0.4, width: 0.357, height: 0.33 })],
+  cj: [own("/mockups/own-sweatshirt-front.png", { x: 0.312, y: 0.35, width: 0.357, height: 0.34 })],
+};
+
+/**
+ * Every view of one blank, front first.
+ *
+ * Ours lead where they exist, with the supplier's kept behind them: their side
+ * and back views are still the only ones for a mug's handle or a sleeve, and a
+ * customer turning the product round should not run out of views.
+ */
 export function mockupsFor(uid: string | null | undefined): readonly Mockup[] {
-  return (uid && MOCKUPS[uid]) || [];
+  if (!uid) return [];
+  const mine = OWN_MOCKUPS[uid] ?? [];
+  const theirs = MOCKUPS[uid] ?? [];
+  return mine.length ? [...mine, ...theirs.slice(1)] : theirs;
 }
 
 /** The front view — the one a product card and the editor open on. */
