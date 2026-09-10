@@ -269,6 +269,43 @@ export const shopCheckoutSchema = z
 
 export type ShopCheckoutInput = z.infer<typeof shopCheckoutSchema>;
 
+/**
+ * A personalised book, as posted by the wizard.
+ *
+ * The photo keys are storage keys minted by /api/upload, never files — the
+ * upload has already normalised, stripped EXIF and refused unusable images by
+ * the time this runs.
+ */
+export const bookInputSchema = z.object({
+  characters: z
+    .array(
+      z.object({
+        name: z.string().trim().min(2, "Въведи име").max(40),
+        age: z.number().int().min(0).max(17).nullable().optional(),
+        gender: z.enum(["BOY", "GIRL"]).nullable().optional(),
+        description: z.string().trim().max(600).optional(),
+        interests: z.string().trim().max(120).optional(),
+        favouriteToy: z.string().trim().max(80).optional(),
+        favouriteAnimal: z.string().trim().max(80).optional(),
+        photoKey: z.string().min(1, "Качи снимка").max(200),
+      })
+    )
+    .min(1, "Добави поне едно дете")
+    .max(4, "Най-много четири деца"),
+  /** Only meaningful with more than one child; the prompt actually spends it. */
+  relationships: z.string().trim().max(500).optional(),
+  adventure: z.string().min(1, "Избери приключение").max(40),
+  customIdea: z.string().trim().max(800).optional(),
+  ageGroup: z.enum(["AGE_3_5", "AGE_5_7", "AGE_7_9"]),
+  mood: z.enum(["FUNNY", "MAGICAL", "ADVENTUROUS", "CALM", "EDUCATIONAL"]),
+  mustInclude: z.array(z.string().trim().max(40)).max(10).default([]),
+  style: z.string().min(1).max(40),
+  dedication: z.string().trim().max(240).optional(),
+  leadEmail: z.string().trim().email().max(120).optional().or(z.literal("")),
+});
+
+export type BookInput = z.infer<typeof bookInputSchema>;
+
 export const adminStatusSchema = z.object({
   orderId: z.string().cuid(),
   status: z.enum([

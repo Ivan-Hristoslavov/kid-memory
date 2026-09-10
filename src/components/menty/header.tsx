@@ -22,6 +22,7 @@ const NAV = [
   { href: "/produkti", label: "Продукти" },
   { href: "/za-povoda", label: "За повода" },
   { href: "/personalizirani", label: "Персонализирани" },
+  { href: "/prikazka", label: "Детска книжка" },
   { href: "/biznes-podaratsi", label: "Бизнес подаръци" },
 ];
 

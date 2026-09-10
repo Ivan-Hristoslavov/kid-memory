@@ -44,7 +44,7 @@ export function Avatar({ name, className = "size-11" }: { name: string; classNam
     .toUpperCase();
   return (
     <span
-      className={`grid ${className} shrink-0 place-items-center rounded-full bg-secondary font-heading text-sm font-bold text-foreground/70 ring-1 ring-border`}
+    className={`grid ${className} shrink-0 place-items-center rounded-full bg-secondary text-sm font-bold text-foreground/70 ring-1 ring-border`}
     >
       {initials}
     </span>

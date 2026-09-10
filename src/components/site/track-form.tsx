@@ -95,7 +95,7 @@ export function TrackForm({ defaultOrderNumber }: { defaultOrderNumber?: string 
             {state.order.total && (
               <div className="flex justify-between gap-4">
                 <dt className="text-muted-foreground">За плащане на куриера</dt>
-                <dd className="font-heading text-base font-extrabold">
+        <dd className="text-base font-extrabold">
                   {state.order.total}
                 </dd>
               </div>

@@ -51,7 +51,7 @@ export function CookieConsent() {
                 <Cookie className="size-5" />
               </span>
               <div>
-                <p className="font-heading font-bold">Използваме бисквитки</p>
+        <p className="font-bold">Използваме бисквитки</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Задължителните са нужни, за да работи сайтът. С твое съгласие ползваме и
                   анонимна статистика и рекламни бисквитки.{" "}

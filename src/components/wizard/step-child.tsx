@@ -251,7 +251,7 @@ export function StepChild() {
                 </button>
               </div>
               <div className="min-w-0">
-                <p className="font-heading font-bold text-primary">Снимката е готова ✓</p>
+        <p className="font-bold text-primary">Снимката е готова ✓</p>
                 {subject.max > 1 && (
                   <p className="text-sm text-muted-foreground">
                     Ако на снимката има още някой — добави го по-долу.
@@ -311,7 +311,7 @@ export function StepChild() {
                 )}
               </motion.span>
               <div>
-                <p className="font-heading font-bold">
+        <p className="font-bold">
                   {uploading
                     ? "Качваме снимката..."
                     : dragActive
@@ -338,7 +338,7 @@ export function StepChild() {
                 className="rounded-xl border-2 border-border bg-card/60 p-5"
               >
                 <div className="mb-4 flex items-center justify-between">
-                  <span className="inline-flex items-center gap-2 font-heading font-bold">
+          <span className="inline-flex items-center gap-2 font-bold">
                     <span className="grid size-7 place-items-center rounded-full bg-secondary text-foreground/70">
                       <SubjectIcon template={template} />
                     </span>

@@ -89,7 +89,7 @@ export default async function SuccessPage({
                 : "Получихме твоята поръчка ❤️"}
           </h1>
           {orderNumber && (
-            <p className="mt-3 font-heading text-lg font-bold text-primary">
+      <p className="mt-3 text-lg font-bold text-primary">
               Поръчка №{orderNumber}
             </p>
           )}
@@ -99,7 +99,7 @@ export default async function SuccessPage({
               settled card order is blocked on nothing. */}
           {awaitingPayment ? (
             <div className="mt-7 rounded-xl border-2 border-primary/40 bg-primary/5 p-5 text-left">
-              <p className="flex items-center gap-2 font-heading font-bold">
+        <p className="flex items-center gap-2 font-bold">
                 <Clock className="size-5 text-primary" />
                 Обработваме плащането
               </p>
@@ -110,7 +110,7 @@ export default async function SuccessPage({
             </div>
           ) : isPaid ? (
             <div className="mt-7 rounded-xl border-2 border-emerald-500/40 bg-emerald-500/5 p-5 text-left">
-              <p className="flex items-center gap-2 font-heading font-bold">
+        <p className="flex items-center gap-2 font-bold">
                 <ShieldCheck className="size-5 text-emerald-600" />
                 Плащането е прието
               </p>
@@ -122,7 +122,7 @@ export default async function SuccessPage({
             </div>
           ) : (
             <div className="mt-7 rounded-xl border-2 border-primary/40 bg-primary/5 p-5 text-left">
-              <p className="flex items-center gap-2 font-heading font-bold">
+        <p className="flex items-center gap-2 font-bold">
                 <Mail className="size-5 text-primary" />
                 Провери пощата си сега
               </p>
@@ -224,7 +224,7 @@ function Step({
         <Icon className="size-5" />
       </span>
       <span>
-        <span className="block font-heading font-bold">{title}</span>
+    <span className="block font-bold">{title}</span>
         <span className="block text-sm text-muted-foreground">{children}</span>
       </span>
     </li>

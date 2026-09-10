@@ -126,7 +126,7 @@ function Step({
         <Icon className="size-5" />
       </span>
       <span>
-        <span className="block font-heading font-bold">{title}</span>
+    <span className="block font-bold">{title}</span>
         <span className="block text-sm text-muted-foreground">{children}</span>
       </span>
     </li>

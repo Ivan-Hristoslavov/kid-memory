@@ -63,10 +63,10 @@ export default async function OrderPage({
       <MentyHeader />
       <main className="bg-sand flex-1 pt-12 pb-20">
         <div className="mx-auto max-w-5xl px-6">
-          <h1 className="text-center font-heading text-3xl font-extrabold tracking-tight sm:text-4xl">
+          <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
             Последна стъпка до постера на {order.childName}
           </h1>
-          <p className="mt-3 text-center text-muted-foreground">
+          <p className="mt-3 text-muted-foreground">
             {methods.includes("STRIPE")
               ? "Плащаш с карта или при доставка — както ти е удобно."
               : "Плащане при доставка — без карта, без риск."}

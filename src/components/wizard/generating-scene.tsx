@@ -158,7 +158,7 @@ export function GeneratingScene({
               </span>
               <span
                 className={`text-sm ${
-                  active ? "font-heading font-bold" : "text-muted-foreground"
+         active ? "font-bold": "text-muted-foreground"
                 }`}
               >
                 {p}

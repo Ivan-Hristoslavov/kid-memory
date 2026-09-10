@@ -39,13 +39,13 @@ export default async function MyPostersPage({
       <MentyHeader />
       <main className="bg-sand flex-1 px-6 pt-14 pb-24">
         <div className="mx-auto max-w-3xl">
-          <h1 className="text-center font-heading text-4xl font-extrabold tracking-tight">
+          <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
             Моите постери
           </h1>
 
           {!session ? (
             <>
-              <p className="mx-auto mt-4 max-w-lg text-center text-muted-foreground">
+              <p className="mt-3 max-w-lg text-muted-foreground">
                 {t
                   ? "Връзката е изтекла или вече не е валидна. Поискай нова."
                   : "Въведи имейла, с който си поръчал. Ще ти изпратим връзка — без парола."}
@@ -82,7 +82,7 @@ export default async function MyPostersPage({
                       )}
 
                       <div className="min-w-0 flex-1">
-                        <p className="font-heading font-bold">
+            <p className="font-bold">
                           Постерът на {o.childName}
                         </p>
                         <p className="text-sm text-muted-foreground">
@@ -121,7 +121,7 @@ export default async function MyPostersPage({
               )}
 
               <div className="bg-card ring-1 ring-border mt-10 rounded-xl p-7 text-center">
-                <p className="font-heading text-lg font-bold">
+        <p className="text-lg font-bold">
                   Догодина думичките ще са други
                 </p>
                 <p className="mt-2 text-sm text-muted-foreground">

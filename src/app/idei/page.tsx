@@ -20,12 +20,12 @@ export default function ArticlesPage() {
       <MentyHeader />
       <main className="bg-sand flex-1 px-6 pt-14 pb-24">
         <div className="mx-auto max-w-5xl">
-          <div className="flex flex-col items-center text-center">
+          <div className="max-w-xl">
             <Eyebrow>Идеи и съвети</Eyebrow>
             <h1 className="mt-5 font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">
               Подаръци, които се пазят
             </h1>
-            <p className="mt-4 max-w-xl text-lg text-muted-foreground">
+            <p className="mt-4 text-lg text-muted-foreground">
               За 1 юни, за баба и дядо, за рожден ден — и малко за думичките, които
               изчезват твърде бързо.
             </p>

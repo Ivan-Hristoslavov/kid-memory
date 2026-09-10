@@ -149,7 +149,7 @@ export default async function ArticlePage({
                     href={`/idei/${o.slug}`}
                     className="bg-card ring-1 ring-border lift block rounded-xl p-5"
                   >
-                    <p className="font-heading font-bold leading-snug">{o.title}</p>
+          <p className="font-bold leading-snug">{o.title}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{o.excerpt}</p>
                   </Link>
                 ))}

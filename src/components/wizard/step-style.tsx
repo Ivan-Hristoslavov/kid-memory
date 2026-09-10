@@ -23,7 +23,7 @@ export function StepStyle() {
     <Card className="bg-card ring-1 ring-border overflow-hidden rounded-xl border-none">
       <CardContent className="space-y-6 p-8">
         <div className="rounded-xl bg-secondary p-4 text-center">
-          <p className="flex items-center justify-center gap-2 font-heading font-bold">
+      <p className="flex items-center justify-center gap-2 font-bold">
             <Palette className="size-4 text-primary" />
             Как да изглежда светът на {subjectName}?
           </p>

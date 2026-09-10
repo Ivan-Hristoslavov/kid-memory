@@ -69,7 +69,7 @@ export function Wizard({ initialTemplate }: { initialTemplate: TemplateId | null
           {Array.from({ length: STEP_COUNT }, (_, i) => (
             <div key={i} className="flex flex-1 items-center last:flex-none">
               <div
-                className={`grid size-9 shrink-0 place-items-center rounded-full font-heading text-sm font-bold transition-colors ${
+        className={`grid size-9 shrink-0 place-items-center rounded-full text-sm font-bold transition-colors ${
                   i <= step
                     ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                     : "bg-muted text-muted-foreground"
@@ -87,7 +87,7 @@ export function Wizard({ initialTemplate }: { initialTemplate: TemplateId | null
             </div>
           ))}
         </div>
-        <h1 className="mt-8 text-center font-heading text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <h1 className="mt-8 text-center font-heading text-3xl font-bold tracking-tight sm:text-4xl">
           {stepTitles[step]}
         </h1>
       </div>

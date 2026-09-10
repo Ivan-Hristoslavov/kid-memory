@@ -67,7 +67,7 @@ export function Transformation() {
                   <span className="block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {i + 1}. {f.label}
                   </span>
-                  <span className="mt-1 block truncate font-heading text-base font-bold">
+                  <span className="mt-1 block truncate text-base font-semibold">
                     {f.value}
                   </span>
                   <span className="block text-xs text-muted-foreground">{f.hint}</span>

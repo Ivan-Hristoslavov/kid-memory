@@ -118,7 +118,7 @@ function SubjectLines({
 
   return (
     <div className="rounded-xl border-2 border-border bg-card/60 p-5">
-      <p className="mb-4 inline-flex items-center gap-2 font-heading font-bold">
+    <p className="mb-4 inline-flex items-center gap-2 font-bold">
         <span className="grid size-7 place-items-center rounded-full bg-secondary text-foreground/70">
           <MessageSquareHeart className="size-4" />
         </span>
@@ -252,7 +252,7 @@ function SubjectLines({
                 }`}
               >
                 <div className="min-w-0">
-                  <span className="font-heading font-bold">„{l.text}“</span>
+          <span className="font-bold">„{l.text}“</span>
                   {l.sub ? (
                     <span className="ml-2 text-sm text-muted-foreground">{l.sub}</span>
                   ) : null}

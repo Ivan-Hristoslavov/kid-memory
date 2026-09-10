@@ -184,7 +184,7 @@ export function CheckoutForm({
                       <Check className="size-3" />
                     </span>
                   )}
-                  <p className="font-heading font-bold">{p.name}</p>
+          <p className="font-bold">{p.name}</p>
                   <p className="mt-1 text-sm text-muted-foreground">{p.description}</p>
                   <p className="mt-2 font-heading text-2xl font-extrabold">
                     {formatPrice(p.priceEUR)}
@@ -399,10 +399,10 @@ export function CheckoutForm({
                     <Icon className="size-5" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block font-heading font-bold">{a.name}</span>
+          <span className="block font-bold">{a.name}</span>
                     <span className="block text-sm text-muted-foreground">{a.description}</span>
                   </span>
-                  <span className="shrink-0 font-heading font-bold">
+          <span className="shrink-0 font-bold">
                     +{formatPrice(addonPriceEUR(id, product))}
                   </span>
                 </label>
@@ -423,7 +423,7 @@ export function CheckoutForm({
                   <CreditCard className="size-5" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block font-heading font-bold">
+          <span className="block font-bold">
                     {PAYMENT_LABELS.STRIPE.name}
                   </span>
                   <span className="block text-sm text-muted-foreground">
@@ -464,7 +464,7 @@ export function CheckoutForm({
                       <Icon className="size-5" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block font-heading font-bold">{m.name}</span>
+            <span className="block font-bold">{m.name}</span>
                       <span className="block text-sm text-muted-foreground">
                         {m.description}
                       </span>
@@ -528,7 +528,7 @@ export function CheckoutForm({
               </div>
             )}
             <div className="flex items-center justify-between border-t border-border pt-3">
-              <span className="font-heading text-lg font-bold">Общо</span>
+        <span className="text-lg font-bold">Общо</span>
               <span className="font-heading text-2xl font-extrabold">
                 {formatPrice(total)}
               </span>
