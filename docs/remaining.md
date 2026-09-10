@@ -5,15 +5,15 @@ between the shop and its first real order.
 
 ## A. Blocks the first sale
 
-**1. No print file is ever produced.**
-A basket line stores a `Placement` — the artwork's centre, scale and feather as
-fractions — deliberately, so the print can be re-rendered from the original
-upload at full resolution rather than from the 1600px screen copy. Nothing
-renders it. There is no `lib/print`, and `artworkUrl` appears only in the POD
-types and the product panel. Until this exists there is nothing to hand a
-printer, whatever else works.
+**1. ~~No print file is ever produced.~~ Done.**
+`lib/print/render.ts` produces a PNG at the print area's true millimetre size at
+300 DPI, re-rendered from the original upload rather than from the preview.
+Lettering is converted to outlines, because librsvg ignores `@font-face` and the
+Cyrillic would be the first thing to fall back. `/admin/print/[lineId]`
+downloads it behind the existing admin auth.
 
-**2. Nothing reaches the printer.**
+**2. Nothing reaches the printer.** *(Half-open: the file now exists, the
+automatic hand-off does not.)*
 `activePodProvider()` and `createOrder()` are called from nowhere outside
 `lib/pod` itself. Checkout writes the order to our database and stops. Even
 wired up it would fail: `createOrder` needs a numeric `product_id` that already
@@ -40,14 +40,18 @@ order settles it.
 **6. Both API tokens are still live.**
 PrintFactory and printondemand.bg were both pasted in plain text. Rotate them.
 
-**7. Forty-six commits exist on one machine.**
-Nothing is pushed. Every design, every mock-up, the whole restructure.
+**7. ~~Forty-six commits exist on one machine.~~ Done.**
+Forty-eight commits merged to `main` and pushed. Work continues on
+`launch-prep`.
 
-**8. No production build has been run.**
-The dev server has been up throughout, and `next build` against a running dev
-server corrupts `.next`. Stop it, build, and confirm — `dynamicParams = false`
-in particular only takes effect in a production build, so the 404s for dead
-product URLs are unverified.
+**8. ~~No production build has been run.~~ Done.**
+Builds clean, 216 product pages prerendered, and `dynamicParams = false`
+verified against a production server: `/produkt/photo-puzzle-a4` and any other
+dead id return 404, live ones 200.
+
+Worth knowing for next time: prerendering exhausts the Supabase session pooler
+(`pool_size: 15`) and the log fills with `EMAXCONNSESSION`. The build still
+succeeds. Port 6543, the transaction pooler, is the fix.
 
 ## C. Half-built
 
