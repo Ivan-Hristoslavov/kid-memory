@@ -24,12 +24,23 @@ export const cartLineInput = z.object({
   quantity: z.number().int().min(1).max(20),
   variants: z.record(z.string().max(40), z.string().max(60)).default({}),
   photoKey: z.string().max(200).optional(),
-  /** Where the photo sits in the print area. Bounded so a posted value
-   *  cannot ask the print renderer for an absurd transform. */
+  /**
+   * Where the photo sits in the print area.
+   *
+   * x and y are the photo's CENTRE as a fraction of the print window, and that
+   * centre legitimately leaves 0..1 once the photo is larger than the window:
+   * panning a 3x zoom into a corner puts it at roughly -1.4 or 2.4. Bounding
+   * these to 0..1 — as this first did — would have silently dropped the line
+   * of any customer who zoomed in and moved the crop to an edge.
+   *
+   * The bound is therefore wide enough for any legal crop and narrow enough
+   * that a hand-edited value cannot ask the print renderer for something
+   * absurd. `scale` matches the slider's own range.
+   */
   placement: z
     .object({
-      x: z.number().min(0).max(1),
-      y: z.number().min(0).max(1),
+      x: z.number().min(-5).max(6),
+      y: z.number().min(-5).max(6),
       scale: z.number().min(1).max(3),
     })
     .optional(),

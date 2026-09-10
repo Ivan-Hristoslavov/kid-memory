@@ -32,17 +32,31 @@ export function PhotoPlacer({
     null
   );
 
+  /**
+   * How the photo is fitted, and how far past the window it then reaches.
+   *
+   * The mock-ups are square, so the window's on-screen aspect is just the print
+   * area's own width/height fractions. Whichever side of the photo is
+   * proportionally shorter is pinned to the window; the other overflows, and
+   * that overflow is what there is to pan.
+   *
+   * Computed before the callbacks because the pan clamp depends on it, and
+   * hooks cannot run after the `!area` early return below.
+   */
+  const cover = coverOf(natural, product.printArea, placement.scale);
+
   const move = useCallback(
-    (dxFraction: number, dyFraction: number) => {
+    (nextX: number, nextY: number) => {
       onChange({
         ...placement,
-        // Clamped so the photo can never be dragged out of the window and
-        // leave a blank corner in the print.
-        x: clamp(dxFraction, 0, 1),
-        y: clamp(dyFraction, 0, 1),
+        // Clamped against the ACTUAL overflow so no blank edge can enter the
+        // print. A flat 0..1 was wrong: at x = 0 the photo's centre sits on the
+        // window's left edge, leaving the right half empty.
+        x: clamp(nextX, ...panRange(cover.rx)),
+        y: clamp(nextY, ...panRange(cover.ry)),
       });
     },
-    [onChange, placement]
+    [onChange, placement, cover.rx, cover.ry]
   );
 
   useEffect(() => {
@@ -71,6 +85,7 @@ export function PhotoPlacer({
 
   const dpi = natural ? effectiveDpi(natural, area, placement.scale) : null;
   const lowRes = dpi !== null && dpi < MIN_PRINT_DPI;
+
 
   return (
     <div>
@@ -131,11 +146,18 @@ export function PhotoPlacer({
               })
             }
             style={{
+              // Sized to COVER the window, then scaled. Previously this had no
+              // width or height at all, only `min-w-full min-h-full`, so the
+              // photo rendered at its natural size — a 1536px image inside a
+              // 200px window, which is why scale 1 looked like a 700% zoom.
+              ...(cover.axis === "width"
+                ? { width: "100%", height: "auto" }
+                : { width: "auto", height: "100%" }),
               transform: `translate(-50%, -50%) scale(${placement.scale})`,
               left: `${placement.x * 100}%`,
               top: `${placement.y * 100}%`,
             }}
-            className="pointer-events-none absolute min-h-full min-w-full max-w-none object-cover"
+            className="pointer-events-none absolute max-w-none"
           />
         </div>
       </div>
@@ -148,7 +170,18 @@ export function PhotoPlacer({
           max={3}
           step={0.02}
           value={placement.scale}
-          onChange={(e) => onChange({ ...placement, scale: Number(e.target.value) })}
+          onChange={(e) => {
+            // Zooming OUT shrinks the pannable range, so a position that was
+            // legal at 2x can leave a blank edge at 1.2x. Re-clamp against the
+            // new range rather than only on drag.
+            const scale = Number(e.target.value);
+            const next = coverOf(natural, area, scale);
+            onChange({
+              scale,
+              x: clamp(placement.x, ...panRange(next.rx)),
+              y: clamp(placement.y, ...panRange(next.ry)),
+            });
+          }}
           aria-label="Мащаб на снимката"
           className="h-1 w-full flex-1 cursor-pointer appearance-none rounded-full bg-border accent-forest"
         />
@@ -176,6 +209,35 @@ export function PhotoPlacer({
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, v));
+}
+
+/**
+ * How far the photo's centre may travel and still cover the window.
+ *
+ * With the photo `r` times the window's width, it spans [x - r/2, x + r/2] in
+ * window units. Covering means x - r/2 <= 0 and x + r/2 >= 1, so the centre
+ * lives in [1 - r/2, r/2]. At r = 1 that collapses to exactly 0.5 — nothing to
+ * pan, which is correct, because at that size the photo fits precisely.
+ */
+function panRange(r: number): [number, number] {
+  if (r <= 1) return [0.5, 0.5];
+  return [1 - r / 2, r / 2];
+}
+
+/** Which side is pinned to the window, and the overflow on each axis. */
+function coverOf(
+  natural: { w: number; h: number } | null,
+  area: PrintArea | undefined,
+  scale: number
+): { axis: "width" | "height"; rx: number; ry: number } {
+  if (!natural || !area) return { axis: "width", rx: scale, ry: scale };
+  // The product mock-ups are square, so the window's rendered aspect is the
+  // ratio of the print area's own fractions.
+  const windowAspect = area.width / area.height;
+  const photoAspect = natural.w / natural.h;
+  return photoAspect > windowAspect
+    ? { axis: "height", rx: (photoAspect / windowAspect) * scale, ry: scale }
+    : { axis: "width", rx: scale, ry: (windowAspect / photoAspect) * scale };
 }
 
 /**

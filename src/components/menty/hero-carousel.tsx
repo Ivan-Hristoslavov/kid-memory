@@ -61,7 +61,13 @@ export function HeroCarousel() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-0"
           >
-            <Link href={slide.href} aria-label={slide.label}>
+            {/* `fill` measures against the nearest positioned ancestor, and a
+                bare <Link> is static — Next warns about exactly this. */}
+            <Link
+              href={slide.href}
+              aria-label={slide.label}
+              className="relative block h-full w-full"
+            >
               <Image
                 src={slide.image}
                 alt={slide.label}
