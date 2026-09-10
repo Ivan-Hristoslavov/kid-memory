@@ -23,6 +23,11 @@ import {
  * carrying a photograph a customer uploaded ten minutes ago, because that mug
  * is a product that does not exist in their catalogue yet. See the note in
  * `createOrder`.
+ *
+ * Their web panel CAN create one — it posts the artwork as a base64 data URL to
+ * `/v2/crt-spd`, a session-authenticated route outside `/api/*`. That is a
+ * bridge rather than a foundation, and `docs/printondemand-panel.md` records
+ * both how it works and why we should ask them to expose it properly first.
  * ─────────────────────────────────────────────────────────────────────────
  */
 export class PrintOnDemandProvider implements PodProvider {
