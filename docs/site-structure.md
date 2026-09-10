@@ -46,7 +46,9 @@ Every page answers exactly one question, and each question has one home.
 
 ```
 READY TO BUY          /dizaini           160 finished shirts, by category
-SOMETHING TO PERSONALISE  /produkti      the blanks, and the editor — the "Създай свой" button
+SOMETHING TO PERSONALISE  /produkti      27 products on nine shelves, the supplier's own
+                                         grouping and order — and the editor, reached by
+                                         the "Създай свой" button
 WHO / WHEN            /za-povoda         audiences and occasions, in two labelled sections
 ```
 
@@ -86,3 +88,18 @@ they are not in it.
 Three doors in, two own products, one B2B page. When something new is added, it
 answers one of the three questions or it is a product — and if it answers two,
 it belongs in whichever one a customer would say out loud.
+
+## The navigation, second pass
+
+"Продукти" as a bare word gave no hint that there are twenty-seven things behind
+it across nine shelves, so it read as vague and the range was invisible. It now
+opens a panel listing the shelves — tees, sweats, bottoms, headwear, drinkware,
+bags, stickers, packaging, our own — which are the supplier's own groups in the
+supplier's own order, so their catalogue and ours can be compared line by line.
+
+Four items, in the order somebody decides in: ready-made shirts, products, the
+occasion, the book. Plus one button, which is an action.
+
+On a phone the shelves are listed inline under "Продукти" rather than behind a
+second tap. A nested menu on a small screen is a place to get lost, and the list
+is short enough to simply show.

@@ -44,6 +44,45 @@ export type PersonalizationKind =
   | "DESIGN"
   | "EMBROIDERY";
 
+/**
+ * The shelf a product sits on, mirroring printondemand.bg's own catalogue.
+ *
+ * `ProductFamily` below is ours and stays — it drives the bestsellers rhythm
+ * and the older collection filters. This is the supplier's, and it exists
+ * because a customer browsing a print shop thinks in their terms: t-shirts,
+ * sweatshirts, headwear. Fourteen garments under one heading called "Дрехи" is
+ * not a catalogue, it is a pile, and that is what /produkti was.
+ *
+ * The order is theirs too, from `sort_client` — heavy oversized first, boxes
+ * last. Matching it means their page and ours can be compared line by line.
+ */
+export type ProductGroup =
+  | "TEES"
+  | "SWEATS"
+  | "BOTTOMS"
+  | "HEADWEAR"
+  | "DRINKWARE"
+  | "BAGS"
+  | "STICKERS"
+  | "PACKAGING"
+  | "OWN";
+
+export const PRODUCT_GROUPS: readonly {
+  id: ProductGroup;
+  label: string;
+  blurb: string;
+}[] = [
+  { id: "TEES", label: "Тениски и топове", blurb: "Мъжки, дамски, детски, овърсайз." },
+  { id: "SWEATS", label: "Суичъри и блузи", blurb: "С качулка, без качулка, с цип." },
+  { id: "BOTTOMS", label: "Долнища", blurb: "Анцузи и къси панталони." },
+  { id: "HEADWEAR", label: "Шапки", blurb: "С козирка, с мрежа, идиотка." },
+  { id: "DRINKWARE", label: "Чаши и бутилки", blurb: "Керамика, емайл, алуминий." },
+  { id: "BAGS", label: "Чанти", blurb: "Памучни торби за всеки ден." },
+  { id: "STICKERS", label: "Стикери", blurb: "Водоустойчиви, в три размера." },
+  { id: "PACKAGING", label: "Опаковка", blurb: "Подаръчни кутии с печат." },
+  { id: "OWN", label: "Наши изработки", blurb: "Постери и книжки, които правим сами." },
+];
+
 /** Broad grouping, used for collection pages and the bestsellers rhythm. */
 export type ProductFamily =
   | "DRINKWARE"
@@ -98,6 +137,8 @@ export interface MentyProduct {
   /** One line under the title on a product card. */
   blurb: string;
   family: ProductFamily;
+  /** The supplier-aligned shelf. See `ProductGroup`. */
+  group: ProductGroup;
 
   /**
    * Who manufactures and ships this.
@@ -209,6 +250,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Персонализирана чаша",
     blurb: "Керамична чаша със снимка и послание, отпечатана в България.",
     family: "DRINKWARE",
+    group: "DRINKWARE",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "bejdh",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/bejdh",
@@ -227,19 +269,35 @@ export const PRODUCTS: readonly MentyProduct[] = [
     personalization: ["PHOTO", "TEXT"],
     bestsellerRank: 1,
   },
-  // The magic mug is missing on purpose, not by oversight.
-  //
-  // printondemand.bg stocks one (uid `gehah`, 3.27 wholesale), but every image
-  // they have for it — the catalogue thumbnail and all three editor mock-ups —
-  // is the same plain white mug they use for the ordinary ceramic one. Two
-  // identical-looking cards three euro apart tell a customer nothing, and the
-  // rule this file opens with is that the picture has to match the parcel. It
-  // comes back the moment there is a photograph of the actual mug.
+  {
+    id: "magic-mug",
+    title: "Магическа чаша",
+    blurb:
+      "Черна отвън. Наливаш горещо и снимката се появява — после пак изчезва.",
+    family: "DRINKWARE",
+    group: "DRINKWARE",
+    supplier: "PRINTONDEMAND",
+    supplierProductCode: "gehah",
+    supplierUrl: "https://printondemand.bg/v2/catalog/create/gehah",
+    priceEUR: 16.99,
+    priceReferenceBGN: 32.9,
+    // Their only picture of it is the plain white mug they use for the ceramic
+    // one — the trick is that it is black until it is hot, and no photograph
+    // they hold shows that. Ours is the same render for now, with the blurb
+    // doing the explaining, because being absent from the catalogue is worse
+    // than being under-photographed. Replace on the first sample order.
+    images: ["/prints/mug.webp", "/supplier/bejdh.webp"],
+    printArea: { x: 0.2367, y: 0.3417, width: 0.5531, height: 0.3417, widthMm: 208, heightMm: 88 },
+    tags: ["for-her", "for-him", "birthday", "just-because", "love", "theme-birthday"],
+    variants: [{ label: "Цвят", options: ["Черна"], swatch: { "Черна": "#1B1B1B" } }],
+    personalization: ["PHOTO", "TEXT"],
+  },
   {
     id: "enamel-mug",
     title: "Емайлирано канче",
     blurb: "За похода, за градината, за кафето на терасата.",
     family: "DRINKWARE",
+    group: "DRINKWARE",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "hejg",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/hejg",
@@ -262,6 +320,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Алуминиева бутилка 500 мл",
     blurb: "Рециклиран алуминий, с име или снимка по избор.",
     family: "DRINKWARE",
+    group: "DRINKWARE",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "dagdf",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/dagdf",
@@ -287,6 +346,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Премиум тениска Stanley/Stella",
     blurb: "Унисекс тениска от органичен памук, колекция CREATOR.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "c",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/c",
@@ -351,6 +411,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Дамска тениска",
     blurb: "Приталена дамска тениска, над трийсет цвята.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ce",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ce",
@@ -412,6 +473,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Унисекс овърсайз тениска",
     blurb: "Свободна кройка, тежко памучно трико.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "iidf",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/iidf",
@@ -438,6 +500,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Овърсайз премиум хеви тениска",
     blurb: "Най-плътната ни тениска — плътен памук, който пада тежко.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gddfd",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gddfd",
@@ -464,6 +527,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Детска тениска",
     blurb: "От 1 до 15 години, с рисунката или снимката на детето.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ge",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ge",
@@ -503,6 +567,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Бебешко боди",
     blurb: "Подаръкът за новото бебе — с име и дата на раждане.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gdab",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gdab",
@@ -533,6 +598,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Кроп топ",
     blurb: "Къса дамска кройка с печат отпред или отзад.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ddejj",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ddejj",
@@ -559,6 +625,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Мъжки потник",
     blurb: "За лятото и за залата.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "de",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/de",
@@ -589,6 +656,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Дамски потник",
     blurb: "Лека дамска кройка с печат по избор.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gh",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gh",
@@ -618,6 +686,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Мъжка Polo риза",
     blurb: "Яка и копчета — за офиса и за фирмения подарък.",
     family: "APPAREL",
+    group: "TEES",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "dcc",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/dcc",
@@ -664,6 +733,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Унисекс суичър",
     blurb: "Класически суичър с качулка, печат или бродерия.",
     family: "APPAREL",
+    group: "SWEATS",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ca",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ca",
@@ -691,6 +761,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Унисекс блуза",
     blurb: "Суичър без качулка — тихият вариант на същия подарък.",
     family: "APPAREL",
+    group: "SWEATS",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "cj",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/cj",
@@ -717,6 +788,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Овърсайз суичър",
     blurb: "Широка кройка с връзки, в пет приглушени цвята.",
     family: "APPAREL",
+    group: "SWEATS",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "eaccd",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/eaccd",
@@ -746,6 +818,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Унисекс ватиран суичър с цип",
     blurb: "Ватиран, с цял цип и джобове.",
     family: "APPAREL",
+    group: "SWEATS",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gcjg",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gcjg",
@@ -771,6 +844,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Мъжки ватиран анцуг",
     blurb: "Комплект за зимата, с бродирано име по избор.",
     family: "APPAREL",
+    group: "BOTTOMS",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "eaij",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/eaij",
@@ -796,6 +870,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Къс панталон",
     blurb: "Летни шорти с печат отпред или отзад.",
     family: "APPAREL",
+    group: "BOTTOMS",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gdah",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gdah",
@@ -823,6 +898,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Памучна чанта",
     blurb: "100% памук, 37 × 41 см — за пазара и за книгите.",
     family: "ACCESSORIES",
+    group: "BAGS",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ebih",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ebih",
@@ -846,6 +922,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Унисекс шапка",
     blurb: "Класическа шапка с козирка, осем цвята.",
     family: "ACCESSORIES",
+    group: "HEADWEAR",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "debd",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/debd",
@@ -875,6 +952,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Унисекс шапка с мрежа",
     blurb: "Trucker кройка с дишащ гръб.",
     family: "ACCESSORIES",
+    group: "HEADWEAR",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "dchc",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/dchc",
@@ -897,6 +975,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Унисекс шапка идиотка",
     blurb: "Bucket шапка за лятото, с печат от двете страни.",
     family: "ACCESSORIES",
+    group: "HEADWEAR",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "djbh",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/djbh",
@@ -924,6 +1003,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Стикери със снимка",
     blurb: "Водоустойчиви стикери — за лаптопа, бутилката и тетрадката.",
     family: "ACCESSORIES",
+    group: "STICKERS",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "bbahe",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/bbahe",
@@ -942,6 +1022,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Подаръчна кутия",
     blurb: "Картонена кутия с печат — подаръкът пристига опакован.",
     family: "PACKAGING",
+    group: "PACKAGING",
     supplier: "PRINTONDEMAND",
     supplierProductCode: "bbfcc",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/bbfcc",
@@ -979,6 +1060,7 @@ export const OWN_PRODUCTS: readonly MentyProduct[] = [
     title: "Постер със снимка в рамка",
     blurb: "Илюстрован постер по твоя снимка, готов за стената.",
     family: "WALL",
+    group: "OWN",
     supplier: "OWN",
     supplierProductCode: null,
     supplierUrl: "",
@@ -1032,6 +1114,15 @@ export function bestsellers(): readonly MentyProduct[] {
 
 export function byFamily(family: ProductFamily): readonly MentyProduct[] {
   return ALL_PRODUCTS.filter((p) => p.family === family);
+}
+
+/** Everything on one shelf, in the supplier's own order. */
+export function byGroup(group: ProductGroup): readonly MentyProduct[] {
+  return ALL_PRODUCTS.filter((p) => p.group === group);
+}
+
+export function groupMeta(id: string) {
+  return PRODUCT_GROUPS.find((g) => g.id === id.toUpperCase());
 }
 
 /** Everything tagged for one audience or occasion id. */

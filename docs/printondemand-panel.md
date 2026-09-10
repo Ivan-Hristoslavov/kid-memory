@@ -144,6 +144,13 @@ VAT included, because the account is already in euro. Their own photograph of
 each blank is in `/public/supplier/<uid>.webp` rather than hot-linked from their
 S3.
 
+**Coverage is 28 of 28.** Every retail blank they stock is sold, in their own
+order and under their own grouping — the three sticker sizes as one product with
+a size axis, everything else one to one. The two that are not there are the DTF
+and UV DTF rolls: those are print media sold by the 60 cm x 100 m roll, priced
+per square metre, and nobody is giving one as a gift. They belong on the
+business page if anywhere.
+
 Reading it settled something the shop had wrong. The catalogue listed a photo
 puzzle, two keychains, printed socks and a waistpack. **printondemand.bg makes
 none of them** — they were PrintFactory items that survived the move, so the

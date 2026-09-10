@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { MentyHeader } from "@/components/menty/header";
 import { MentyFooter } from "@/components/menty/footer";
 import { ProductCard } from "@/components/menty/bestsellers";
-import { ALL_PRODUCTS, type ProductFamily } from "@/lib/shop/products";
+import Link from "next/link";
+import { PRODUCT_GROUPS, byGroup } from "@/lib/shop/products";
 import { BRAND } from "@/lib/brand";
 
 export const metadata: Metadata = {
@@ -14,38 +15,19 @@ export const metadata: Metadata = {
 /**
  * The catalogue.
  *
- * Grouped by family rather than presented as one long grid: somebody browsing
- * for a gift is choosing a KIND of thing first — something to drink from,
- * something to wear, something for the wall — and a flat grid of a hundred
- * items makes that choice harder, not easier.
+ * Grouped the way the supplier groups their own, and in their order. Fourteen
+ * garments under one heading called "Дрехи" was not a catalogue, it was a pile:
+ * a t-shirt, a hoodie and a pair of shorts are three different decisions and
+ * they were sharing a shelf.
  *
- * Families with nothing in them are skipped, so the page grows on its own as
- * the catalogue fills rather than showing empty headings.
+ * There is a jump link per group at the top, because on a phone the ninth
+ * heading is a long way down. Empty groups are skipped, so the page grows on
+ * its own as the catalogue fills rather than showing bare headings.
  */
-const FAMILY_LABELS: Record<ProductFamily, string> = {
-  DRINKWARE: "Чаши",
-  APPAREL: "Дрехи",
-  WALL: "За стената",
-  ACCESSORIES: "Аксесоари",
-  PUZZLES: "Пъзели",
-  HOME: "За дома",
-  PACKAGING: "Опаковка",
-};
-
-const FAMILY_ORDER: readonly ProductFamily[] = [
-  "DRINKWARE",
-  "APPAREL",
-  "WALL",
-  "ACCESSORIES",
-  "PUZZLES",
-  "HOME",
-  "PACKAGING",
-];
-
 export default function ProductsPage() {
-  const groups = FAMILY_ORDER.map((family) => ({
-    family,
-    items: ALL_PRODUCTS.filter((p) => p.family === family),
+  const groups = PRODUCT_GROUPS.map((g) => ({
+    ...g,
+    items: byGroup(g.id),
   })).filter((g) => g.items.length > 0);
 
   return (
@@ -61,11 +43,31 @@ export default function ProductsPage() {
             поръчка в България.
           </p>
 
+          <nav
+            aria-label="Категории"
+            className="-mx-1 mt-6 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {groups.map((g) => (
+              <Link
+                key={g.id}
+                href={`#${g.id.toLowerCase()}`}
+                className="h-9 shrink-0 rounded-full border border-border bg-background px-4 text-sm font-medium leading-9 text-foreground/75 transition-colors hover:border-foreground/40 hover:text-foreground"
+              >
+                {g.label}
+              </Link>
+            ))}
+          </nav>
+
           {groups.map((group) => (
-            <section key={group.family} className="mt-12 sm:mt-16">
+            <section
+              key={group.id}
+              id={group.id.toLowerCase()}
+              className="mt-12 scroll-mt-28 sm:mt-16"
+            >
               <h2 className="font-heading text-xl font-bold tracking-tight sm:text-2xl">
-                {FAMILY_LABELS[group.family]}
+                {group.label}
               </h2>
+              <p className="mt-1 text-sm text-muted-foreground">{group.blurb}</p>
               <ul className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
                 {group.items.map((p) => (
                   <li key={p.id}>

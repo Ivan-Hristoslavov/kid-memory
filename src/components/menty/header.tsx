@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, ShoppingBag, User, Wand2, X } from "lucide-react";
+import { PRODUCT_GROUPS } from "@/lib/shop/products";
+import { ChevronDown, Menu, Search, ShoppingBag, User, Wand2, X } from "lucide-react";
 import { SearchDialog } from "./search-dialog";
 import { ThemeToggle } from "./theme-toggle";
 import { cartCount, useCart } from "@/lib/store/cart";
@@ -19,20 +20,19 @@ import { Logo } from "./logo";
  * a hairline — the reference's own treatment.
  */
 /**
- * Browsing, and nothing else.
+ * Four places, in the order somebody decides in.
  *
- * Ready-made shirts lead: most people do not want to design anything, they want
- * to buy the one that says "Кумът". Making them walk through an editor to get
- * there was the shop's biggest mistake, and it was the default path.
+ * "Готови тениски" leads because most people do not want to design anything —
+ * they want the one that says "Кумът". "Продукти" opens a panel rather than a
+ * page: the shop sells twenty-seven things across nine shelves, and a single
+ * word gave no hint of that, which is why it read as vague.
  *
- * The editor is not in this list. It is a button beside it — see the header —
- * because it is an action, not a place, and it deserves to look like one.
- *
- * See docs/site-structure.md.
+ * The editor is not in this list. It is the button beside it, because it is an
+ * action rather than a place. See docs/site-structure.md.
  */
-const NAV = [
+const NAV: { href: string; label: string; panel?: boolean }[] = [
   { href: "/dizaini", label: "Готови тениски" },
-  { href: "/produkti", label: "Подаръци" },
+  { href: "/produkti", label: "Продукти", panel: true },
   { href: "/za-povoda", label: "За повода" },
   { href: "/prikazka", label: "Детска книжка" },
 ];
@@ -40,6 +40,7 @@ const NAV = [
 export function MentyHeader() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [panel, setPanel] = useState(false);
   const pathname = usePathname();
 
   /**
@@ -106,24 +107,69 @@ export function MentyHeader() {
           {NAV.map((l) => {
             const active = pathname === l.href || pathname.startsWith(`${l.href}/`);
             return (
-              <Link
+              <div
                 key={l.href}
-                href={l.href}
-                aria-current={active ? "page" : undefined}
-                className={`relative py-2 text-sm transition-colors ${
-                  active
-                    ? "font-semibold text-foreground"
-                    : "font-medium text-foreground/70 hover:text-foreground"
-                }`}
+                className="relative"
+                // Hover opens it and a click still goes through to the page.
+                // A panel that can only be opened by hovering is unusable with
+                // a keyboard, so focus opens it too.
+                onMouseEnter={() => l.panel && setPanel(true)}
+                onMouseLeave={() => l.panel && setPanel(false)}
+                onFocus={() => l.panel && setPanel(true)}
+                onBlur={(e) => {
+                  if (l.panel && !e.currentTarget.contains(e.relatedTarget)) {
+                    setPanel(false);
+                  }
+                }}
               >
-                {l.label}
-                {/* A rule under the current section rather than a coloured
-                    pill — the page already tells you where you are, this only
-                    has to confirm it. */}
-                {active && (
-                  <span className="absolute -bottom-px left-0 h-0.5 w-full rounded-full bg-clay" />
+                <Link
+                  href={l.href}
+                  aria-current={active ? "page" : undefined}
+                  aria-expanded={l.panel ? panel : undefined}
+                  className={`relative flex items-center gap-1 py-2 text-sm transition-colors ${
+                    active
+                      ? "font-semibold text-foreground"
+                      : "font-medium text-foreground/70 hover:text-foreground"
+                  }`}
+                >
+                  {l.label}
+                  {l.panel && (
+                    <ChevronDown
+                      className={`size-3.5 transition-transform ${panel ? "rotate-180" : ""}`}
+                      strokeWidth={2}
+                    />
+                  )}
+                  {/* A rule under the current section rather than a coloured
+                      pill — the page already tells you where you are, this only
+                      has to confirm it. */}
+                  {active && (
+                    <span className="absolute -bottom-px left-0 h-0.5 w-full rounded-full bg-clay" />
+                  )}
+                </Link>
+
+                {l.panel && panel && (
+                  <div className="absolute left-1/2 top-full z-50 w-[34rem] -translate-x-1/2 pt-3">
+                    <ul className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-background p-2 shadow-xl">
+                      {PRODUCT_GROUPS.map((g) => (
+                        <li key={g.id}>
+                          <Link
+                            href={`/produkti#${g.id.toLowerCase()}`}
+                            onClick={() => setPanel(false)}
+                            className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-muted"
+                          >
+                            <span className="block text-sm font-semibold text-foreground">
+                              {g.label}
+                            </span>
+                            <span className="block text-xs text-muted-foreground">
+                              {g.blurb}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
-              </Link>
+              </div>
             );
           })}
         </nav>
@@ -194,6 +240,24 @@ export function MentyHeader() {
                 >
                   {l.label}
                 </Link>
+                {/* The shelves inline rather than behind a second tap: on a
+                    phone a nested menu is a place to get lost, and this list is
+                    short enough to simply show. */}
+                {l.panel && (
+                  <ul className="mb-1 ml-2 border-l border-border pl-3">
+                    {PRODUCT_GROUPS.map((g) => (
+                      <li key={g.id}>
+                        <Link
+                          href={`/produkti#${g.id.toLowerCase()}`}
+                          onClick={() => setOpen(false)}
+                          className="block rounded-lg px-2 py-2 text-sm text-foreground/75 transition-colors hover:bg-muted hover:text-foreground"
+                        >
+                          {g.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
             {/* The button has no room in the mobile bar, so it leads the menu. */}
