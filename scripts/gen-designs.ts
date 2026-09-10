@@ -17,7 +17,12 @@
 import { promises as fs } from "fs";
 import path from "path";
 import sharp from "sharp";
-import { DESIGNS, DESIGN_LOOK, type Design } from "../src/lib/shop/designs";
+import {
+  DESIGNS,
+  DESIGN_ICONS,
+  DESIGN_LOOK,
+  type Design,
+} from "../src/lib/shop/designs";
 
 type Quality = "low" | "medium" | "high";
 const PRICE: Record<Quality, number> = { low: 0.016, medium: 0.063, high: 0.25 };
@@ -34,7 +39,9 @@ async function generate(design: Design, quality: Quality): Promise<Buffer> {
     },
     body: JSON.stringify({
       model: "gpt-image-1",
-      prompt: `${design.prompt} ${DESIGN_LOOK}`,
+      // The icons carry their own art direction — solid black, no colour — and
+      // appending the general one would argue with it.
+      prompt: design.iconOnly ? design.prompt : `${design.prompt} ${DESIGN_LOOK}`,
       size: "1024x1024",
       quality,
       background: "transparent",
@@ -72,7 +79,8 @@ async function main() {
   const outDir = path.join(process.cwd(), "public", "designs");
   await fs.mkdir(outDir, { recursive: true });
 
-  const wanted = only ? DESIGNS.filter((d) => d.id === only) : DESIGNS;
+  const all = [...DESIGNS, ...DESIGN_ICONS];
+  const wanted = only ? all.filter((d) => d.id === only) : all;
   const todo: Design[] = [];
   for (const d of wanted) {
     if (await exists(path.join(outDir, `${d.id}.webp`))) {

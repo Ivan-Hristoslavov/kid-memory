@@ -34,6 +34,14 @@ export interface TextDesign {
   layout: TextLayout;
   /** Tailwind-free hex, because this is rendered into SVG. */
   accent?: string;
+  /**
+   * A silhouette drawn above the lettering — an id from `DESIGN_ICONS`.
+   *
+   * This is the shape the Bulgarian market actually sells: a small black figure
+   * over a phrase. "Кумът" alone is a word on a shirt; "Кумът" under a bow tie
+   * is a stag-weekend shirt.
+   */
+  icon?: string;
   font: "SERIF" | "ROUNDED" | "SANS";
 }
 
@@ -46,43 +54,46 @@ const t = (
   emphasis: number,
   font: TextDesign["font"] = "SANS",
   layout: TextLayout = "STACK",
-  accent?: string
-): TextDesign => ({ id, title, category, forDark, lines, emphasis, layout, font, accent });
+  accent?: string,
+  icon?: string
+): TextDesign => ({
+  id, title, category, forDark, lines, emphasis, layout, font, accent, icon,
+});
 
 export const TEXT_DESIGNS: readonly TextDesign[] = [
   // ── Ергенско ──────────────────────────────────────────────────────────
-  t("txt-groom", "Младоженецът", "BACHELOR", true, ["МЛАДОЖЕНЕЦЪТ", "{name}"], 0, "SANS", "BANNER"),
-  t("txt-best-man", "Кумът", "BACHELOR", true, ["КУМЪТ", "{name}"], 0, "SANS", "BANNER"),
-  t("txt-groom-team", "Отборът на младоженеца", "BACHELOR", true, ["ОТБОРЪТ НА", "МЛАДОЖЕНЕЦА", "{name}"], 1),
-  t("txt-last-night", "Последна нощ на свобода", "BACHELOR", true, ["ПОСЛЕДНА НОЩ", "НА СВОБОДА"], 0, "SERIF"),
-  t("txt-game-over", "Game Over", "BACHELOR", true, ["GAME", "OVER"], 1, "SANS", "STACK", "#C77D6B"),
-  t("txt-almost-married", "Почти женен", "BACHELOR", true, ["ПОЧТИ", "ЖЕНЕН"], 1),
-  t("txt-new-management", "Под ново ръководство", "BACHELOR", true, ["ПОД НОВО", "РЪКОВОДСТВО"], 1, "SERIF"),
-  t("txt-stag-do", "Ергенски запой", "BACHELOR", true, ["ЕРГЕНСКИ", "ЗАПОЙ", "{name}"], 1),
-  t("txt-chief-drinker", "Главният пияница", "BACHELOR", true, ["ГЛАВНИЯТ", "ПИЯНИЦА"], 1, "ROUNDED"),
-  t("txt-last-charmer", "Последен сваляч", "BACHELOR", true, ["ПОСЛЕДЕН", "СВАЛЯЧ"], 1, "ROUNDED"),
-  t("txt-free-until", "Свободен до", "BACHELOR", true, ["СВОБОДЕН ДО", "{name}"], 0, "SERIF", "BANNER"),
-  t("txt-support-team", "Групата за подкрепа", "BACHELOR", true, ["ГРУПАТА ЗА", "ПОДКРЕПА"], 1),
+  t("txt-groom", "Младоженецът", "BACHELOR", true, ["МЛАДОЖЕНЕЦЪТ", "{name}"], 0, "SANS", "BANNER", undefined, "ico-couple"),
+  t("txt-best-man", "Кумът", "BACHELOR", true, ["КУМЪТ", "{name}"], 0, "SANS", "BANNER", undefined, "ico-bowtie"),
+  t("txt-groom-team", "Отборът на младоженеца", "BACHELOR", true, ["ОТБОРЪТ НА", "МЛАДОЖЕНЕЦА", "{name}"], 1, undefined, undefined, undefined, "ico-men-row"),
+  t("txt-last-night", "Последна нощ на свобода", "BACHELOR", true, ["ПОСЛЕДНА НОЩ", "НА СВОБОДА"], 0, "SERIF", undefined, undefined, "ico-tophat"),
+  t("txt-game-over", "Game Over", "BACHELOR", true, ["GAME", "OVER"], 1, "SANS", "STACK", "#C77D6B", "ico-couple"),
+  t("txt-almost-married", "Почти женен", "BACHELOR", true, ["ПОЧТИ", "ЖЕНЕН"], 1, undefined, undefined, undefined, "ico-ring"),
+  t("txt-new-management", "Под ново ръководство", "BACHELOR", true, ["ПОД НОВО", "РЪКОВОДСТВО"], 1, "SERIF", undefined, undefined, "ico-tophat"),
+  t("txt-stag-do", "Ергенски запой", "BACHELOR", true, ["ЕРГЕНСКИ", "ЗАПОЙ", "{name}"], 1, undefined, undefined, undefined, "ico-beer-cheers"),
+  t("txt-chief-drinker", "Главният пияница", "BACHELOR", true, ["ГЛАВНИЯТ", "ПИЯНИЦА"], 1, "ROUNDED", undefined, undefined, "ico-shots"),
+  t("txt-last-charmer", "Последен сваляч", "BACHELOR", true, ["ПОСЛЕДЕН", "СВАЛЯЧ"], 1, "ROUNDED", undefined, undefined, "ico-heels"),
+  t("txt-free-until", "Свободен до", "BACHELOR", true, ["СВОБОДЕН ДО", "{name}"], 0, "SERIF", "BANNER", undefined, "ico-ring"),
+  t("txt-support-team", "Групата за подкрепа", "BACHELOR", true, ["ГРУПАТА ЗА", "ПОДКРЕПА"], 1, undefined, undefined, undefined, "ico-men-row"),
 
   // ── Моминско ──────────────────────────────────────────────────────────
-  t("txt-bride", "Булката", "HEN", false, ["БУЛКАТА", "{name}"], 0, "SERIF", "BANNER", "#C77D6B"),
-  t("txt-maid-of-honour", "Кумата", "HEN", false, ["КУМАТА", "{name}"], 0, "SERIF", "BANNER", "#C77D6B"),
-  t("txt-bride-team", "Отборът на булката", "HEN", false, ["ОТБОРЪТ НА", "БУЛКАТА", "{name}"], 1, "SERIF"),
-  t("txt-she-said-yes", "Тя каза да", "HEN", false, ["ТЯ КАЗА", "ДА"], 1, "SERIF", "STACK", "#C77D6B"),
-  t("txt-last-hen", "Последно моминско", "HEN", false, ["ПОСЛЕДНО", "МОМИНСКО"], 1, "ROUNDED"),
-  t("txt-still-free", "Още е свободна", "HEN", false, ["ОЩЕ Е", "СВОБОДНА"], 1, "ROUNDED"),
-  t("txt-hen-party", "Моминско парти", "HEN", false, ["МОМИНСКО", "ПАРТИ", "{name}"], 1, "SERIF"),
-  t("txt-bride-squad", "Bride Squad", "HEN", false, ["BRIDE", "SQUAD"], 1, "SANS", "STACK", "#C77D6B"),
-  t("txt-future-mrs", "Бъдещата госпожа", "HEN", false, ["БЪДЕЩАТА", "ГОСПОЖА", "{name}"], 1, "SERIF"),
-  t("txt-one-last-dance", "Един последен танц", "HEN", false, ["ЕДИН ПОСЛЕДЕН", "ТАНЦ"], 1, "SERIF"),
+  t("txt-bride", "Булката", "HEN", false, ["БУЛКАТА", "{name}"], 0, "SERIF", "BANNER", "#C77D6B", "ico-tiara"),
+  t("txt-maid-of-honour", "Кумата", "HEN", false, ["КУМАТА", "{name}"], 0, "SERIF", "BANNER", "#C77D6B", "ico-heels"),
+  t("txt-bride-team", "Отборът на булката", "HEN", false, ["ОТБОРЪТ НА", "БУЛКАТА", "{name}"], 1, "SERIF", undefined, undefined, "ico-women-row"),
+  t("txt-she-said-yes", "Тя каза да", "HEN", false, ["ТЯ КАЗА", "ДА"], 1, "SERIF", "STACK", "#C77D6B", "ico-ring"),
+  t("txt-last-hen", "Последно моминско", "HEN", false, ["ПОСЛЕДНО", "МОМИНСКО"], 1, "ROUNDED", undefined, undefined, "ico-champagne"),
+  t("txt-still-free", "Още е свободна", "HEN", false, ["ОЩЕ Е", "СВОБОДНА"], 1, "ROUNDED", undefined, undefined, "ico-lips"),
+  t("txt-hen-party", "Моминско парти", "HEN", false, ["МОМИНСКО", "ПАРТИ", "{name}"], 1, "SERIF", undefined, undefined, "ico-champagne"),
+  t("txt-bride-squad", "Bride Squad", "HEN", false, ["BRIDE", "SQUAD"], 1, "SANS", "STACK", "#C77D6B", "ico-lips"),
+  t("txt-future-mrs", "Бъдещата госпожа", "HEN", false, ["БЪДЕЩАТА", "ГОСПОЖА", "{name}"], 1, "SERIF", undefined, undefined, "ico-tiara"),
+  t("txt-one-last-dance", "Един последен танц", "HEN", false, ["ЕДИН ПОСЛЕДЕН", "ТАНЦ"], 1, "SERIF", undefined, undefined, "ico-heels"),
 
   // ── Гейминг ───────────────────────────────────────────────────────────
-  t("txt-gg", "GG WP", "GAMING", true, ["GG", "WP"], 0, "SANS", "STACK", "#7C5CFF"),
-  t("txt-one-more-game", "Още една игра", "GAMING", true, ["ОЩЕ ЕДНА", "ИГРА"], 1),
-  t("txt-respawn", "Respawn", "GAMING", true, ["RESPAWN"], 0, "SANS", "BANNER", "#3FC1C9"),
-  t("txt-afk", "AFK живот", "GAMING", true, ["AFK", "ЖИВОТ"], 0, "SANS", "STACK", "#7C5CFF"),
+  t("txt-gg", "GG WP", "GAMING", true, ["GG", "WP"], 0, "SANS", "STACK", "#7C5CFF", "ico-controller"),
+  t("txt-one-more-game", "Още една игра", "GAMING", true, ["ОЩЕ ЕДНА", "ИГРА"], 1, undefined, undefined, undefined, "ico-dice"),
+  t("txt-respawn", "Respawn", "GAMING", true, ["RESPAWN"], 0, "SANS", "BANNER", "#3FC1C9", "ico-controller"),
+  t("txt-afk", "AFK живот", "GAMING", true, ["AFK", "ЖИВОТ"], 0, "SANS", "STACK", "#7C5CFF", "ico-controller"),
   t("txt-loading", "Зарежда се", "GAMING", true, ["ЗАРЕЖДА СЕ", "…"], 0, "ROUNDED"),
-  t("txt-no-sleep", "Сънят е за слабите", "GAMING", true, ["СЪНЯТ Е ЗА", "СЛАБИТЕ"], 1),
+  t("txt-no-sleep", "Сънят е за слабите", "GAMING", true, ["СЪНЯТ Е ЗА", "СЛАБИТЕ"], 1, undefined, undefined, undefined, "ico-dice"),
 
   // ── Хумор и семейство ────────────────────────────────────────────────
   t("txt-coffee-first", "Първо кафе", "HUMOUR", false, ["ПЪРВО", "КАФЕ"], 1, "ROUNDED", "STACK", "#C77D6B"),

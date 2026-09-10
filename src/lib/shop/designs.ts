@@ -159,6 +159,16 @@ export interface Design {
   forDark: boolean;
   /** The generation prompt. Kept so one list drives art and shop alike. */
   prompt: string;
+  /**
+   * A silhouette meant to sit ABOVE lettering, not to be sold on its own.
+   *
+   * Every stag and hen shirt on the Bulgarian market is a small black figure
+   * over a phrase — a groom and bride, a bow tie, a row of men in suits — and
+   * lettering alone was the obvious thing missing from ours. These live in the
+   * same list because they are generated the same way, and are filtered out of
+   * every shop listing because a bow tie by itself is not a design.
+   */
+  iconOnly?: boolean;
 }
 
 /** Shared art direction: the print itself, not a photograph of a print. */
@@ -371,12 +381,47 @@ export const DESIGNS: readonly Design[] = [
     "Four dog paw prints of decreasing size walking in a diagonal line, in clay brown."),
 ];
 
+/**
+ * Silhouettes for the lettering designs. Solid black on transparency, so one
+ * file serves a dark garment by being inverted rather than generated twice.
+ */
+const ICON_LOOK = `Solid flat black silhouette on a fully transparent background, \
+crisp clean edges, centred with even margins, screen-print style. Pure black only — no grey, \
+no gradients, no shading, no outline, no colour. NO text, no letters, no numbers, no watermark, \
+no frame, no background.`;
+
+const ic = (id: string, title: string, prompt: string): Design => ({
+  id,
+  title,
+  category: "HUMOUR",
+  forDark: false,
+  iconOnly: true,
+  prompt: `${prompt} ${ICON_LOOK}`,
+});
+
+export const DESIGN_ICONS: readonly Design[] = [
+  ic("ico-couple", "Младоженци", "A simple silhouette of a groom in a suit standing beside a bride in a long dress, both facing forward, cartoon-simple and friendly."),
+  ic("ico-bowtie", "Папийонка", "A single bow tie seen face-on."),
+  ic("ico-tophat", "Цилиндър", "A top hat above a bow tie, stacked and centred."),
+  ic("ico-men-row", "Мъже в редица", "Five men in suits standing side by side in a row, seen from the front, full-body silhouettes of slightly different heights."),
+  ic("ico-beer-cheers", "Халби", "Two beer steins clinking together with a few droplets flying off."),
+  ic("ico-shots", "Шотове", "Three shot glasses standing in a row, one slightly tilted."),
+  ic("ico-ring", "Пръстен", "A single engagement ring with a faceted stone, seen from the side at a slight angle."),
+  ic("ico-tiara", "Диадема", "A small tiara with five points, seen face-on."),
+  ic("ico-heels", "Обувка", "A single high-heeled shoe seen from the side."),
+  ic("ico-women-row", "Жени в редица", "Five women in dresses standing side by side in a row, seen from the front, full-body silhouettes with different hairstyles."),
+  ic("ico-champagne", "Чаши шампанско", "Two champagne coupe glasses clinking, with a few small bubbles rising."),
+  ic("ico-lips", "Устни", "A pair of stylised lips, seen face-on."),
+  ic("ico-controller", "Контролер", "A modern game controller seen face-on."),
+  ic("ico-dice", "Зар", "A twenty-sided polyhedral dice seen at a three-quarter angle."),
+];
+
 export function designById(id: string): Design | undefined {
   return DESIGNS.find((x) => x.id === id);
 }
 
 export function designsInCategory(category: DesignCategory): readonly Design[] {
-  return DESIGNS.filter((x) => x.category === category);
+  return DESIGNS.filter((x) => x.category === category && !x.iconOnly);
 }
 
 export function categoryMeta(id: DesignCategory): DesignCategoryMeta | undefined {

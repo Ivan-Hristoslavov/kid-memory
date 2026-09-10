@@ -1,3 +1,4 @@
+import { designImage } from "@/lib/shop/designs";
 import { TEXT_FONTS } from "@/lib/shop/placement";
 import { resolveLines, type TextDesign } from "@/lib/shop/text-designs";
 
@@ -32,6 +33,16 @@ export function TextDesignArt({
 
   const font = TEXT_FONTS[design.font].css;
   const banner = design.layout === "BANNER";
+  /**
+   * The silhouette above the words.
+   *
+   * Generated once in solid black and inverted for a dark garment rather than
+   * generated twice — a filter costs nothing and a second file costs another
+   * six cents and another thing to keep in step. `light` is decided by the ink
+   * colour, which is already decided by the garment.
+   */
+  const light = color.toUpperCase() !== "#2B2B2B";
+  const iconHeight = design.icon ? 40 : 0;
 
   // Each line owns a band; the emphasised one owns a taller band and fills more
   // of the width. Everything is expressed in viewBox units so the SVG needs no
@@ -39,16 +50,22 @@ export function TextDesignArt({
   const bands = lines.map((_, i) => (i === design.emphasis ? 22 : 13));
   const gap = 4;
   const height =
-    bands.reduce((a, b) => a + b, 0) + gap * (lines.length - 1) + (banner ? 10 : 0);
+    bands.reduce((a, b) => a + b, 0) +
+    gap * (lines.length - 1) +
+    (banner ? 10 : 0) +
+    iconHeight;
 
   // Baselines computed up front rather than accumulated inside the map: a
   // running total mutated during render is exactly what the React Compiler
   // refuses to reason about, and it is unnecessary here.
   const tops: number[] = [];
-  bands.reduce((top, band) => {
-    tops.push(top);
-    return top + band + gap;
-  }, banner ? 5 : 0);
+  bands.reduce(
+    (top, band) => {
+      tops.push(top);
+      return top + band + gap;
+    },
+    (banner ? 5 : 0) + iconHeight
+  );
 
   return (
     <svg
@@ -58,6 +75,17 @@ export function TextDesignArt({
       className="size-full"
       preserveAspectRatio="xMidYMid meet"
     >
+      {design.icon && (
+        <image
+          href={designImage(design.icon)}
+          x="30"
+          y={banner ? 7 : 0}
+          width="40"
+          height={iconHeight - 6}
+          preserveAspectRatio="xMidYMid meet"
+          style={light ? { filter: "invert(1)" } : undefined}
+        />
+      )}
       {banner && (
         <>
           <rect x="4" y="0" width="92" height="1.2" fill={design.accent ?? color} />
