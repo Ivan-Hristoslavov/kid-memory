@@ -8,6 +8,7 @@ import { Transformation } from "@/components/menty/transformation";
 import { CategoryStrip } from "@/components/menty/category-strip";
 import { PersonalizeBanner } from "@/components/menty/personalize-banner";
 import { Bestsellers } from "@/components/menty/bestsellers";
+import { DesignStrip } from "@/components/menty/design-strip";
 import { Themes } from "@/components/menty/themes";
 import { Occasions } from "@/components/menty/occasions";
 import { HowItWorks } from "@/components/menty/how-it-works";
@@ -55,6 +56,9 @@ export default function Home() {
             with, "it is her birthday on Tuesday" is one they arrive with too,
             but the first has no other door into the catalogue. */}
         <Themes />
+        {/* The answer to the objection the rest of the page invites: everything
+            above assumes a photograph, and most visitors do not have one. */}
+        <DesignStrip />
         <Occasions />
         <HowItWorks />
         <Reviews />

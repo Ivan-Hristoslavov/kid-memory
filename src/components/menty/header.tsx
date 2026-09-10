@@ -20,6 +20,9 @@ import { Logo } from "./logo";
  */
 const NAV = [
   { href: "/produkti", label: "Продукти" },
+  // Second, not last: for a shopper without a photograph this is the shortest
+  // route to a basket, and it is the page that ranks for what they type.
+  { href: "/dizaini", label: "Готови дизайни" },
   { href: "/za-povoda", label: "За повода" },
   { href: "/personalizirani", label: "Персонализирани" },
   { href: "/prikazka", label: "Детска книжка" },

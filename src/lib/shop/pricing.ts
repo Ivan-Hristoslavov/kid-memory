@@ -48,6 +48,7 @@ export const cartLineInput = z.object({
       font: z.enum(["SERIF", "ROUNDED", "SANS"]).optional(),
     })
     .optional(),
+  designId: z.string().max(60).optional(),
   text: z.string().max(60).optional(),
   giftWrap: z.boolean().default(false),
 });
@@ -61,6 +62,8 @@ export interface PricedLine {
   quantity: number;
   variants: Record<string, string>;
   photoKey?: string;
+  /** A ready-made design's id, when the customer chose one instead. */
+  designId?: string;
   placement: Placement;
   text?: string;
   giftWrap: boolean;
@@ -113,6 +116,7 @@ export function priceCart(input: CartLineInput[]): PricedCart | null {
       quantity: raw.quantity,
       variants,
       photoKey: raw.photoKey,
+      designId: raw.designId,
       // A line with a photo always carries a placement, so the print renderer
       // never has to guess: an absent one means "centred, no zoom". The two
       // newer fields are filled from the default for the same reason — a basket

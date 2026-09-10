@@ -1,11 +1,15 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
+
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Check, ImagePlus, Loader2, Minus, Plus, ShoppingBag } from "lucide-react";
 import { formatPrice, ADDONS } from "@/lib/catalog";
 import { useCart } from "@/lib/store/cart";
 import { PhotoPlacer } from "./photo-placer";
+import { DesignPicker } from "./design-picker";
+import { designById, designImage } from "@/lib/shop/designs";
 import { DEFAULT_PLACEMENT, type Placement } from "@/lib/shop/placement";
 import type { MentyProduct } from "@/lib/shop/products";
 
@@ -30,6 +34,17 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
   const [photoKey, setPhotoKey] = useState<string>("");
   const [photoUrl, setPhotoUrl] = useState<string>("");
   const [photoName, setPhotoName] = useState<string>("");
+  /**
+   * Prefilled from `?design=`, so a design page can hand the choice over.
+   *
+   * Read once into initial state rather than watched: after the first render
+   * the customer owns this control, and a later URL change should not reach in
+   * and swap the design under their hands.
+   */
+  const initialDesign = useSearchParams().get("design") ?? "";
+  const [designId, setDesignId] = useState<string>(
+    designById(initialDesign) ? initialDesign : ""
+  );
   const [placement, setPlacement] = useState<Placement>(DEFAULT_PLACEMENT);
   const [uploading, setUploading] = useState(false);
   const [text, setText] = useState("");
@@ -48,12 +63,21 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
     undefined
   );
 
+  /**
+   * One print carries one piece of artwork, so choosing a design puts the
+   * upload aside and uploading puts the design aside. Silently keeping both and
+   * printing whichever the renderer happens to prefer would be the worse
+   * failure — it is invisible until the parcel arrives.
+   */
+  const artworkUrl = designId ? designImage(designId) : photoUrl;
+
   const takesPhoto = product.personalization.includes("PHOTO");
   const takesText =
     product.personalization.includes("TEXT") ||
     product.personalization.includes("EMBROIDERY");
 
   async function onFile(file: File) {
+    setDesignId("");
     setUploading(true);
     try {
       const form = new FormData();
@@ -88,16 +112,19 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
   }
 
   function onAdd() {
-    if (takesPhoto && !photoKey) {
-      toast.error("Качи снимка, за да продължиш.");
+    // A design counts. Requiring an upload when one is chosen was the old rule
+    // and would now block the shorter, likelier path through the page.
+    if (takesPhoto && !photoKey && !designId) {
+      toast.error("Избери дизайн или качи снимка, за да продължиш.");
       return;
     }
     add({
       productId: product.id,
       quantity,
       variants,
-      photoKey: photoKey || undefined,
-      placement: photoKey ? placement : undefined,
+      photoKey: designId ? undefined : photoKey || undefined,
+      designId: designId || undefined,
+      placement: photoKey || designId ? placement : undefined,
       text: text.trim() || undefined,
       giftWrap,
     });
@@ -120,7 +147,8 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
       {showPreview && (
         <PhotoPlacer
           product={product}
-          photoUrl={photoUrl || undefined}
+          photoUrl={artworkUrl || undefined}
+          isDesign={Boolean(designId)}
           placement={placement}
           onChange={setPlacement}
           colorHex={selectedHex}
@@ -182,7 +210,27 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
 
       {takesPhoto && (
         <div>
-          <p className="text-sm font-semibold text-foreground">Качи снимка</p>
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="text-sm font-semibold text-foreground">Избери дизайн</p>
+            {designId && (
+              <button
+                type="button"
+                onClick={() => setDesignId("")}
+                className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Изчисти
+              </button>
+            )}
+          </div>
+          <div className="mt-2.5">
+            <DesignPicker value={designId} onChange={setDesignId} />
+          </div>
+        </div>
+      )}
+
+      {takesPhoto && (
+        <div>
+          <p className="text-sm font-semibold text-foreground">…или качи своя снимка</p>
           <input
             ref={fileInput}
             type="file"

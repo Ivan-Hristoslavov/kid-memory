@@ -31,6 +31,16 @@ export interface CartLine {
   /** Storage key of an uploaded photo, when the product takes one. */
   photoKey?: string;
   /**
+   * A ready-made design from `lib/shop/designs.ts`, when the customer chose one
+   * instead of uploading.
+   *
+   * Mutually exclusive with `photoKey` in practice — the panel offers one or
+   * the other — but stored separately rather than as a tagged union, because
+   * the print renderer resolves them from different places: a design is a file
+   * we ship, a photo is a private object in storage.
+   */
+  designId?: string;
+  /**
    * Where the customer put that photo inside the print area. Stored as a
    * transform rather than a cropped file so the print can be re-rendered from
    * the original upload at full resolution.
@@ -54,6 +64,7 @@ function lineKey(input: Omit<CartLine, "key" | "quantity">): string {
     input.productId,
     variants,
     input.photoKey ?? "",
+    input.designId ?? "",
     placement,
     input.text ?? "",
     input.giftWrap ? "wrap" : "",

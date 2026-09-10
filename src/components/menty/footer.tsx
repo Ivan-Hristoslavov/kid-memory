@@ -8,6 +8,7 @@ import { Logo } from "./logo";
 
 const SHOP = [
   { href: "/produkti", label: "Всички продукти" },
+  { href: "/dizaini", label: "Готови дизайни" },
   { href: "/personalizirani", label: "Персонализирани" },
   { href: "/biznes-podaratsi", label: "Бизнес подаръци" },
   { href: "/proverka", label: "Провери поръчка" },

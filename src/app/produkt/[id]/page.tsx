@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -115,8 +116,13 @@ export default async function ProductPage({
                 {formatPrice(product.priceEUR)}
               </p>
 
+              {/* The panel reads ?design= to prefill a choice made on a design
+                  page, and useSearchParams needs a boundary on a statically
+                  rendered route. */}
               <div className="mt-8">
-                <ProductPanel product={product} />
+                <Suspense fallback={<div className="h-96" />}>
+                  <ProductPanel product={product} />
+                </Suspense>
               </div>
 
               <ul className="mt-8 grid gap-3 sm:grid-cols-3">

@@ -23,9 +23,10 @@ export function PhotoPlacer({
   onChange,
   colorHex,
   text,
+  isDesign = false,
 }: {
   product: MentyProduct;
-  /** Signed URL of the uploaded photo. Absent on a text-only personalisation. */
+  /** The artwork: a signed URL of an upload, or a ready-made design's file. */
   photoUrl?: string;
   placement: Placement;
   onChange: (p: Placement) => void;
@@ -39,6 +40,18 @@ export function PhotoPlacer({
    * the print area is visible here rather than at the door.
    */
   text?: string;
+  /**
+   * Whether the artwork is a ready-made design rather than a photograph.
+   *
+   * It changes how the artwork is fitted, and that difference matters. A photo
+   * COVERS the print window — a gap at the edge of a printed photograph looks
+   * like a mistake. A design CONTAINS — it is drawn on transparency with its
+   * own margins, and cropping a crest to fill a rectangle cuts the crest.
+   *
+   * It also turns off the resolution warning, which measures a photograph's
+   * pixels against millimetres and has nothing to say about flat artwork.
+   */
+  isDesign?: boolean;
 }) {
   const area = product.printArea;
   /**
@@ -120,14 +133,18 @@ export function PhotoPlacer({
   if (!area) return null;
 
   const dpi = natural ? effectiveDpi(natural, area, placement.scale) : null;
-  const lowRes = dpi !== null && dpi < MIN_PRINT_DPI;
+  const lowRes = !isDesign && dpi !== null && dpi < MIN_PRINT_DPI;
 
 
   return (
     <div>
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-foreground">
-          {photoUrl ? "Намести снимката" : "Ето как ще изглежда"}
+          {!photoUrl
+            ? "Ето как ще изглежда"
+            : isDesign
+              ? "Намести дизайна"
+              : "Намести снимката"}
         </p>
         <button
           type="button"
@@ -204,9 +221,11 @@ export function PhotoPlacer({
               // width or height at all, only `min-w-full min-h-full`, so the
               // photo rendered at its natural size — a 1536px image inside a
               // 200px window, which is why scale 1 looked like a 700% zoom.
-              ...(cover.axis === "width"
-                ? { width: "100%", height: "auto" }
-                : { width: "auto", height: "100%" }),
+              ...(isDesign
+                ? { width: "100%", height: "100%", objectFit: "contain" as const }
+                : cover.axis === "width"
+                  ? { width: "100%", height: "auto" }
+                  : { width: "auto", height: "100%" }),
               transform: `translate(-50%, -50%) scale(${placement.scale})`,
               left: `${placement.x * 100}%`,
               top: `${placement.y * 100}%`,
@@ -323,7 +342,7 @@ export function PhotoPlacer({
         </div>
       )}
 
-      {photoUrl && (
+      {photoUrl && !isDesign && (
         <div className="mt-4">
           <div className="flex items-baseline justify-between gap-3">
             <p className="text-xs font-semibold text-foreground">Меки ръбове</p>
