@@ -9,6 +9,8 @@ import {
   designsInCategory,
   type DesignCategory,
 } from "@/lib/shop/designs";
+import { TEXT_DESIGNS } from "@/lib/shop/text-designs";
+import { TextDesignArt } from "./text-design-art";
 
 /**
  * Picking a ready-made design.
@@ -29,8 +31,11 @@ export function DesignPicker({
   value: string;
   onChange: (designId: string) => void;
 }) {
-  const [category, setCategory] = useState<DesignCategory>("GAMING");
+  const [category, setCategory] = useState<DesignCategory>("BACHELOR");
   const designs = designsInCategory(category);
+  // Lettering first. For a stag or hen weekend it is what people actually buy —
+  // the graphics are the alternative, not the headline.
+  const words = TEXT_DESIGNS.filter((t) => t.category === category);
 
   return (
     <div>
@@ -53,6 +58,37 @@ export function DesignPicker({
       </div>
 
       <ul className="mt-2 grid grid-cols-4 gap-2 sm:grid-cols-5">
+        {words.map((w) => {
+          const active = value === w.id;
+          return (
+            <li key={w.id}>
+              <button
+                type="button"
+                onClick={() => onChange(active ? "" : w.id)}
+                aria-pressed={active}
+                title={w.title}
+                className={`relative block aspect-square w-full overflow-hidden rounded-lg border p-2 transition-colors ${
+                  w.forDark ? "bg-forest" : "bg-sand"
+                } ${
+                  active
+                    ? "border-foreground ring-1 ring-foreground"
+                    : "border-border hover:border-foreground/40"
+                }`}
+              >
+                <TextDesignArt
+                  design={w}
+                  color={w.forDark ? "#FEFCF8" : "#2B2B2B"}
+                />
+                {active && (
+                  <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-foreground">
+                    <Check className="size-2.5 text-background" strokeWidth={3} />
+                  </span>
+                )}
+              </button>
+            </li>
+          );
+        })}
+
         {designs.map((d) => {
           const active = value === d.id;
           return (

@@ -159,18 +159,18 @@ export const MOCKUPS: Readonly<Record<string, readonly Mockup[]>> = {
     { name: "Отпред", image: "/mockups/GEO_mockup_470.png", aspect: 1, print: { x: 0.2699, y: 0.3097, width: 0.4867, height: 0.2655 } },
   ],
   hejg: [
-    { name: "Отпред", image: "/mockups/kanche_all.png", aspect: 1.8147, overlay: true, print: { x: 0.2699, y: 0.3212, width: 0.5531, height: 0.5018 } },
     { name: "Отляво", image: "/mockups/kanche_left.png", aspect: 1, overlay: true, print: { x: 0.3584, y: 0.3097, width: 0.531, height: 0.4867 } },
     { name: "Отдясно", image: "/mockups/kanche_right.png", aspect: 1, overlay: true, print: { x: 0.1593, y: 0.3097, width: 0.531, height: 0.4867 } },
+    { name: "Отпред", image: "/mockups/kanche_all.png", aspect: 1.8147, overlay: true, print: { x: 0.2699, y: 0.3212, width: 0.5531, height: 0.5018 } },
   ],
   bejdh: [
-    { name: "Отпред", image: "/mockups/chasha_center_1.png", aspect: 1.1031, overlay: true, print: { x: 0.2367, y: 0.3417, width: 0.5531, height: 0.3417 } },
     { name: "Отляво", image: "/mockups/chasha_left.png", aspect: 1.0723, overlay: true, print: { x: 0.3805, y: 0.3203, width: 0.3097, height: 0.427 } },
     { name: "Отдясно", image: "/mockups/chasha_right.png", aspect: 1.0723, overlay: true, print: { x: 0.3473, y: 0.3203, width: 0.3097, height: 0.427 } },
+    { name: "Отпред", image: "/mockups/chasha_center_1.png", aspect: 1.1031, overlay: true, print: { x: 0.2367, y: 0.3417, width: 0.5531, height: 0.3417 } },
   ],
   dagdf: [
-    { name: "Отпред", image: "/mockups/double aluminium_bottle_r.png", aspect: 1, print: { x: 0.2367, y: 0.3097, width: 0.5642, height: 0.6305 } },
     { name: "Отляво", image: "/mockups/single aluminium_bottle_r.png", aspect: 1, print: { x: 0.3805, y: 0.2987, width: 0.2655, height: 0.6637 } },
+    { name: "Отпред", image: "/mockups/double aluminium_bottle_r.png", aspect: 1, print: { x: 0.2367, y: 0.3097, width: 0.5642, height: 0.6305 } },
   ],
   bbfcc: [
     { name: "Отпред", image: "/mockups/box_gift_new.png", aspect: 0.9957, print: { x: 0.115, y: 0.2643, width: 0.8186, height: 0.5507 } },

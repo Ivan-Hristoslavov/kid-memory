@@ -11,6 +11,8 @@ import {
   designsInCategory,
   type DesignCategory,
 } from "@/lib/shop/designs";
+import { TEXT_DESIGNS } from "@/lib/shop/text-designs";
+import { TextDesignArt } from "@/components/menty/text-design-art";
 import { ALL_PRODUCTS } from "@/lib/shop/products";
 import { formatPrice } from "@/lib/catalog";
 
@@ -35,7 +37,10 @@ export async function generateMetadata({
   if (!c) return { title: "Категорията не е намерена" };
   return {
     title: `Дизайни — ${c.label}`,
-    description: `${c.blurb} ${designsInCategory(c.id).length} готови дизайна за тениски, суичъри и чаши.`,
+    description: `${c.blurb} ${
+      designsInCategory(c.id).length +
+      TEXT_DESIGNS.filter((t) => t.category === c.id).length
+    } готови дизайна за тениски, суичъри и чаши.`,
     alternates: { canonical: `/dizaini/${category}` },
   };
 }
@@ -59,6 +64,7 @@ export default async function DesignCategoryPage({
   if (!meta) notFound();
 
   const designs = designsInCategory(meta.id as DesignCategory);
+  const words = TEXT_DESIGNS.filter((t) => t.category === meta.id);
   /**
    * Where a design tile lands.
    *
@@ -100,6 +106,27 @@ export default async function DesignCategoryPage({
           )}
 
           <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            {words.map((w) => (
+              <li key={w.id}>
+                <Link
+                  href={landing ? `/produkt/${landing.id}?design=${w.id}` : "/produkti"}
+                  className="group block overflow-hidden rounded-xl ring-1 ring-border transition-shadow hover:shadow-lg"
+                >
+                  <div
+                    className={`relative aspect-square p-8 ${w.forDark ? "bg-forest" : "bg-sand"}`}
+                  >
+                    <TextDesignArt
+                      design={w}
+                      color={w.forDark ? "#FEFCF8" : "#2B2B2B"}
+                    />
+                  </div>
+                  <p className="bg-background p-3 text-center text-sm font-medium text-foreground">
+                    {w.title}
+                  </p>
+                </Link>
+              </li>
+            ))}
+
             {designs.map((d) => (
               <li key={d.id}>
                 <Link

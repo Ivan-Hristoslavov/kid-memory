@@ -13,6 +13,7 @@ import {
   type TextFont,
 } from "@/lib/shop/placement";
 import { mockupsFor } from "@/lib/pod/mockups";
+import { printAreaMm } from "@/lib/pod/catalog";
 
 export { DEFAULT_PLACEMENT, type Placement };
 
@@ -24,6 +25,7 @@ export function PhotoPlacer({
   colorHex,
   text,
   isDesign = false,
+  artwork,
 }: {
   product: MentyProduct;
   /** The artwork: a signed URL of an upload, or a ready-made design's file. */
@@ -52,8 +54,16 @@ export function PhotoPlacer({
    * pixels against millimetres and has nothing to say about flat artwork.
    */
   isDesign?: boolean;
+  /**
+   * Artwork rendered as markup rather than fetched as a file — a text design.
+   *
+   * Takes precedence over `photoUrl`. It exists because lettering has to be
+   * live: it is set from the customer's own name, and an SVG that reaches the
+   * page's webfonts has to be in the page, not behind an <img>.
+   */
+  artwork?: React.ReactNode;
 }) {
-  const area = product.printArea;
+  const catalogueArea = product.printArea;
   /**
    * The supplier's flat render of this blank, or nothing.
    *
@@ -66,6 +76,26 @@ export function PhotoPlacer({
   const views = mockupsFor(product.supplierProductCode);
   const [view, setView] = useState(0);
   const mock = views[view];
+
+  /**
+   * The print window for the view being shown.
+   *
+   * It has to come from the mock-up, not from the catalogue. `printArea` is one
+   * rectangle per product — the front — and drawing it over the left-hand view
+   * of a mug put the print through the handle. The catalogue's copy stays as
+   * the fallback for products with no mock-up at all, and as the source of the
+   * millimetres the resolution warning needs.
+   */
+  const area =
+    mock && catalogueArea
+      ? {
+          ...catalogueArea,
+          ...mock.print,
+          // Millimetres per view too, or the resolution warning would judge a
+          // mug's narrow side panel by the front wrap's dimensions.
+          ...(printAreaMm(product.supplierProductCode ?? "", mock.name) ?? {}),
+        }
+      : catalogueArea;
   const frameRef = useRef<HTMLDivElement>(null);
   const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
 
@@ -140,7 +170,7 @@ export function PhotoPlacer({
     <div>
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-foreground">
-          {!photoUrl
+          {!photoUrl && !artwork
             ? "Ето как ще изглежда"
             : isDesign
               ? "Намести дизайна"
@@ -172,7 +202,7 @@ export function PhotoPlacer({
             src={product.images[0]}
             alt=""
             fill
-            sizes="480px"
+            sizes="(max-width: 1024px) 100vw, 560px"
             className="object-cover"
             priority
           />
@@ -183,7 +213,7 @@ export function PhotoPlacer({
             src={mock.image}
             alt={product.title}
             fill
-            sizes="480px"
+            sizes="(max-width: 1024px) 100vw, 560px"
             // This one is an ordinary opaque photograph — a mug, an enamel cup,
             // a tracksuit. Artwork goes over it, or it goes behind a wall.
             className="pointer-events-none object-contain"
@@ -205,8 +235,12 @@ export function PhotoPlacer({
           // line at 6px — technically rendered, practically invisible.
           className="absolute cursor-grab overflow-hidden [container-type:inline-size] active:cursor-grabbing"
         >
+          {artwork && (
+            <div className="pointer-events-none absolute inset-0">{artwork}</div>
+          )}
+
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          {photoUrl && <img
+          {!artwork && photoUrl && <img
             src={photoUrl}
             alt="Твоята снимка върху продукта"
             draggable={false}
@@ -244,7 +278,7 @@ export function PhotoPlacer({
             className="pointer-events-none absolute max-w-none"
           />}
 
-          {text && (
+          {text && !artwork && (
             <span
               style={{
                 fontFamily: TEXT_FONTS[placement.font].css,
@@ -269,7 +303,7 @@ export function PhotoPlacer({
             src={mock.image}
             alt={product.title}
             fill
-            sizes="480px"
+            sizes="(max-width: 1024px) 100vw, 560px"
             // Above the artwork on purpose: this PNG is only folds and shadow
             // over the garment, and opaque everywhere else.
             className="pointer-events-none object-contain"

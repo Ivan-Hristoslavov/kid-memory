@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MentyHeader } from "@/components/menty/header";
 import { MentyFooter } from "@/components/menty/footer";
 import { DESIGN_CATEGORIES, designImage, designsInCategory } from "@/lib/shop/designs";
+import { TEXT_DESIGNS } from "@/lib/shop/text-designs";
 
 export const metadata: Metadata = {
   title: "Готови дизайни",
@@ -55,7 +56,9 @@ export default function DesignsPage() {
                     <p className="text-sm font-semibold text-foreground">{c.label}</p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{c.blurb}</p>
                     <p className="mt-1.5 text-xs font-medium text-forest">
-                      {designsInCategory(c.id).length} дизайна →
+                      {designsInCategory(c.id).length +
+                        TEXT_DESIGNS.filter((t) => t.category === c.id).length}{" "}
+                      дизайна →
                     </p>
                   </div>
                 </Link>

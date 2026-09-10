@@ -10,6 +10,8 @@ import { useCart } from "@/lib/store/cart";
 import { PhotoPlacer } from "./photo-placer";
 import { DesignPicker } from "./design-picker";
 import { designById, designImage } from "@/lib/shop/designs";
+import { textDesignById } from "@/lib/shop/text-designs";
+import { TextDesignArt } from "./text-design-art";
 import { DEFAULT_PLACEMENT, type Placement } from "@/lib/shop/placement";
 import type { MentyProduct } from "@/lib/shop/products";
 
@@ -43,7 +45,7 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
    */
   const initialDesign = useSearchParams().get("design") ?? "";
   const [designId, setDesignId] = useState<string>(
-    designById(initialDesign) ? initialDesign : ""
+    designById(initialDesign) || textDesignById(initialDesign) ? initialDesign : ""
   );
   const [placement, setPlacement] = useState<Placement>(DEFAULT_PLACEMENT);
   const [uploading, setUploading] = useState(false);
@@ -69,7 +71,9 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
    * printing whichever the renderer happens to prefer would be the worse
    * failure — it is invisible until the parcel arrives.
    */
-  const artworkUrl = designId ? designImage(designId) : photoUrl;
+  const textDesign = textDesignById(designId);
+  const artworkUrl =
+    designId && !textDesign ? designImage(designId) : textDesign ? "" : photoUrl;
 
   const takesPhoto = product.personalization.includes("PHOTO");
   const takesText =
@@ -149,6 +153,17 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
           product={product}
           photoUrl={artworkUrl || undefined}
           isDesign={Boolean(designId)}
+          artwork={
+            textDesign ? (
+              <TextDesignArt
+                design={textDesign}
+                name={text}
+                // Ink follows the garment: cream on a dark shirt, charcoal on a
+                // pale one. The same rule the preview's own line already uses.
+                color={isLightHex(selectedHex) ? "#2B2B2B" : "#FEFCF8"}
+              />
+            ) : undefined
+          }
           placement={placement}
           onChange={setPlacement}
           colorHex={selectedHex}
@@ -332,4 +347,13 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
       </div>
     </div>
   );
+}
+
+/** Rec. 709 luma, so a saturated blue is not mistaken for a light garment. */
+function isLightHex(hex: string | undefined): boolean {
+  if (!hex || !/^#[0-9a-f]{6}$/i.test(hex)) return true;
+  const n = parseInt(hex.slice(1), 16);
+  const luma =
+    0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255);
+  return luma > 140;
 }
