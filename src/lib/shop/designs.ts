@@ -38,7 +38,10 @@ export type DesignCategory =
   | "TRAVEL"
   | "MUSIC"
   | "FAMILY"
-  | "HUMOUR";
+  | "HUMOUR"
+  | "HOLIDAY"
+  | "PROFESSION"
+  | "GRADUATION";
 
 export interface DesignCategoryMeta {
   id: DesignCategory;
@@ -115,6 +118,24 @@ export const DESIGN_CATEGORIES: readonly DesignCategoryMeta[] = [
     label: "Семейство",
     blurb: "Първите години, за спомен.",
     cover: "family-line",
+  },
+  {
+    id: "HOLIDAY",
+    label: "Празници",
+    blurb: "Коледа, Нова година, Осми март.",
+    cover: "christmas-tree",
+  },
+  {
+    id: "PROFESSION",
+    label: "По професия",
+    blurb: "За тези, които работят, докато другите спят.",
+    cover: "stethoscope",
+  },
+  {
+    id: "GRADUATION",
+    label: "Абитуриентски",
+    blurb: "Випускът, който няма да се повтори.",
+    cover: "grad-cap",
   },
   {
     id: "HUMOUR",
@@ -273,6 +294,81 @@ export const DESIGNS: readonly Design[] = [
     "A sloth hanging upside down from a branch with its eyes closed, in soft grey-brown and sage."),
   d("pizza-slice", "Парче пица", "HUMOUR", true,
     "A single slice of pizza with a lightning bolt of melted cheese trailing from it, in warm yellow, coral and cream."),
+
+  // ── Гейминг, втора вълна ─────────────────────────────────────────────
+  d("dice-d20", "Двадесетстенник", "GAMING", true,
+    "A twenty-sided polyhedral dice seen at a three-quarter angle, faceted and clean, with a small sparkle beside it, in cream and violet."),
+  d("headset-glow", "Слушалки", "GAMING", true,
+    "A gaming headset with a boom microphone seen face-on, with two small glowing arcs at the ear cups, in cream and cyan."),
+  d("keyboard-keys", "WASD", "GAMING", true,
+    "Four blank mechanical keyboard keycaps arranged in the WASD cross shape, seen from a slight angle, with no letters on them, in cream and coral."),
+  d("mana-potion", "Отвара", "GAMING", true,
+    "A round-bottomed potion flask with a cork stopper, filled with glowing liquid and small bubbles rising, in cyan and violet."),
+  d("boss-crown", "Финалният бос", "GAMING", true,
+    "A jagged spiked crown above a pair of glowing eyes in shadow, menacing and graphic, in cream and deep red."),
+  d("portal-ring", "Портал", "GAMING", true,
+    "An upright oval portal ring with swirling energy inside it and small stones floating around its edge, in violet and cyan."),
+  d("space-ship", "Космически кораб", "GAMING", true,
+    "A small angular spacecraft seen from the side with a trail of thrust behind it, above three small stars, in cream and orange."),
+  // Was an 8-bit mushroom, which OpenAI's safety system refused — it is close
+  // enough to a Nintendo asset that a filter noticed, which is a useful second
+  // opinion on the IP note at the top of this file. A pixel coin is ours.
+  d("pixel-coin", "Пиксел монета", "GAMING", true,
+    "A chunky 8-bit pixel-art coin seen face-on, a circle with a square hole and a highlight pixel, with two small sparkle pixels beside it, in warm gold and cream."),
+  d("axe-rune", "Бойна брадва", "GAMING", true,
+    "A double-headed viking battle axe seen face-on with invented rune marks etched on the blade, in cream and steel grey."),
+  d("wolf-howl", "Вълкът", "GAMING", true,
+    "A wolf's head howling in profile against a large full circle moon, geometric and graphic, in cream and pale blue."),
+  d("phoenix", "Феникс", "GAMING", true,
+    "A phoenix rising with spread wings and trailing flames, symmetrical and heraldic, in orange, gold and cream."),
+  d("tower-defence", "Кулата", "GAMING", true,
+    "A tall fantasy stone tower with a pointed roof and a banner, on a small rock, in cream and teal."),
+
+  // ── Ергенско и моминско, графики ─────────────────────────────────────
+  d("stag-beer", "Наздраве", "BACHELOR", true,
+    "Two beer mugs clinking with foam and a few droplets flying, bold and graphic, in cream and warm amber."),
+  d("stag-skull-hat", "Черепът с цилиндър", "BACHELOR", true,
+    "A stylised skull wearing a top hat and a bow tie, clean and graphic, not gory, in cream."),
+  d("hen-lips", "Целувка", "HEN", false,
+    "A pair of stylised lips with a small heart beside them, in coral and blush."),
+  d("hen-diamond", "Диамантът", "HEN", false,
+    "A large faceted diamond seen face-on with small sparkles around it, in blush pink and pale gold."),
+
+  // ── Празници ──────────────────────────────────────────────────────────
+  d("christmas-tree", "Елха", "HOLIDAY", true,
+    "A stylised triangular Christmas tree built from simple geometric layers with a star on top and small baubles, in deep green, cream and gold."),
+  d("snowflake", "Снежинка", "HOLIDAY", true,
+    "A single large six-armed snowflake with fine symmetrical detail, in pale blue and cream."),
+  d("reindeer", "Еленът с шейната", "HOLIDAY", true,
+    "A reindeer head seen face-on with large antlers and a round red nose, wearing a small scarf, in cream, red and green."),
+  d("mimosa-branch", "Мартеница", "HOLIDAY", false,
+    "Two small tassel figures, one white and one red, joined by twisted red and white cord, drawn cleanly, in red and cream on transparent."),
+  d("spring-flowers", "Осми март", "HOLIDAY", false,
+    "A small bunch of spring flowers — snowdrops and tulips — tied with a ribbon, in blush, sage and warm yellow."),
+
+  // ── По професия ───────────────────────────────────────────────────────
+  d("stethoscope", "Стетоскоп", "PROFESSION", false,
+    "A stethoscope arranged so its tubing forms a heart shape, in charcoal and coral."),
+  d("truck-road", "Камионът", "PROFESSION", true,
+    "A long-haul lorry seen from the side on a short strip of road, with a small sun behind it, in cream and orange."),
+  d("chef-knife", "Готвачът", "PROFESSION", false,
+    "A chef's knife crossed with a whisk above a small sprig of herbs, in charcoal and sage."),
+  d("hard-hat", "Строителят", "PROFESSION", true,
+    "A hard hat above crossed spanner and hammer, in cream and warm yellow."),
+
+  // ── Абитуриентски ─────────────────────────────────────────────────────
+  d("grad-cap", "Шапката", "GRADUATION", true,
+    "A graduation mortarboard cap thrown at an angle with its tassel flying, above a rolled diploma tied with ribbon, in cream and gold."),
+  d("class-stars", "Випускът", "GRADUATION", true,
+    "Three five-pointed stars in a rising arc with a small laurel branch beneath them, in cream and gold."),
+
+  // ── Още любимци и хумор ──────────────────────────────────────────────
+  d("cat-grumpy", "Намръщеното коте", "HUMOUR", false,
+    "A round grumpy-looking cat sitting face-on with narrowed eyes and folded paws, in soft grey and cream."),
+  d("plant-parent", "Родител на растения", "HUMOUR", false,
+    "A potted monstera plant with two smaller pots beside it, in sage green and clay."),
+  d("dog-paw-family", "Лапи в редица", "PETS", false,
+    "Four dog paw prints of decreasing size walking in a diagonal line, in clay brown."),
 ];
 
 export function designById(id: string): Design | undefined {

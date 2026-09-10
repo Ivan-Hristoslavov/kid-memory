@@ -105,7 +105,15 @@ export default async function DesignCategoryPage({
             </p>
           )}
 
-          <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {/* Two sections, not one mixed grid. Lettering and graphics are
+              different purchases — somebody buying "Кумът" for six friends is
+              not browsing crests — and a heading is what lets them skip. */}
+          {words.length > 0 && (
+            <h2 className="mt-10 font-heading text-xl font-bold tracking-tight">
+              С надпис
+            </h2>
+          )}
+          <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {words.map((w) => (
               <li key={w.id}>
                 <Link
@@ -126,7 +134,14 @@ export default async function DesignCategoryPage({
                 </Link>
               </li>
             ))}
+          </ul>
 
+          {designs.length > 0 && (
+            <h2 className="mt-12 font-heading text-xl font-bold tracking-tight">
+              С графика
+            </h2>
+          )}
+          <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {designs.map((d) => (
               <li key={d.id}>
                 <Link
