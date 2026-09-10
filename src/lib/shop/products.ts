@@ -27,6 +27,8 @@
  * ─────────────────────────────────────────────────────────────────────────
  */
 
+import type { PodSupplierId } from "@/lib/pod/types";
+
 /** What can be personalised on an item — drives the product page controls. */
 export type PersonalizationKind =
   | "PHOTO"
@@ -81,15 +83,22 @@ export interface MentyProduct {
   blurb: string;
   family: ProductFamily;
 
-  /** Where this is fulfilled from. One value today; an enum for when it isn't. */
-  source: "PRINTFACTORY";
   /**
-   * Supplier product code. Null where the source page lists no code — those
-   * items are still real, they are just identified by URL alone.
+   * Who manufactures and ships this.
+   *
+   * A field rather than a constant because it has already changed once: the
+   * shop moved from PrintFactory to printondemand.bg, and a catalogue that
+   * names one supplier in every entry has to be rewritten to move again.
+   * Resolved to an implementation through lib/pod.
    */
-  sourceProductCode: string | null;
+  supplier: PodSupplierId;
+  /**
+   * The supplier's product code. Null where their page lists none — those items
+   * are still real, they are just identified by URL alone.
+   */
+  supplierProductCode: string | null;
   /** Canonical supplier page. The authority for form, variants and mockups. */
-  sourceUrl: string;
+  supplierUrl: string;
 
   /**
    * Retail price. See CURRENCY_NOTE below — the reference mockup prices in
@@ -143,9 +152,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Персонализирана чаша",
     blurb: "Керамична чаша 330 мл със снимка и послание.",
     family: "DRINKWARE",
-    source: "PRINTFACTORY",
-    sourceProductCode: "MD4000",
-    sourceUrl: "https://printfactory.bg/print-on-demand-ceramic-mug",
+    supplier: "PRINTFACTORY",
+    supplierProductCode: "MD4000",
+    supplierUrl: "https://printfactory.bg/print-on-demand-ceramic-mug",
     priceEUR: 12.9,
     priceReferenceBGN: 24.9,
     images: ["/products/photo-mug-330.webp"],
@@ -160,9 +169,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Чаша с цветна дръжка",
     blurb: "Бяла керамична чаша с цветна дръжка и вътрешност.",
     family: "DRINKWARE",
-    source: "PRINTFACTORY",
-    sourceProductCode: null,
-    sourceUrl:
+    supplier: "PRINTFACTORY",
+    supplierProductCode: null,
+    supplierUrl:
       "https://printfactory.bg/bqla-keramichna-chasha-s-cvetna-drajka-i-vatreshnost",
     priceEUR: 14.9,
     priceReferenceBGN: 28.9,
@@ -179,9 +188,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Премиум тениска Stanley/Stella",
     blurb: "Унисекс тениска от органичен памук.",
     family: "APPAREL",
-    source: "PRINTFACTORY",
-    sourceProductCode: "STTU755-E",
-    sourceUrl:
+    supplier: "PRINTFACTORY",
+    supplierProductCode: "STTU755-E",
+    supplierUrl:
       "https://printfactory.bg/stanley-stella-organic-creator-print-on-demand-balgaria",
     priceEUR: 20.9,
     priceReferenceBGN: 39.9,
@@ -200,9 +209,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Суичър с бродерия",
     blurb: "Унисекс суичър от органичен памук, B&C.",
     family: "APPAREL",
-    source: "PRINTFACTORY",
-    sourceProductCode: null,
-    sourceUrl:
+    supplier: "PRINTFACTORY",
+    supplierProductCode: null,
+    supplierUrl:
       "https://printfactory.bg/uniseks-suichar-ot-organichen-pamuck-print-on-demand",
     priceEUR: 30.9,
     priceReferenceBGN: 59.9,
@@ -221,9 +230,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Ключодържател със снимка",
     blurb: "Кожен ключодържател с гравирана снимка.",
     family: "ACCESSORIES",
-    source: "PRINTFACTORY",
-    sourceProductCode: null,
-    sourceUrl: "https://printfactory.bg/kojen-kliuchodarjatel-sas-snimka",
+    supplier: "PRINTFACTORY",
+    supplierProductCode: null,
+    supplierUrl: "https://printfactory.bg/kojen-kliuchodarjatel-sas-snimka",
     priceEUR: 10.9,
     priceReferenceBGN: 19.9,
     images: ["/products/photo-leather-keychain.webp"],
@@ -238,9 +247,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Метален ключодържател",
     blurb: "Двустранен печат върху метал.",
     family: "ACCESSORIES",
-    source: "PRINTFACTORY",
-    sourceProductCode: "YA154",
-    sourceUrl:
+    supplier: "PRINTFACTORY",
+    supplierProductCode: "YA154",
+    supplierUrl:
       "https://printfactory.bg/best-sublimation/metalen-kliuchodarjatel-za-dvustranen-pechat",
     priceEUR: 8.9,
     priceReferenceBGN: 16.9,
@@ -255,9 +264,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Фото пъзел A4",
     blurb: "Картонен пъзел със снимка — спомен, който се сглобява.",
     family: "PUZZLES",
-    source: "PRINTFACTORY",
-    sourceProductCode: "PTA4",
-    sourceUrl: "https://printfactory.bg/pazel-a4-120parcheta-pechat-pri-poiskvane",
+    supplier: "PRINTFACTORY",
+    supplierProductCode: "PTA4",
+    supplierUrl: "https://printfactory.bg/pazel-a4-120parcheta-pechat-pri-poiskvane",
     priceEUR: 15.9,
     priceReferenceBGN: 29.9,
     images: ["/products/photo-puzzle-a4.webp"],
@@ -271,9 +280,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Памучна чанта",
     blurb: "Плътна чанта от органичен памук.",
     family: "ACCESSORIES",
-    source: "PRINTFACTORY",
-    sourceProductCode: "KI0252",
-    sourceUrl:
+    supplier: "PRINTFACTORY",
+    supplierProductCode: "KI0252",
+    supplierUrl:
       "https://printfactory.bg/platna-pamuchna-chanta-ot-organichen-pamuk-print-on-demand",
     priceEUR: 13.9,
     priceReferenceBGN: 26.9,
@@ -288,9 +297,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Чорапи с печат",
     blurb: "Памучни чорапи с печат по поръчка.",
     family: "APPAREL",
-    source: "PRINTFACTORY",
-    sourceProductCode: null,
-    sourceUrl:
+    supplier: "PRINTFACTORY",
+    supplierProductCode: null,
+    supplierUrl:
       "https://printfactory.bg/pechat-i-shtampirane-na-chorapi-print-on-demand-balgaria",
     priceEUR: 9.9,
     priceReferenceBGN: 18.9,
@@ -305,9 +314,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     title: "Чанта банан Studio",
     blurb: "Studio Waistpack с персонализиран печат.",
     family: "ACCESSORIES",
-    source: "PRINTFACTORY",
-    sourceProductCode: "BG144",
-    sourceUrl: "https://printfactory.bg/aksesoari/chanta-banan-print-on-demand",
+    supplier: "PRINTFACTORY",
+    supplierProductCode: "BG144",
+    supplierUrl: "https://printfactory.bg/aksesoari/chanta-banan-print-on-demand",
     priceEUR: 17.9,
     priceReferenceBGN: 34.9,
     images: ["/products/studio-waistpack.webp"],
@@ -333,9 +342,9 @@ export const OWN_PRODUCTS: readonly MentyProduct[] = [
     title: "Постер със снимка в рамка",
     blurb: "Илюстрован постер по твоя снимка, готов за стената.",
     family: "WALL",
-    source: "PRINTFACTORY",
-    sourceProductCode: null,
-    sourceUrl: "",
+    supplier: "PRINTFACTORY",
+    supplierProductCode: null,
+    supplierUrl: "",
     priceEUR: 17.9,
     priceReferenceBGN: 34.9,
     images: ["/samples/hero-wall.webp"],

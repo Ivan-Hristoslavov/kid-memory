@@ -39,7 +39,7 @@ export async function generateMetadata({
  * type scale, radii, button height and spacing are the homepage's, because the
  * brief asks for one design language across both.
  *
- * The supplier's own page stays reachable from `sourceUrl` in the catalogue —
+ * The supplier's own page stays reachable from `supplierUrl` in the catalogue —
  * it is the authority on form and variants — but it is never linked to a
  * customer, who is buying from Menty and should not be handed off to a
  * fulfilment partner mid-purchase.
