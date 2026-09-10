@@ -110,7 +110,7 @@ export function StepPreview() {
   const shownUrl = testMode ? wizard.finalUrl : wizard.previewUrl;
 
   return (
-    <Card className="glass overflow-hidden rounded-2xl border-none">
+    <Card className="bg-card ring-1 ring-border overflow-hidden rounded-xl border-none">
       {/* `relative` anchors the reveal glow below — without it the burst
           positions against some far-off ancestor. */}
       <CardContent className="relative flex flex-col items-center gap-6 p-8">
@@ -121,7 +121,7 @@ export function StepPreview() {
         {!generating && error && (
           <div className="flex flex-col items-center gap-4 py-10 text-center">
             <p className="text-destructive">{error}</p>
-            <Button onClick={() => void generate()} className="rounded-full">
+            <Button onClick={() => void generate()} className="rounded-lg">
               Опитай отново
             </Button>
           </div>
@@ -148,7 +148,7 @@ export function StepPreview() {
               initial={{ opacity: 0, scale: 0.82, y: 24 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ type: "spring", stiffness: 120, damping: 16, mass: 0.9 }}
-              className="elevate-lg relative w-full max-w-sm overflow-hidden rounded-2xl"
+              className="elevate-lg relative w-full max-w-sm overflow-hidden rounded-xl"
             >
               {testMode ? (
                 <Image
@@ -223,7 +223,7 @@ export function StepPreview() {
               </Button>
               <Button
                 size="lg"
-                className="flex-1 rounded-full text-base shadow-lg shadow-primary/25"
+                className="flex-1 rounded-lg text-base shadow-lg shadow-primary/25"
                 onClick={() => {
                   trackFunnel("InitiateCheckout", { content_name: "Постер" });
                   router.push(`/order?orderId=${wizard.orderId}`);

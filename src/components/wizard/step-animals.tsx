@@ -18,9 +18,9 @@ export function StepAnimals() {
     wizard.subjects.map((s) => s.name).filter(Boolean).join(" и ") || "героя";
 
   return (
-    <Card className="glass overflow-hidden rounded-2xl border-none">
+    <Card className="bg-card ring-1 ring-border overflow-hidden rounded-xl border-none">
       <CardContent className="space-y-6 p-8">
-        <div className="rounded-2xl bg-secondary p-4 text-center">
+        <div className="rounded-xl bg-secondary p-4 text-center">
           <p className="flex items-center justify-center gap-2 font-heading font-bold">
             <PawPrint className="size-4 text-primary" />
             Кои животни да са до {childrenName} на илюстрацията?
@@ -65,7 +65,7 @@ export function StepAnimals() {
                   wizard.toggleAnimal(animal.id);
                 }}
                 aria-pressed={selected}
-                className={`relative flex flex-col items-center gap-2 rounded-2xl border-2 p-4 transition-all ${
+                className={`relative flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all ${
                   selected
                     ? "border-primary bg-primary/10 shadow-md shadow-primary/10"
                     : disabled
@@ -102,7 +102,7 @@ export function StepAnimals() {
           </Button>
           <Button
             size="lg"
-            className="group flex-1 rounded-full shadow-lg shadow-primary/25"
+            className="group flex-1 rounded-lg shadow-none"
             onClick={() => {
               if (count === 0) {
                 toast.error("Избери поне едно животно");

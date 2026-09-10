@@ -25,7 +25,7 @@ export function StepTemplate() {
   }
 
   return (
-    <Card className="glass overflow-hidden rounded-2xl border-none">
+    <Card className="bg-card ring-1 ring-border overflow-hidden rounded-xl border-none">
       <CardContent className="space-y-6 p-8">
         <p className="text-center text-muted-foreground">
           Всеки постер тръгва от една снимка. Избери за кого е — останалото питаме
@@ -46,7 +46,7 @@ export function StepTemplate() {
                 transition={{ delay: i * 0.06 }}
                 onClick={() => choose(id)}
                 aria-pressed={selected}
-                className={`group relative overflow-hidden rounded-2xl border-2 p-6 text-left transition-all ${
+                className={`group relative overflow-hidden rounded-xl border-2 p-6 text-left transition-all ${
                   selected
                     ? "border-primary shadow-xl shadow-primary/15"
                     : "border-border hover:scale-[1.01] hover:border-primary/40"
@@ -61,7 +61,7 @@ export function StepTemplate() {
                       <Check className="size-3.5" />
                     </span>
                   )}
-                  <span className="grid size-12 place-items-center rounded-2xl bg-white/70 text-foreground/75 shadow-sm">
+                  <span className="grid size-12 place-items-center rounded-xl bg-white/70 text-foreground/75 shadow-sm">
                     <Icon className="size-6" />
                   </span>
                   <h3 className="mt-4 font-heading text-lg font-bold">{t.name}</h3>

@@ -117,7 +117,7 @@ function SubjectLines({
   const left = suggestions.filter((s) => !used.has(s.text.toLowerCase()));
 
   return (
-    <div className="rounded-2xl border-2 border-border bg-card/60 p-5">
+    <div className="rounded-xl border-2 border-border bg-card/60 p-5">
       <p className="mb-4 inline-flex items-center gap-2 font-heading font-bold">
         <span className="grid size-7 place-items-center rounded-full bg-secondary text-foreground/70">
           <MessageSquareHeart className="size-4" />
@@ -136,7 +136,7 @@ function SubjectLines({
           </Label>
           <Input
             placeholder={`напр. ${cfg.textPlaceholder}`}
-            className="h-11 rounded-2xl border-2"
+            className="h-11 rounded-xl border-2"
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => {
@@ -152,7 +152,7 @@ function SubjectLines({
             <Label className="text-xs">{cfg.subLabel}</Label>
             <Input
               placeholder={cfg.subPlaceholder ? `напр. ${cfg.subPlaceholder}` : ""}
-              className="h-11 rounded-2xl border-2"
+              className="h-11 rounded-xl border-2"
               value={sub}
               onChange={(e) => setSub(e.target.value)}
               onKeyDown={(e) => {
@@ -168,7 +168,7 @@ function SubjectLines({
           <Button
             type="button"
             onClick={() => save()}
-            className="h-11 flex-1 rounded-2xl px-5 sm:flex-none"
+            className="h-11 flex-1 rounded-xl px-5 sm:flex-none"
           >
             {editing !== null ? (
               <>
@@ -185,7 +185,7 @@ function SubjectLines({
               type="button"
               variant="outline"
               onClick={clearForm}
-              className="h-11 rounded-2xl px-3"
+              className="h-11 rounded-xl px-3"
               aria-label="Откажи редакцията"
             >
               <X className="size-4" />
@@ -205,7 +205,7 @@ function SubjectLines({
           </Label>
           <Input
             placeholder={sub ? `по подразбиране: ${sub.toLowerCase()}` : "напр. чаша вода"}
-            className="h-11 rounded-2xl border-2"
+            className="h-11 rounded-xl border-2"
             value={visual}
             onChange={(e) => setVisual(e.target.value)}
           />
@@ -311,7 +311,7 @@ export function StepWords() {
   }
 
   return (
-    <Card className="glass overflow-hidden rounded-2xl border-none">
+    <Card className="bg-card ring-1 ring-border overflow-hidden rounded-xl border-none">
       <CardContent className="space-y-5 p-8">
         <p className="text-center text-muted-foreground">{template.lines.help}</p>
 
@@ -337,7 +337,7 @@ export function StepWords() {
           </Button>
           <Button
             size="lg"
-            className="group flex-1 rounded-full shadow-lg shadow-primary/25"
+            className="group flex-1 rounded-lg shadow-none"
             onClick={next}
           >
             Продължи

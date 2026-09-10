@@ -156,7 +156,7 @@ export function CheckoutForm({
 
       <div className="space-y-8">
         {/* Product selection */}
-        <section className="glass rounded-2xl p-7">
+        <section className="bg-card ring-1 ring-border rounded-xl p-7">
           <h2 className="font-heading text-xl font-bold">Избери продукт</h2>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {AVAILABLE_PRODUCTS.map((id) => {
@@ -165,7 +165,7 @@ export function CheckoutForm({
               return (
                 <label
                   key={id}
-                  className={`relative cursor-pointer rounded-2xl border-2 p-4 transition-all ${
+                  className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all ${
                     selected
                       ? "border-primary bg-primary/5"
                       : "border-border bg-card hover:border-primary/40"
@@ -196,7 +196,7 @@ export function CheckoutForm({
         </section>
 
         {/* Customer details */}
-        <section className="glass rounded-2xl p-7">
+        <section className="bg-card ring-1 ring-border rounded-xl p-7">
           <h2 className="font-heading text-xl font-bold">Твоите данни</h2>
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <div className="space-y-2 sm:col-span-2">
@@ -204,7 +204,7 @@ export function CheckoutForm({
               <Input
                 id="customerName"
                 name="customerName"
-                className="h-12 rounded-2xl"
+                className="h-12 rounded-xl"
                 placeholder="напр. Мария Иванова"
               />
               {err("customerName") && (
@@ -217,7 +217,7 @@ export function CheckoutForm({
                 id="phone"
                 name="phone"
                 type="tel"
-                className="h-12 rounded-2xl"
+                className="h-12 rounded-xl"
                 placeholder="0888 123 456"
               />
               {err("phone") && <p className="text-sm text-destructive">{err("phone")}</p>}
@@ -228,7 +228,7 @@ export function CheckoutForm({
                 id="email"
                 name="email"
                 type="email"
-                className="h-12 rounded-2xl"
+                className="h-12 rounded-xl"
                 placeholder="maria@example.com"
               />
               {err("email") && <p className="text-sm text-destructive">{err("email")}</p>}
@@ -238,7 +238,7 @@ export function CheckoutForm({
 
         {/* Delivery */}
         {!isDigital && (
-          <section className="glass rounded-2xl p-7">
+          <section className="bg-card ring-1 ring-border rounded-xl p-7">
             <h2 className="font-heading text-xl font-bold">Доставка</h2>
 
             <div className="mt-5 space-y-5">
@@ -253,7 +253,7 @@ export function CheckoutForm({
                   {COURIERS.map((c) => (
                     <label
                       key={c.id}
-                      className={`flex cursor-pointer items-center gap-3 rounded-2xl border-2 p-4 transition-all ${
+                      className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all ${
                         courier === c.id
                           ? "border-primary bg-primary/5"
                           : "border-border bg-card hover:border-primary/40"
@@ -277,7 +277,7 @@ export function CheckoutForm({
                   {DELIVERY_METHODS.map((d) => (
                     <label
                       key={d.id}
-                      className={`flex cursor-pointer items-center gap-3 rounded-2xl border-2 p-4 transition-all ${
+                      className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-all ${
                         delivery === d.id
                           ? "border-primary bg-primary/5"
                           : "border-border bg-card hover:border-primary/40"
@@ -295,7 +295,7 @@ export function CheckoutForm({
                 <Input
                   id="city"
                   name="city"
-                  className="h-12 rounded-2xl"
+                  className="h-12 rounded-xl"
                   placeholder="напр. София"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
@@ -309,7 +309,7 @@ export function CheckoutForm({
                   <Input
                     id="address"
                     name="address"
-                    className="h-12 rounded-2xl"
+                    className="h-12 rounded-xl"
                     placeholder="ул., №, вход, етаж, апартамент"
                   />
                   {err("address") && (
@@ -328,7 +328,7 @@ export function CheckoutForm({
                   </Label>
                   {shownOffices.length > 0 ? (
                     <Select name="courierOffice">
-                      <SelectTrigger className="h-12 w-full rounded-2xl">
+                      <SelectTrigger className="h-12 w-full rounded-xl">
                         <SelectValue placeholder="Избери от списъка" />
                       </SelectTrigger>
                       <SelectContent>
@@ -343,7 +343,7 @@ export function CheckoutForm({
                     <Input
                       id="courierOffice"
                       name="courierOffice"
-                      className="h-12 rounded-2xl"
+                      className="h-12 rounded-xl"
                       placeholder={
                         delivery === "LOCKER"
                           ? "напр. Еконтомат Младост 1"
@@ -360,7 +360,7 @@ export function CheckoutForm({
           </section>
         )}
         {/* Add-ons */}
-        <section className="glass rounded-2xl p-7">
+        <section className="bg-card ring-1 ring-border rounded-xl p-7">
           <h2 className="font-heading text-xl font-bold">Направи го още по-специално</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Малки допълнения, които правят подаръка завършен.
@@ -373,7 +373,7 @@ export function CheckoutForm({
               return (
                 <label
                   key={id}
-                  className={`flex cursor-pointer items-center gap-4 rounded-2xl border-2 p-4 transition-all ${
+                  className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
                     checked
                       ? "border-primary bg-primary/5"
                       : "border-border bg-card hover:border-primary/40"
@@ -412,13 +412,13 @@ export function CheckoutForm({
         </section>
 
         {/* Payment */}
-        <section className="glass rounded-2xl p-7">
+        <section className="bg-card ring-1 ring-border rounded-xl p-7">
           <h2 className="font-heading text-xl font-bold">Плащане</h2>
 
           {isDigital ? (
             <>
               <input type="hidden" name="paymentMethod" value="STRIPE" />
-              <div className="mt-5 flex items-start gap-4 rounded-2xl border-2 border-primary bg-primary/5 p-4">
+              <div className="mt-5 flex items-start gap-4 rounded-xl border-2 border-primary bg-primary/5 p-4">
                 <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
                   <CreditCard className="size-5" />
                 </span>
@@ -447,7 +447,7 @@ export function CheckoutForm({
                 return (
                   <label
                     key={id}
-                    className={`flex cursor-pointer items-center gap-4 rounded-2xl border-2 p-4 transition-all ${
+                    className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
                       selected
                         ? "border-primary bg-primary/5"
                         : "border-border bg-card hover:border-primary/40"
@@ -491,7 +491,7 @@ export function CheckoutForm({
 
       {/* Summary */}
       <aside className="lg:sticky lg:top-28 h-fit space-y-5">
-        <div className="glass overflow-hidden rounded-2xl">
+        <div className="bg-card ring-1 ring-border overflow-hidden rounded-xl">
           {previewUrl && (
             <ProtectedImage
               src={previewUrl}
@@ -547,7 +547,7 @@ export function CheckoutForm({
               )}
             </p>
             {missingForFreeDelivery > 0 && (
-              <p className="rounded-2xl bg-secondary/60 p-3 text-center text-sm">
+              <p className="rounded-xl bg-secondary/60 p-3 text-center text-sm">
                 Още {formatPrice(missingForFreeDelivery)} до безплатна доставка
               </p>
             )}
@@ -555,14 +555,14 @@ export function CheckoutForm({
         </div>
 
         {state.error && (
-          <p className="rounded-2xl bg-destructive/10 p-4 text-sm text-destructive">
+          <p className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive">
             {state.error}
           </p>
         )}
 
         {/* Both optional and both about coming back later, so they sit
             together and out of the way of the required fields. */}
-        <section className="glass rounded-2xl p-7">
+        <section className="bg-card ring-1 ring-border rounded-xl p-7">
           <h2 className="font-heading text-xl font-bold">Да ти напомним ли догодина?</h2>
           <div className="mt-5 space-y-4">
             <div className="space-y-2">
@@ -574,7 +574,7 @@ export function CheckoutForm({
                 id="childBirthday"
                 name="childBirthday"
                 type="date"
-                className="h-12 rounded-2xl"
+                className="h-12 rounded-xl"
               />
               <p className="text-xs text-muted-foreground">
                 Пишем ти три седмици преди следващия — думичките дотогава ще са други.
@@ -598,7 +598,7 @@ export function CheckoutForm({
         {/* Personalised goods are excluded from the statutory right of
             withdrawal (чл. 57, т. 3 ЗЗП). Making the customer tick it here is
             both the legal record and a deliberate pause before a COD order. */}
-        <label className="flex cursor-pointer items-start gap-3 rounded-2xl bg-card/70 p-4 text-sm">
+        <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-card/70 p-4 text-sm">
           <input
             type="checkbox"
             name="personalisedAck"

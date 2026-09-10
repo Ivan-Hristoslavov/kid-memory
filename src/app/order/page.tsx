@@ -32,15 +32,15 @@ export default async function OrderPage({
     return (
       <>
         <MentyHeader />
-        <main className="bg-dreamy flex flex-1 items-center justify-center px-6 pt-12 pb-20">
-          <div className="glass max-w-md rounded-3xl p-10 text-center">
+        <main className="bg-sand flex flex-1 items-center justify-center px-6 pt-12 pb-20">
+          <div className="bg-card ring-1 ring-border max-w-md rounded-xl p-10 text-center">
             <h1 className="font-heading text-2xl font-bold">
               Тази поръчка вече е потвърдена ❤️
             </h1>
             <p className="mt-3 text-muted-foreground">
               Ако искаш още един, създай нов постер.
             </p>
-            <Button asChild className="mt-6 rounded-full">
+            <Button asChild className="mt-6 rounded-lg">
               <Link href="/create">Създай постер</Link>
             </Button>
           </div>
@@ -61,7 +61,7 @@ export default async function OrderPage({
   return (
     <>
       <MentyHeader />
-      <main className="bg-dreamy flex-1 pt-12 pb-20">
+      <main className="bg-sand flex-1 pt-12 pb-20">
         <div className="mx-auto max-w-5xl px-6">
           <h1 className="text-center font-heading text-3xl font-extrabold tracking-tight sm:text-4xl">
             Последна стъпка до постера на {order.childName}

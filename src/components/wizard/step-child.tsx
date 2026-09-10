@@ -161,7 +161,7 @@ export function StepChild() {
       : null;
 
   return (
-    <Card className="glass overflow-hidden rounded-2xl border-none">
+    <Card className="bg-card ring-1 ring-border overflow-hidden rounded-xl border-none">
       <CardContent className="space-y-7 p-8">
         {/* Photo */}
         <div className="space-y-2">
@@ -174,7 +174,7 @@ export function StepChild() {
 
           {/* Photo guidance — input quality is the single biggest factor in how
               much the illustration ends up looking like the real subject. */}
-          <div className="rounded-2xl bg-secondary/50 px-4 py-3">
+          <div className="rounded-xl bg-secondary/50 px-4 py-3">
             <div className="flex flex-wrap gap-x-4 gap-y-1.5">
               {["Ясно лице към камерата", "Добра светлина", "Цветна и рязка", "Отблизо"].map(
                 (t) => (
@@ -201,7 +201,7 @@ export function StepChild() {
 
           {/* The upload button is exactly where someone hesitates — answer the
               privacy question here, not three sections down in the FAQ. */}
-          <p className="flex items-start gap-1.5 rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+          <p className="flex items-start gap-1.5 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
             <Lock className="mt-0.5 size-4 shrink-0" />
             <span>
               Снимката се съхранява защитено, служи само за твоята илюстрация и се
@@ -230,7 +230,7 @@ export function StepChild() {
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="relative flex items-center gap-4 rounded-2xl border-2 border-primary/40 bg-primary/5 p-4"
+              className="relative flex items-center gap-4 rounded-xl border-2 border-primary/40 bg-primary/5 p-4"
             >
               <div className="relative shrink-0">
                 <Image
@@ -239,7 +239,7 @@ export function StepChild() {
                   width={88}
                   height={88}
                   unoptimized
-                  className="size-22 rounded-2xl object-cover shadow-md"
+                  className="size-22 rounded-xl object-cover shadow-md"
                 />
                 <button
                   type="button"
@@ -293,7 +293,7 @@ export function StepChild() {
                 const f = e.dataTransfer.files?.[0];
                 if (f) void handlePhoto(f);
               }}
-              className={`flex w-full flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed px-6 py-9 text-center transition-all ${
+              className={`flex w-full flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-9 text-center transition-all ${
                 dragActive
                   ? "scale-[1.01] border-primary bg-primary/10"
                   : "border-border bg-card/60 hover:border-primary/50 hover:bg-card"
@@ -302,7 +302,7 @@ export function StepChild() {
               <motion.span
                 animate={dragActive ? { y: [-2, -8, -2] } : { y: 0 }}
                 transition={{ duration: 0.8, repeat: dragActive ? Infinity : 0 }}
-                className="grid size-14 place-items-center rounded-2xl bg-secondary text-foreground/70 shadow-inner"
+                className="grid size-14 place-items-center rounded-xl bg-secondary text-foreground/70 shadow-inner"
               >
                 {uploading ? (
                   <Loader2 className="size-7 animate-spin" />
@@ -335,7 +335,7 @@ export function StepChild() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, height: 0 }}
-                className="rounded-2xl border-2 border-border bg-card/60 p-5"
+                className="rounded-xl border-2 border-border bg-card/60 p-5"
               >
                 <div className="mb-4 flex items-center justify-between">
                   <span className="inline-flex items-center gap-2 font-heading font-bold">
@@ -361,7 +361,7 @@ export function StepChild() {
                     <Sparkle className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-primary/50" />
                     <Input
                       placeholder={`Име на ${subject.noun}`}
-                      className="h-12 rounded-2xl border-2 pl-11"
+                      className="h-12 rounded-xl border-2 pl-11"
                       value={s.name}
                       onChange={(e) => wizard.updateSubject(s.id, { name: e.target.value })}
                     />
@@ -372,7 +372,7 @@ export function StepChild() {
                       <PawPrint className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-primary/50" />
                       <Input
                         placeholder="Вид или порода — напр. лабрадор, сиамска котка"
-                        className="h-12 rounded-2xl border-2 pl-11"
+                        className="h-12 rounded-xl border-2 pl-11"
                         value={s.species}
                         onChange={(e) =>
                           wizard.updateSubject(s.id, { species: e.target.value })
@@ -386,7 +386,7 @@ export function StepChild() {
                       <Heart className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-primary/50" />
                       <Input
                         placeholder="Какъв ти е (по избор) — напр. колежка, учител"
-                        className="h-12 rounded-2xl border-2 pl-11"
+                        className="h-12 rounded-xl border-2 pl-11"
                         value={s.relation}
                         onChange={(e) =>
                           wizard.updateSubject(s.id, { relation: e.target.value })
@@ -404,7 +404,7 @@ export function StepChild() {
                             value={s.age}
                             onValueChange={(v) => wizard.updateSubject(s.id, { age: v })}
                           >
-                            <SelectTrigger className="!h-12 w-full whitespace-nowrap rounded-2xl border-2 pl-11 [&>span]:truncate">
+                            <SelectTrigger className="!h-12 w-full whitespace-nowrap rounded-xl border-2 pl-11 [&>span]:truncate">
                               <SelectValue
                                 placeholder={
                                   subject.age === "optional"
@@ -432,7 +432,7 @@ export function StepChild() {
                                 key={g}
                                 type="button"
                                 onClick={() => wizard.updateSubject(s.id, { gender: g })}
-                                className={`group relative h-12 overflow-hidden rounded-2xl border-2 text-sm font-semibold transition-all ${
+                                className={`group relative h-12 overflow-hidden rounded-xl border-2 text-sm font-semibold transition-all ${
                                   active
                                     ? "border-primary shadow-md shadow-primary/15"
                                     : "border-border bg-card hover:border-primary/40"
@@ -463,7 +463,7 @@ export function StepChild() {
             <button
               type="button"
               onClick={() => wizard.addSubject()}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-primary/40 py-3 font-semibold text-primary transition-colors hover:bg-primary/5"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-primary/40 py-3 font-semibold text-primary transition-colors hover:bg-primary/5"
             >
               <Plus className="size-5" /> {subject.addLabel}
             </button>
@@ -484,7 +484,7 @@ export function StepChild() {
             size="lg"
             onClick={next}
             disabled={uploading}
-            className="group h-14 flex-1 rounded-full text-base shadow-lg shadow-primary/25 transition-transform hover:scale-[1.01]"
+            className="group h-14 flex-1 rounded-lg text-base shadow-lg shadow-primary/25 transition-transform hover:scale-[1.01]"
           >
             Продължи
             <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />

@@ -28,7 +28,7 @@ export function TrackForm({ defaultOrderNumber }: { defaultOrderNumber?: string 
 
   return (
     <div className="mx-auto w-full max-w-lg">
-      <form action={action} className="glass space-y-5 rounded-2xl p-7">
+      <form action={action} className="bg-card ring-1 ring-border space-y-5 rounded-xl p-7">
         <div className="space-y-2">
           <Label htmlFor="orderNumber">Номер на поръчка</Label>
           <Input
@@ -37,7 +37,7 @@ export function TrackForm({ defaultOrderNumber }: { defaultOrderNumber?: string 
             inputMode="numeric"
             defaultValue={defaultOrderNumber}
             placeholder="напр. 128"
-            className="h-12 rounded-2xl"
+            className="h-12 rounded-xl"
           />
         </div>
         <div className="space-y-2">
@@ -47,12 +47,12 @@ export function TrackForm({ defaultOrderNumber }: { defaultOrderNumber?: string 
             name="phone"
             type="tel"
             placeholder="0888 123 456"
-            className="h-12 rounded-2xl"
+            className="h-12 rounded-xl"
           />
         </div>
 
         {state.error && (
-          <p className="rounded-2xl bg-destructive/10 p-4 text-sm text-destructive">
+          <p className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive">
             {state.error}
           </p>
         )}
@@ -76,7 +76,7 @@ export function TrackForm({ defaultOrderNumber }: { defaultOrderNumber?: string 
       </form>
 
       {state.order && status && (
-        <div className="glass mt-6 rounded-2xl p-7">
+        <div className="bg-card ring-1 ring-border mt-6 rounded-xl p-7">
           <p className="text-sm text-muted-foreground">
             Поръчка №{state.order.orderNumber} · {state.order.childName}
           </p>
@@ -103,7 +103,7 @@ export function TrackForm({ defaultOrderNumber }: { defaultOrderNumber?: string 
           </dl>
 
           {!state.order.confirmed && state.order.status === "CONFIRMED" && (
-            <p className="mt-5 rounded-2xl bg-secondary/60 p-4 text-sm">
+            <p className="mt-5 rounded-xl bg-secondary/60 p-4 text-sm">
               Чакаме твоето потвърждение от имейла, преди да пуснем постера за печат.
               Провери пощата си (и папка „Спам“).
             </p>

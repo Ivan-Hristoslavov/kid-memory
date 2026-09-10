@@ -82,7 +82,7 @@ export default async function ArticlePage({
         }}
       />
       <MentyHeader />
-      <main className="aura flex-1 px-6 pt-10 pb-24">
+      <main className="bg-sand flex-1 px-6 pt-10 pb-24">
         <article className="mx-auto max-w-3xl">
           <Link
             href="/idei"
@@ -99,7 +99,7 @@ export default async function ArticlePage({
             {new Date(article.updated).toLocaleDateString("bg-BG")}
           </p>
 
-          <div className="elevate-lg relative mt-8 aspect-[3/2] overflow-hidden rounded-2xl">
+          <div className="elevate-lg relative mt-8 aspect-[3/2] overflow-hidden rounded-xl">
             <Image
               src={article.image}
               alt=""
@@ -110,7 +110,7 @@ export default async function ArticlePage({
             />
           </div>
 
-          <div className="glass mt-8 rounded-2xl p-8 leading-relaxed">
+          <div className="bg-card ring-1 ring-border mt-8 rounded-xl p-8 leading-relaxed">
             {article.body.map((block, i) => (
               <section key={i} className={i > 0 ? "mt-8" : ""}>
                 {block.h && (
@@ -124,14 +124,14 @@ export default async function ArticlePage({
               </section>
             ))}
 
-            <div className="mt-10 rounded-2xl bg-secondary/50 p-6 text-center">
+            <div className="mt-10 rounded-xl bg-secondary/50 p-6 text-center">
               <p className="font-heading text-xl font-bold">
                 Направи го със снимката на твоето дете
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
                 Виждаш готовия постер преди да платиш. Плащане при доставка.
               </p>
-              <Button asChild size="lg" className="mt-5 rounded-full">
+              <Button asChild size="lg" className="mt-5 rounded-lg">
                 <Link href="/create">
                   Създай постер <ArrowRight className="size-4" />
                 </Link>
@@ -147,7 +147,7 @@ export default async function ArticlePage({
                   <Link
                     key={o.slug}
                     href={`/idei/${o.slug}`}
-                    className="glass lift block rounded-2xl p-5"
+                    className="bg-card ring-1 ring-border lift block rounded-xl p-5"
                   >
                     <p className="font-heading font-bold leading-snug">{o.title}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{o.excerpt}</p>

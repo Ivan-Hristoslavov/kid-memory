@@ -18,7 +18,7 @@ export default function ArticlesPage() {
   return (
     <>
       <MentyHeader />
-      <main className="aura flex-1 px-6 pt-14 pb-24">
+      <main className="bg-sand flex-1 px-6 pt-14 pb-24">
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-col items-center text-center">
             <Eyebrow>Идеи и съвети</Eyebrow>
@@ -34,7 +34,7 @@ export default function ArticlesPage() {
           <div className="mt-14 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {ARTICLES.map((a) => (
               <Link key={a.slug} href={`/idei/${a.slug}`} className="group block">
-                <article className="glass lift flex h-full flex-col overflow-hidden rounded-2xl">
+                <article className="bg-card ring-1 ring-border lift flex h-full flex-col overflow-hidden rounded-xl">
                   <div className="relative aspect-[3/2] overflow-hidden">
                     <Image
                       src={a.image}

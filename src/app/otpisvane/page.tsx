@@ -29,8 +29,8 @@ export default async function UnsubscribePage({
   return (
     <>
       <MentyHeader />
-      <main className="bg-dreamy flex flex-1 items-center justify-center px-6 py-24">
-        <div className="glass max-w-md rounded-3xl p-10 text-center">
+      <main className="bg-sand flex flex-1 items-center justify-center px-6 py-24">
+        <div className="bg-card ring-1 ring-border max-w-md rounded-xl p-10 text-center">
           {done ? (
             <>
               <span className="mx-auto grid size-14 place-items-center rounded-full bg-emerald-100 text-emerald-700">
@@ -51,7 +51,7 @@ export default async function UnsubscribePage({
               </p>
             </>
           )}
-          <Button asChild variant="outline" className="mt-8 rounded-full">
+          <Button asChild variant="outline" className="mt-8 rounded-lg">
             <Link href="/">Към началото</Link>
           </Button>
         </div>

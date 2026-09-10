@@ -68,7 +68,7 @@ export default async function SuccessPage({
   return (
     <>
       <MentyHeader />
-      <main className="bg-dreamy relative flex-1 overflow-hidden px-6 pt-12 pb-20">
+      <main className="bg-sand relative flex-1 overflow-hidden px-6 pt-12 pb-20">
         <SuccessConfetti />
         {/* Only report a sale that actually is one. A card order that has not
             settled yet would otherwise be counted, and every ad platform would
@@ -77,7 +77,7 @@ export default async function SuccessPage({
           <PurchaseTracker orderId={record.id} valueEUR={total} />
         )}
 
-        <div className="glass relative mx-auto max-w-xl rounded-2xl p-8 text-center sm:p-12">
+        <div className="bg-card ring-1 ring-border relative mx-auto max-w-xl rounded-xl p-8 text-center sm:p-12">
           <span className="mx-auto grid size-16 place-items-center rounded-full bg-primary/10 text-primary">
             <Heart className="size-8 fill-current" />
           </span>
@@ -98,7 +98,7 @@ export default async function SuccessPage({
               method: cash on delivery is blocked on a confirmation click, a
               settled card order is blocked on nothing. */}
           {awaitingPayment ? (
-            <div className="mt-7 rounded-2xl border-2 border-primary/40 bg-primary/5 p-5 text-left">
+            <div className="mt-7 rounded-xl border-2 border-primary/40 bg-primary/5 p-5 text-left">
               <p className="flex items-center gap-2 font-heading font-bold">
                 <Clock className="size-5 text-primary" />
                 Обработваме плащането
@@ -109,7 +109,7 @@ export default async function SuccessPage({
               </p>
             </div>
           ) : isPaid ? (
-            <div className="mt-7 rounded-2xl border-2 border-emerald-500/40 bg-emerald-500/5 p-5 text-left">
+            <div className="mt-7 rounded-xl border-2 border-emerald-500/40 bg-emerald-500/5 p-5 text-left">
               <p className="flex items-center gap-2 font-heading font-bold">
                 <ShieldCheck className="size-5 text-emerald-600" />
                 Плащането е прието
@@ -121,7 +121,7 @@ export default async function SuccessPage({
               </p>
             </div>
           ) : (
-            <div className="mt-7 rounded-2xl border-2 border-primary/40 bg-primary/5 p-5 text-left">
+            <div className="mt-7 rounded-xl border-2 border-primary/40 bg-primary/5 p-5 text-left">
               <p className="flex items-center gap-2 font-heading font-bold">
                 <Mail className="size-5 text-primary" />
                 Провери пощата си сега
@@ -177,12 +177,12 @@ export default async function SuccessPage({
           </ol>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button asChild size="lg" className="rounded-full">
+            <Button asChild size="lg" className="rounded-lg">
               <Link href={orderNumber ? `/proverka?order=${orderNumber}` : "/proverka"}>
                 <PackageSearch className="size-5" /> Проследи поръчката
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-full">
+            <Button asChild size="lg" variant="outline" className="rounded-lg">
               <Link href="/otzivi">
                 <Star className="size-5" /> Остави отзив след доставка
               </Link>
@@ -192,14 +192,14 @@ export default async function SuccessPage({
 
         {/* Word of mouth is the cheapest channel for a gift that hangs on a
             wall — ask while the excitement is at its peak. */}
-        <div className="glass mx-auto mt-6 max-w-xl rounded-2xl p-7 text-center">
+        <div className="bg-card ring-1 ring-border mx-auto mt-6 max-w-xl rounded-xl p-7 text-center">
           <h2 className="font-heading text-xl font-bold">
             Знаеш ли друг родител, който събира такива думички?
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             Изпрати му линка — повечето родители дори не знаят, че това е възможно.
           </p>
-          <Button asChild variant="ghost" className="mt-4 rounded-full">
+          <Button asChild variant="ghost" className="mt-4 rounded-lg">
             <Link href="/">Сподели сайта</Link>
           </Button>
         </div>

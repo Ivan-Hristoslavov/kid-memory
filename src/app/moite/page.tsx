@@ -37,7 +37,7 @@ export default async function MyPostersPage({
   return (
     <>
       <MentyHeader />
-      <main className="aura flex-1 px-6 pt-14 pb-24">
+      <main className="bg-sand flex-1 px-6 pt-14 pb-24">
         <div className="mx-auto max-w-3xl">
           <h1 className="text-center font-heading text-4xl font-extrabold tracking-tight">
             Моите постери
@@ -65,7 +65,7 @@ export default async function MyPostersPage({
               ) : (
                 <ul className="mt-10 space-y-4">
                   {session.orders.map((o) => (
-                    <li key={o.id} className="glass flex flex-wrap items-center gap-5 rounded-2xl p-5">
+                    <li key={o.id} className="bg-card ring-1 ring-border flex flex-wrap items-center gap-5 rounded-xl p-5">
                       {o.previewUrl ? (
                         // Short-lived signed URL on a private bucket — nothing
                         // for the image optimiser to cache.
@@ -93,7 +93,7 @@ export default async function MyPostersPage({
 
                       <div className="flex gap-2">
                         {o.status === "PREVIEW_READY" && (
-                          <Button asChild size="sm" className="rounded-full">
+                          <Button asChild size="sm" className="rounded-lg">
                             <Link href={`/order?orderId=${o.id}`}>Завърши</Link>
                           </Button>
                         )}
@@ -103,13 +103,13 @@ export default async function MyPostersPage({
                             one. Plain anchor, not Link: it points at signed
                             storage, not at a route. */}
                         {o.downloadUrl && (
-                          <Button asChild size="sm" className="rounded-full">
+                          <Button asChild size="sm" className="rounded-lg">
                             <a href={o.downloadUrl} download>
                               <Download className="size-4" /> Свали файла
                             </a>
                           </Button>
                         )}
-                        <Button asChild size="sm" variant="outline" className="rounded-full">
+                        <Button asChild size="sm" variant="outline" className="rounded-lg">
                           <Link href={`/proverka?order=${o.orderNumber}`}>
                             <PackageSearch className="size-4" /> Проследи
                           </Link>
@@ -120,7 +120,7 @@ export default async function MyPostersPage({
                 </ul>
               )}
 
-              <div className="glass mt-10 rounded-2xl p-7 text-center">
+              <div className="bg-card ring-1 ring-border mt-10 rounded-xl p-7 text-center">
                 <p className="font-heading text-lg font-bold">
                   Догодина думичките ще са други
                 </p>
@@ -128,7 +128,7 @@ export default async function MyPostersPage({
                   Същото дете, същият стил, нова възраст. Двата един до друг показват цяла
                   година.
                 </p>
-                <Button asChild size="lg" className="mt-5 rounded-full">
+                <Button asChild size="lg" className="mt-5 rounded-lg">
                   <Link href="/create">Направи новия</Link>
                 </Button>
               </div>

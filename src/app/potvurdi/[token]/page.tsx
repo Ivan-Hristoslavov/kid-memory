@@ -55,7 +55,7 @@ export default async function ConfirmPage({
           </a>{" "}
           и ще проверим веднага.
         </p>
-        <Button asChild className="mt-8 rounded-full" size="lg">
+        <Button asChild className="mt-8 rounded-lg" size="lg">
           <Link href="/">Към началото</Link>
         </Button>
       </Shell>
@@ -104,7 +104,7 @@ export default async function ConfirmPage({
         </Step>
       </ul>
 
-      <Button asChild className="mt-9 rounded-full" size="lg">
+      <Button asChild className="mt-9 rounded-lg" size="lg">
         <Link href={`/proverka?order=${order.orderNumber}`}>Проследи поръчката</Link>
       </Button>
     </Shell>
@@ -137,8 +137,8 @@ function Shell({ title, children }: { title: string; children: React.ReactNode }
   return (
     <>
       <MentyHeader />
-      <main className="bg-dreamy relative flex flex-1 items-center justify-center px-6 pt-12 pb-20">
-        <div className="glass w-full max-w-lg rounded-3xl p-9 text-center sm:p-12">
+      <main className="bg-sand relative flex flex-1 items-center justify-center px-6 pt-12 pb-20">
+        <div className="bg-card ring-1 ring-border w-full max-w-lg rounded-xl p-9 text-center sm:p-12">
           <h1 className="font-heading text-3xl font-extrabold tracking-tight">{title}</h1>
           {children}
         </div>

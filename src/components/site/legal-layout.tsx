@@ -16,7 +16,7 @@ export function LegalLayout({
   return (
     <>
       <MentyHeader />
-      <main className="bg-dreamy flex-1 pt-10 pb-20">
+      <main className="bg-sand flex-1 pt-10 pb-20">
         <div className="mx-auto max-w-3xl px-6">
           <Link
             href="/"
@@ -28,7 +28,7 @@ export function LegalLayout({
           <p className="mt-2 text-sm text-muted-foreground">Последна редакция: {updated}</p>
 
           <div
-            className="glass mt-8 space-y-5 rounded-2xl p-8 leading-relaxed
+            className="bg-card ring-1 ring-border mt-8 space-y-5 rounded-xl p-8 leading-relaxed
               [&_a]:font-semibold [&_a]:text-primary [&_a]:underline
               [&_h2]:mt-8 [&_h2]:font-heading [&_h2]:text-xl [&_h2]:font-bold
               [&_h2:first-child]:mt-0

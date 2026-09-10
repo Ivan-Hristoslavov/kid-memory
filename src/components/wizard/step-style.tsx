@@ -20,9 +20,9 @@ export function StepStyle() {
     TEMPLATES[wizard.template].subject.noun;
 
   return (
-    <Card className="glass overflow-hidden rounded-2xl border-none">
+    <Card className="bg-card ring-1 ring-border overflow-hidden rounded-xl border-none">
       <CardContent className="space-y-6 p-8">
-        <div className="rounded-2xl bg-secondary p-4 text-center">
+        <div className="rounded-xl bg-secondary p-4 text-center">
           <p className="flex items-center justify-center gap-2 font-heading font-bold">
             <Palette className="size-4 text-primary" />
             Как да изглежда светът на {subjectName}?
@@ -45,7 +45,7 @@ export function StepStyle() {
                 transition={{ delay: i * 0.06 }}
                 onClick={() => wizard.setStyle(style.id)}
                 aria-pressed={selected}
-                className={`group relative overflow-hidden rounded-2xl border-2 p-6 text-left transition-all ${
+                className={`group relative overflow-hidden rounded-xl border-2 p-6 text-left transition-all ${
                   selected
                     ? "border-primary shadow-xl shadow-primary/15"
                     : "border-border hover:scale-[1.01] hover:border-primary/40"
@@ -60,7 +60,7 @@ export function StepStyle() {
                       <Check className="size-3.5" />
                     </span>
                   )}
-                  <span className="grid size-12 place-items-center rounded-2xl bg-white/70 text-foreground/75 shadow-sm">
+                  <span className="grid size-12 place-items-center rounded-xl bg-white/70 text-foreground/75 shadow-sm">
                     <Icon className="size-6" />
                   </span>
                   <h3 className="mt-4 font-heading text-lg font-bold">{style.name}</h3>
@@ -73,7 +73,7 @@ export function StepStyle() {
 
         {/* Lead capture: lets us send the finished poster / a reminder if the
             visitor leaves before ordering. Optional on purpose. */}
-        <div className="rounded-2xl border-2 border-dashed border-primary/30 bg-card/60 p-5">
+        <div className="rounded-xl border-2 border-dashed border-primary/30 bg-card/60 p-5">
           <Label htmlFor="leadEmail" className="flex items-center gap-2 font-semibold">
             <Mail className="size-4 text-primary" />
             Твоят имейл <span className="font-normal text-muted-foreground">(по избор)</span>
@@ -83,7 +83,7 @@ export function StepStyle() {
             type="email"
             inputMode="email"
             placeholder="напр. maria@example.com"
-            className="mt-2 h-12 rounded-2xl border-2"
+            className="mt-2 h-12 rounded-xl border-2"
             value={wizard.leadEmail}
             onChange={(e) => wizard.setLeadEmail(e.target.value)}
           />
@@ -103,7 +103,7 @@ export function StepStyle() {
           </Button>
           <Button
             size="lg"
-            className="flex-1 rounded-full text-base shadow-lg shadow-primary/25 transition-transform hover:scale-[1.01]"
+            className="flex-1 rounded-lg text-base shadow-lg shadow-primary/25 transition-transform hover:scale-[1.01]"
             onClick={() => {
               if (!wizard.style) {
                 toast.error("Избери стил на илюстрацията");

@@ -20,7 +20,7 @@ export default async function TrackPage({
   return (
     <>
       <MentyHeader />
-      <main className="bg-dreamy flex-1 px-6 pt-14 pb-24">
+      <main className="bg-sand flex-1 px-6 pt-14 pb-24">
         <div className="mx-auto max-w-lg text-center">
           <h1 className="font-heading text-4xl font-extrabold tracking-tight">
             Къде е моята поръчка?

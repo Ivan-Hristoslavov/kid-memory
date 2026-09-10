@@ -30,7 +30,7 @@ export default async function CreatePage({
   return (
     <>
       <MentyHeader />
-      <main className="bg-dreamy flex-1 pt-12 pb-20">
+      <main className="bg-sand flex-1 pt-12 pb-20">
         <Wizard initialTemplate={initialTemplate} />
       </main>
       <MentyFooter />

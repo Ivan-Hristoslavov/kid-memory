@@ -15,7 +15,7 @@ export function AccessRequestForm() {
 
   if (state.ok) {
     return (
-      <p className="glass mx-auto flex max-w-md items-center justify-center gap-2 rounded-2xl p-5 text-center font-semibold text-emerald-700">
+      <p className="bg-card ring-1 ring-border mx-auto flex max-w-md items-center justify-center gap-2 rounded-xl p-5 text-center font-semibold text-emerald-700">
         <Check className="size-5" />
         Ако имаме поръчки на този имейл, връзката вече пътува към теб.
       </p>
@@ -30,9 +30,9 @@ export function AccessRequestForm() {
         required
         placeholder="имейлът от поръчката"
         aria-label="Имейл"
-        className="h-12 rounded-2xl"
+        className="h-12 rounded-xl"
       />
-      <Button type="submit" size="lg" disabled={pending} className="shrink-0 rounded-2xl">
+      <Button type="submit" size="lg" disabled={pending} className="shrink-0 rounded-xl">
         {pending ? <Loader2 className="size-5 animate-spin" /> : <Mail className="size-5" />}
         Изпрати
       </Button>
