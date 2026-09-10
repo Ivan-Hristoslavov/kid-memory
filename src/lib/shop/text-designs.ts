@@ -53,7 +53,16 @@ export interface TextDesign {
    * is a stag-weekend shirt.
    */
   icon?: string;
-  font: "SERIF" | "ROUNDED" | "SANS";
+  font: "SERIF" | "ROUNDED" | "SANS" | "DISPLAY" | "HEAVY" | "SCRIPT";
+  /**
+   * Draw the supporting lines in the accent colour rather than the ink colour.
+   *
+   * The shape that sells on this market is a big line in white with a small
+   * one under it in red — "МЛАДОЖЕНЕЦА" over "ДНЕСКА АХО-ИХИ, УТРЕ ТИХИ". One
+   * flag rather than a per-line colour list, because that is the only pattern
+   * anybody uses and a list would invite worse ones.
+   */
+  subAccent?: boolean;
 }
 
 const t = (
@@ -66,10 +75,15 @@ const t = (
   font: TextDesign["font"] = "SANS",
   layout: TextLayout = "STACK",
   accent?: string,
-  icon?: string
+  icon?: string,
+  subAccent = false
 ): TextDesign => ({
   id, title, category, forDark, lines, emphasis, layout, font, accent, icon,
+  subAccent,
 });
+
+/** Red, the colour every stag shirt on this market puts its punchline in. */
+const RED = "#D93A2B";
 
 export const TEXT_DESIGNS: readonly TextDesign[] = [
   // ── Ергенско ──────────────────────────────────────────────────────────
@@ -181,6 +195,34 @@ export const TEXT_DESIGNS: readonly TextDesign[] = [
   t("txt-getting-married", "Женя се", "BACHELOR", true, ["{name}", "СЕ ЖЕНИ"], 0, "SANS", "STACK", undefined, "ico-couple"),
   t("txt-wedding-day", "Сватбата на", "HEN", false, ["СВАТБАТА НА", "{name}"], 0, "SERIF", "BANNER", "#C77D6B", "ico-ring"),
   t("txt-just-married", "Младоженци", "HEN", false, ["МЛАДОЖЕНЦИ", "{name}"], 0, "SERIF", "BANNER", "#C77D6B", "ico-couple"),
+
+  // ── Ергенско: по-нахално ─────────────────────────────────────────────
+  // The register this market actually sells in — drinking, forgetting, and the
+  // last night of freedom. Cheeky, never crude: a shirt somebody's mother will
+  // also see, printed on demand by a partner who can refuse the job.
+  t("txt-groom-gang", "Бандата на младоженеца", "BACHELOR", true, ["БАНДАТА НА", "МЛАДОЖЕНЕЦА", "ДНЕСКА АХО-ИХИ, УТРЕ ТИХИ"], 1, "DISPLAY", "STACK", RED, "ico-men-row", true),
+  t("txt-wont-remember", "Утре няма да помня", "BACHELOR", true, ["УТРЕ НЯМА", "ДА ПОМНЯ", "ВИЕ ПОМНЕТЕ"], 1, "DISPLAY", "STACK", RED, "ico-shots", true),
+  t("txt-best-man-pays", "Кумът плаща", "BACHELOR", true, ["КУМЪТ", "ПЛАЩА", "ТАКА СЕ РАЗБРАХМЕ"], 1, "DISPLAY", "STACK", RED, "ico-bowtie", true),
+  t("txt-if-i-fall", "Ако падна", "BACHELOR", true, ["АКО ПАДНА", "ОСТАВЕТЕ МЕ"], 0, "DISPLAY", "STACK", RED, "ico-shots", true),
+  t("txt-he-marries-we-drink", "Той се жени, ние пием", "BACHELOR", true, ["ТОЙ СЕ ЖЕНИ", "НИЕ ПИЕМ"], 1, "HEAVY", "STACK", RED, "ico-beer-cheers", true),
+  t("txt-free-until-six", "Свободен до 18:00", "BACHELOR", true, ["СВОБОДЕН", "ДО 18:00"], 1, "DISPLAY", "STACK", RED, "ico-ring", true),
+  t("txt-dont-ask", "Не питай", "BACHELOR", true, ["НЕ ПИТАЙ", "НЕ ПОМНЯ"], 0, "HEAVY", "STACK", RED, "ico-shots", true),
+  t("txt-last-mistake", "Последната ми грешка", "BACHELOR", true, ["ПОСЛЕДНАТА", "МИ ГРЕШКА", "БЕШЕ ВЧЕРА"], 1, "DISPLAY", "STACK", RED, "ico-couple", true),
+  t("txt-drink-for-two", "Пия за двама", "BACHELOR", true, ["ПИЯ ЗА ДВАМА", "{name} КАРА"], 0, "DISPLAY", "STACK", RED, "ico-beer-cheers", true),
+  t("txt-tomorrow-quiet", "Днеска аха, утре тихо", "BACHELOR", true, ["ДНЕСКА АХА", "УТРЕ ТИХО"], 0, "HEAVY", "STACK", RED, "ico-tophat", true),
+
+  // ── Моминско: по-нахално ─────────────────────────────────────────────
+  t("txt-bride-gang", "Бандата на булката", "HEN", false, ["БАНДАТА НА", "БУЛКАТА", "ДНЕСКА НИЕ, УТРЕ ТЯ"], 1, "DISPLAY", "STACK", RED, "ico-women-row", true),
+  t("txt-she-pays", "Булката плаща", "HEN", false, ["БУЛКАТА", "ПЛАЩА", "НО НЕ ПОМНИ"], 1, "DISPLAY", "STACK", RED, "ico-champagne", true),
+  t("txt-last-free-night", "Последна свободна", "HEN", false, ["ПОСЛЕДНА НОЩ", "КАТО СВОБОДНА"], 1, "DISPLAY", "STACK", RED, "ico-heels", true),
+  t("txt-team-drunk", "Отборът е пиян", "HEN", false, ["ОТБОРЪТ Е ПИЯН", "БУЛКАТА Е ЩАСТЛИВА"], 0, "DISPLAY", "STACK", RED, "ico-women-row", true),
+  t("txt-one-more-glass", "Още едно и тръгваме", "HEN", false, ["ОЩЕ ЕДНО", "И ТРЪГВАМЕ", "ЛЪЖА"], 1, "DISPLAY", "STACK", RED, "ico-champagne", true),
+  t("txt-bride-warning", "Внимание, булка", "HEN", false, ["ВНИМАНИЕ", "БУЛКА НА ПЪТ"], 1, "HEAVY", "STACK", RED, "ico-tiara", true),
+
+  // ── Хумор, същият регистър ───────────────────────────────────────────
+  t("txt-not-drunk", "Не съм пиян", "HUMOUR", true, ["НЕ СЪМ ПИЯН", "ПРОСТО СЪМ ЩАСТЛИВ"], 0, "DISPLAY", "STACK", RED, "ico-beer-cheers", true),
+  t("txt-diet-tomorrow", "Диетата е от утре", "HUMOUR", true, ["ДИЕТАТА", "Е ОТ УТРЕ", "ВСЕКИ ДЕН"], 1, "DISPLAY", "STACK", RED, "ico-coffee", true),
+  t("txt-first-coffee-heavy", "Не ми говори", "HUMOUR", true, ["НЕ МИ ГОВОРИ", "ПРЕДИ КАФЕТО"], 0, "DISPLAY", "STACK", RED, "ico-coffee", true),
 ];
 
 export function textDesignById(id: string): TextDesign | undefined {

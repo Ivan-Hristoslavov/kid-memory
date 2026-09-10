@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { Manrope, Nunito, Playfair_Display } from "next/font/google";
+import {
+  Manrope,
+  Nunito,
+  Oswald,
+  Pattaya,
+  Playfair_Display,
+  Russo_One,
+} from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/menty/theme-provider";
 import { BRAND } from "@/lib/brand";
@@ -45,6 +52,39 @@ const nunito = Nunito({
 const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
   variable: "--font-manrope",
+  display: "swap",
+});
+
+/**
+ * The three display faces the printed designs are set in.
+ *
+ * They exist for one job: a t-shirt. The site's own three — Playfair, Nunito,
+ * Manrope — are reading faces, and a stag-weekend shirt set in a book serif
+ * looks like a wedding invitation. What that market runs on is heavy condensed
+ * capitals, and none of the site's faces can do it.
+ *
+ * All three carry Cyrillic, which rules out most of the obvious candidates:
+ * Anton, Bebas Neue and Alfa Slab One are Latin-only, and a shirt that reads
+ * "MLADOZHENETSA" is not the product. Loaded here rather than per-design so a
+ * customer changing the face on the preview sees it instantly.
+ */
+const oswald = Oswald({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-oswald",
+  display: "swap",
+});
+
+const russo = Russo_One({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400"],
+  variable: "--font-russo",
+  display: "swap",
+});
+
+const pattaya = Pattaya({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400"],
+  variable: "--font-pattaya",
   display: "swap",
 });
 
@@ -107,7 +147,7 @@ export default function RootLayout({
   return (
     <html lang="bg" className="h-full" suppressHydrationWarning>
       <body
-        className={`${playfair.variable} ${manrope.variable} ${nunito.variable} grain min-h-full flex flex-col font-sans antialiased`}
+        className={`${playfair.variable} ${manrope.variable} ${nunito.variable} ${oswald.variable} ${russo.variable} ${pattaya.variable} grain min-h-full flex flex-col font-sans antialiased`}
       >
         <ThemeProvider>
           {children}

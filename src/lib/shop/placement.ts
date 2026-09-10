@@ -51,6 +51,18 @@ export const TEXT_FONTS = {
   SERIF: { label: "Класически", css: "var(--font-playfair), Georgia, serif" },
   ROUNDED: { label: "Топъл", css: "var(--font-logo-face), system-ui, sans-serif" },
   SANS: { label: "Изчистен", css: "var(--font-manrope), system-ui, sans-serif" },
+  /**
+   * Three display faces, for the shirts rather than the site.
+   *
+   * A stag-weekend shirt set in a reading face looks like a wedding
+   * invitation. These are what that market actually uses: heavy condensed
+   * capitals, a squared industrial, and a brush script. All three carry
+   * Cyrillic — Anton, Bebas Neue and Alfa Slab One do not, which is why the
+   * obvious choices are absent.
+   */
+  DISPLAY: { label: "Плакатен", css: "var(--font-oswald), Impact, sans-serif" },
+  HEAVY: { label: "Тежък", css: "var(--font-russo), Impact, sans-serif" },
+  SCRIPT: { label: "Ръкописен", css: "var(--font-pattaya), cursive" },
 } as const;
 
 export type TextFont = keyof typeof TEXT_FONTS;

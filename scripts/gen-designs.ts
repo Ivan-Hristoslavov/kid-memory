@@ -21,6 +21,7 @@ import {
   DESIGNS,
   DESIGN_ICONS,
   DESIGN_LOOK,
+  EMBROIDERY_DESIGNS,
   type Design,
 } from "../src/lib/shop/designs";
 
@@ -41,7 +42,12 @@ async function generate(design: Design, quality: Quality): Promise<Buffer> {
       model: "gpt-image-1",
       // The icons carry their own art direction — solid black, no colour — and
       // appending the general one would argue with it.
-      prompt: design.iconOnly ? design.prompt : `${design.prompt} ${DESIGN_LOOK}`,
+      // Icons and embroidery each carry their own art direction; appending the
+      // general one would argue with it.
+      prompt:
+        design.iconOnly || design.category === "EMBROIDERY"
+          ? design.prompt
+          : `${design.prompt} ${DESIGN_LOOK}`,
       size: "1024x1024",
       quality,
       background: "transparent",
@@ -79,7 +85,7 @@ async function main() {
   const outDir = path.join(process.cwd(), "public", "designs");
   await fs.mkdir(outDir, { recursive: true });
 
-  const all = [...DESIGNS, ...DESIGN_ICONS];
+  const all = [...DESIGNS, ...EMBROIDERY_DESIGNS, ...DESIGN_ICONS];
   const wanted = only ? all.filter((d) => d.id === only) : all;
   const todo: Design[] = [];
   for (const d of wanted) {

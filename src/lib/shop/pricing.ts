@@ -46,7 +46,9 @@ export const cartLineInput = z.object({
       // Optional so a basket saved before feathering existed still validates
       // at checkout rather than silently dropping its line.
       feather: z.number().min(0).max(0.5).optional(),
-      font: z.enum(["SERIF", "ROUNDED", "SANS"]).optional(),
+      font: z
+        .enum(["SERIF", "ROUNDED", "SANS", "DISPLAY", "HEAVY", "SCRIPT"])
+        .optional(),
     })
     .optional(),
   designId: z.string().max(60).optional(),

@@ -47,7 +47,12 @@ export function TextDesignArt({
   // Each line owns a band; the emphasised one owns a taller band and fills more
   // of the width. Everything is expressed in viewBox units so the SVG needs no
   // knowledge of its rendered size.
-  const bands = lines.map((_, i) => (i === design.emphasis ? 22 : 13));
+  // A punchline is smaller than the line it follows. 11 rather than 13 when the
+  // design uses one, so three lines still fit a chest without shrinking the
+  // headline to match them.
+  const bands = lines.map((_, i) =>
+    i === design.emphasis ? 22 : design.subAccent ? 11 : 13
+  );
   const gap = 4;
   const height =
     bands.reduce((a, b) => a + b, 0) +
@@ -104,7 +109,10 @@ export function TextDesignArt({
         const cy = tops[i] + band * 0.78;
         // Long lines get the full width, short ones are not stretched to it —
         // a two-letter word forced across 92 units reads as a mistake.
-        const width = Math.min(strong ? 92 : 72, line.length * (strong ? 11 : 7));
+        const width = Math.min(
+          strong ? 92 : design.subAccent ? 84 : 72,
+          line.length * (strong ? 11 : design.subAccent ? 5.4 : 7)
+        );
         return (
           <text
             key={i}
@@ -115,7 +123,17 @@ export function TextDesignArt({
             fontSize={band}
             fontWeight={strong ? 800 : 600}
             letterSpacing={strong ? "0" : "0.6"}
-            fill={strong ? (design.accent ?? color) : color}
+            // The market's own shape: the big line in ink, the punchline under
+            // it in red. `subAccent` inverts which line gets the accent.
+            fill={
+              design.subAccent
+                ? strong
+                  ? color
+                  : (design.accent ?? color)
+                : strong
+                  ? (design.accent ?? color)
+                  : color
+            }
             textLength={width}
             lengthAdjust="spacingAndGlyphs"
           >

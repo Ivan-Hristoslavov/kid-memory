@@ -20,7 +20,7 @@
  * but a line.
  * ─────────────────────────────────────────────────────────────────────────
  */
-import { DESIGNS, designImage } from "./designs";
+import { DESIGNS, EMBROIDERY_DESIGNS, designImage, isEmbroidery } from "./designs";
 import { TEXT_DESIGNS } from "./text-designs";
 import { PRODUCTS, type MentyProduct } from "./products";
 
@@ -41,6 +41,22 @@ const BASE_ID_WOMEN = "womens-tee";
 /** Categories sold on the women's cut. */
 const WOMENS_CATEGORIES = new Set(["HEN"]);
 
+/**
+ * The blank an embroidered design is sold on, and what stitching adds.
+ *
+ * A polo, because that is what an embroidered mark belongs on — a chest badge
+ * on a t-shirt reads as a mistake. And embroidery is not a print with a
+ * different name: the supplier charges 0.0004 per stitch, so a compact chest
+ * mark of roughly eight thousand stitches costs about 3.20 to sew on top of the
+ * garment, against 3.08 for a DTF print of any size. The 5.50 digitising fee is
+ * paid once per design, by us, because we own the design and sell it many
+ * times — passing it on per order would price a single polo at over twenty.
+ */
+const BASE_ID_EMBROIDERY = "mens-polo";
+const STITCH_COST_EUR = 3.2;
+/** Retail multiple on the embroidered landed cost, matching the rest. */
+const EMBROIDERY_MARKUP = 1.85;
+
 /** Ready-made ids are `t-<designId>`, so the design is recoverable from the id. */
 export const READY_PREFIX = "t-";
 
@@ -50,8 +66,12 @@ export function designIdOf(productId: string): string | null {
     : null;
 }
 
-function base(womens = false): MentyProduct {
-  const id = womens ? BASE_ID_WOMEN : BASE_ID;
+function base(womens = false, embroidered = false): MentyProduct {
+  const id = embroidered
+    ? BASE_ID_EMBROIDERY
+    : womens
+      ? BASE_ID_WOMEN
+      : BASE_ID;
   const b = PRODUCTS.find((p) => p.id === id);
   if (!b) throw new Error(`ready.ts: base product ${id} is missing`);
   return b;
@@ -66,6 +86,7 @@ function base(womens = false): MentyProduct {
  * women's in another.
  */
 export function baseUidForDesign(designId: string): string {
+  if (isEmbroidery(designId)) return "dcc";
   const text = TEXT_DESIGNS.find((d) => d.id === designId);
   const graphic = DESIGNS.find((d) => d.id === designId);
   const category = text?.category ?? graphic?.category;
@@ -103,13 +124,22 @@ function make(
   forDark: boolean,
   tags: readonly string[],
   takesName: boolean,
-  womens = false
+  womens = false,
+  embroidered = false
 ): MentyProduct {
-  const b = base(womens);
+  const b = base(womens, embroidered);
+  const priceEUR = embroidered
+    ? Math.round((b.priceEUR + STITCH_COST_EUR * EMBROIDERY_MARKUP) * 100) / 100 -
+      0.01
+    : b.priceEUR;
   return {
     ...b,
     id: `${READY_PREFIX}${designId}`,
-    title: `${womens ? "Дамска тениска" : "Тениска"} — ${title}`,
+    priceEUR,
+    priceReferenceBGN: Math.round(priceEUR * 1.95583 - 0.9) + 0.9,
+    title: embroidered
+      ? `Бродирано поло — ${title}`
+      : `${womens ? "Дамска тениска" : "Тениска"} — ${title}`,
     blurb,
     // Cleared: a ready-made shirt is not a bestseller row candidate, and
     // inheriting the base product's rank would put fifty of them in it.
@@ -153,6 +183,18 @@ function build(): readonly MentyProduct[] {
       WOMENS_CATEGORIES.has(d.category)
     )
   ),
+  ...EMBROIDERY_DESIGNS.map((d) =>
+    make(
+      d.id,
+      d.title,
+      `Бродирано поло с мотив „${d.title}“. Избродирано с конци, не отпечатано — усеща се с пръст.`,
+      d.forDark,
+      ["embroidery"],
+      false,
+      false,
+      true
+    )
+  ),
   ...DESIGNS.filter((d) => !d.iconOnly).map((d) =>
     make(
       d.id,
@@ -173,7 +215,8 @@ export function readyById(id: string): MentyProduct | undefined {
 
 /** The artwork file for a graphic design sold ready-made, if it has one. */
 export function readyArtwork(designId: string): string | null {
-  return DESIGNS.some((d) => d.id === designId && !d.iconOnly)
-    ? designImage(designId)
-    : null;
+  const known =
+    DESIGNS.some((d) => d.id === designId && !d.iconOnly) ||
+    EMBROIDERY_DESIGNS.some((d) => d.id === designId);
+  return known ? designImage(designId) : null;
 }

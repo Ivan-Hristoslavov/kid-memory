@@ -41,7 +41,8 @@ export type DesignCategory =
   | "HUMOUR"
   | "HOLIDAY"
   | "PROFESSION"
-  | "GRADUATION";
+  | "GRADUATION"
+  | "EMBROIDERY";
 
 export interface DesignCategoryMeta {
   id: DesignCategory;
@@ -136,6 +137,12 @@ export const DESIGN_CATEGORIES: readonly DesignCategoryMeta[] = [
     label: "Абитуриентски",
     blurb: "Випускът, който няма да се повтори.",
     cover: "grad-cap",
+  },
+  {
+    id: "EMBROIDERY",
+    label: "Бродерия",
+    blurb: "Избродирано, не отпечатано. За поло, шапка и суичър.",
+    cover: "emb-monogram",
   },
   {
     id: "HUMOUR",
@@ -430,13 +437,56 @@ export const DESIGN_ICONS: readonly Design[] = [
   ic("ico-chef-hat", "Готварска шапка", "A tall chef's toque hat seen face-on."),
 ];
 
+/**
+ * Embroidery, which is a different craft and has to look like one.
+ *
+ * A print can be a photograph; a stitch cannot. These are drawn as thread —
+ * visible satin fill, raised edges, a limited palette — because a customer
+ * ordering embroidery is buying the texture, and a flat vector shown as
+ * "бродерия" would arrive looking like something else entirely.
+ *
+ * They are also small on purpose. The supplier charges per stitch, so an
+ * expanse of fill is a bill: a chest mark at eight thousand stitches costs
+ * about 3.20 to sew, and a full-front design would be a multiple of that.
+ */
+const EMB_LOOK = `Photorealistic machine embroidery on a transparent background: dense satin \
+stitch fill with visible thread direction and sheen, slightly raised edges, a clean stitched \
+outline, no fabric behind it. Limited palette of at most four solid thread colours, no \
+gradients. Compact and centred with even margins. NO text, no letters, no numbers, no \
+watermark, no frame, no garment.`;
+
+const emb = (id: string, title: string, forDark: boolean, prompt: string): Design => ({
+  id,
+  title,
+  category: "EMBROIDERY",
+  forDark,
+  prompt: `${prompt} ${EMB_LOOK}`,
+});
+
+export const EMBROIDERY_DESIGNS: readonly Design[] = [
+  emb("emb-monogram", "Ловен венец", false, "A small laurel wreath in gold thread, open at the top."),
+  emb("emb-anchor", "Котва", false, "A compact anchor with a rope wrapped around its shank, in navy and cream thread."),
+  emb("emb-mountain", "Планина", false, "A small mountain range with a sun behind it, in forest green and warm gold thread."),
+  emb("emb-bee", "Пчела", false, "A single bee seen from above with detailed wings, in gold, black and cream thread."),
+  emb("emb-leaf", "Клонка", false, "A slender olive branch with seven leaves, in sage green thread."),
+  emb("emb-wave", "Вълна", true, "A stylised curling wave, in two tones of blue and cream thread."),
+];
+
 export function designById(id: string): Design | undefined {
-  return DESIGNS.find((x) => x.id === id);
+  return ALL_DESIGNS.find((x) => x.id === id);
+}
+
+/** Stitched rather than printed — priced and described differently. */
+export function isEmbroidery(id: string): boolean {
+  return EMBROIDERY_DESIGNS.some((d) => d.id === id);
 }
 
 export function designsInCategory(category: DesignCategory): readonly Design[] {
-  return DESIGNS.filter((x) => x.category === category && !x.iconOnly);
+  return ALL_DESIGNS.filter((x) => x.category === category && !x.iconOnly);
 }
+
+/** Everything sellable as artwork — printed and stitched alike. */
+export const ALL_DESIGNS: readonly Design[] = [...DESIGNS, ...EMBROIDERY_DESIGNS];
 
 export function categoryMeta(id: DesignCategory): DesignCategoryMeta | undefined {
   return DESIGN_CATEGORIES.find((c) => c.id === id);
