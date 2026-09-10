@@ -11,7 +11,8 @@ import {
   calcDeliveryEUR,
   formatPrice,
 } from "@/lib/catalog";
-import { cartSubtotalEUR, useCart, type CartLine } from "@/lib/store/cart";
+import { cartSubtotalEUR, cartUnits, useCart, type CartLine } from "@/lib/store/cart";
+import { nextTier, quantityDiscount } from "@/lib/shop/quantity";
 import { hasImages, productById } from "@/lib/shop/products";
 
 /**
@@ -57,6 +58,15 @@ export function CartView() {
     (sum, l) => (l.giftWrap ? sum + ADDONS.GIFT_WRAP.priceEUR * l.quantity : sum),
     0
   );
+  const units = cartUnits(lines);
+  const off = quantityDiscount(units);
+  const listPrice = lines.reduce((sum, l) => {
+    const p = productById(l.productId);
+    return p ? sum + p.priceEUR * l.quantity : sum;
+  }, 0);
+  const saved = Math.round((listPrice - goods) * 100) / 100;
+  const up = nextTier(units);
+
   const subtotal = Math.round((goods + wrapTotal) * 100) / 100;
   // Nothing in this basket is a digital file, so delivery is always the
   // physical rate; POSTER_A4 stands in for "a physical product" here.
@@ -81,6 +91,12 @@ export function CartView() {
           <h2 className="font-heading text-lg font-bold">Обобщение</h2>
           <dl className="mt-4 space-y-2.5 text-sm">
             <Row label="Продукти" value={formatPrice(goods)} />
+            {off > 0 && (
+              <Row
+                label={`Отстъпка за ${units} броя (−${Math.round(off * 100)}%)`}
+                value={`−${formatPrice(saved)}`}
+              />
+            )}
             {wrapTotal > 0 && (
               <Row label="Подаръчна опаковка" value={formatPrice(wrapTotal)} />
             )}
@@ -92,6 +108,16 @@ export function CartView() {
               <Row label="Общо" value={formatPrice(total)} strong />
             </div>
           </dl>
+
+          {/* The nudge is the point of the tier. Somebody buying four shirts
+              for a hen weekend is usually buying six. */}
+          {up && (
+            <p className="mt-3 rounded-lg bg-forest/8 p-3 text-xs text-forest">
+              Още {up.from - units}{" "}
+              {up.from - units === 1 ? "продукт" : "продукта"} и отстъпката става{" "}
+              {Math.round(up.off * 100)}%.
+            </p>
+          )}
 
           {delivery > 0 && (
             <p className="mt-3 text-xs text-muted-foreground">

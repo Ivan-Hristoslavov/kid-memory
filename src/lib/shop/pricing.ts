@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { ADDONS, DELIVERY, calcDeliveryEUR } from "@/lib/catalog";
+import { quantityDiscount } from "./quantity";
 import { productById, type MentyProduct } from "./products";
 import { DEFAULT_PLACEMENT, type Placement } from "./placement";
 
@@ -73,6 +74,12 @@ export interface PricedLine {
 
 export interface PricedCart {
   lines: PricedLine[];
+  /** Total units in the basket — what the quantity tier was decided on. */
+  units: number;
+  /** The tier applied, 0 when none. Shown so the saving is visible. */
+  discount: number;
+  /** What the same basket would have cost at list price. */
+  goodsBeforeDiscountEUR: number;
   goodsEUR: number;
   giftWrapEUR: number;
   deliveryEUR: number;
@@ -91,6 +98,8 @@ function round2(n: number): number {
  */
 export function priceCart(input: CartLineInput[]): PricedCart | null {
   const lines: PricedLine[] = [];
+  const units = input.reduce((n, l) => n + (l.quantity || 0), 0);
+  const off = quantityDiscount(units);
 
   for (const raw of input) {
     const product = productById(raw.productId);
@@ -110,7 +119,9 @@ export function priceCart(input: CartLineInput[]): PricedCart | null {
     // nothing to print.
     if (product.personalization.includes("PHOTO") && !raw.photoKey) continue;
 
-    const unit = product.priceEUR;
+    // Rounded per unit rather than off the line total, so what the customer is
+    // shown on the card and what they are charged agree to the cent.
+    const unit = round2(product.priceEUR * (1 - off));
     lines.push({
       product,
       quantity: raw.quantity,
@@ -134,6 +145,9 @@ export function priceCart(input: CartLineInput[]): PricedCart | null {
   if (lines.length === 0) return null;
 
   const goodsEUR = round2(lines.reduce((s, l) => s + l.lineTotalEUR, 0));
+  const goodsBeforeDiscountEUR = round2(
+    lines.reduce((s, l) => s + l.product.priceEUR * l.quantity, 0)
+  );
   const giftWrapEUR = round2(
     lines.reduce(
       (s, l) => (l.giftWrap ? s + ADDONS.GIFT_WRAP.priceEUR * l.quantity : s),
@@ -147,6 +161,9 @@ export function priceCart(input: CartLineInput[]): PricedCart | null {
 
   return {
     lines,
+    units,
+    discount: off,
+    goodsBeforeDiscountEUR,
     goodsEUR,
     giftWrapEUR,
     deliveryEUR,

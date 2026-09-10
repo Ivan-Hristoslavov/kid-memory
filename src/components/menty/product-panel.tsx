@@ -171,6 +171,14 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
         />
       )}
 
+      {/* The set offer, stated where the decision is made. A hen weekend is six
+          shirts and the customer does not know we reward that until they see
+          it — by the basket it is too late to have changed what they picked. */}
+      <div className="rounded-lg bg-forest/8 px-3.5 py-3 text-xs text-forest">
+        <span className="font-semibold">Комплект за парти?</span> 4 броя −10%,
+        6 броя −15%, 10 броя −20%. Смесвай размери, цветове и имена.
+      </div>
+
       {product.variants.map((axis) => (
         <div key={axis.label}>
           <div className="flex items-baseline justify-between gap-3">

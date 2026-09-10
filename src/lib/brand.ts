@@ -37,6 +37,12 @@ export const BRAND = {
 /**
  * The category rail under the hero.
  *
+ * WHO the gift is for, and nothing else.
+ *
+ * "Рожден ден", "Годишнина" and "Просто така" used to sit in this list AND in
+ * the occasion list below, so /za-povoda showed each of them twice on one page.
+ * An audience is a person; an occasion is a date. Nothing belongs in both.
+ *
  * People shop for gifts by recipient and by occasion, not by product type —
  * somebody arrives knowing it is their mother's birthday, not knowing they
  * want a mug. The reference runs these as eight circular photographs directly
@@ -49,9 +55,6 @@ export const GIFT_AUDIENCES = [
   { id: "for-couples", label: "За двойки", image: "/moments/for-couples.webp" },
   { id: "for-parents", label: "За родители", image: "/moments/for-parents.webp" },
   { id: "for-kids", label: "За деца", image: "/moments/for-kids.webp" },
-  { id: "birthday", label: "Рожден ден", image: "/moments/birthday.webp" },
-  { id: "anniversary", label: "Годишнина", image: "/moments/anniversary.webp" },
-  { id: "just-because", label: "Просто така", image: "/moments/just-because.webp" },
 ] as const;
 
 /**
@@ -81,9 +84,11 @@ export const GIFT_OCCASIONS = [
   { id: "birthday", label: "Рожден ден", image: "/moments/birthday.webp" },
   { id: "anniversary", label: "Годишнина", image: "/moments/anniversary.webp" },
   { id: "new-baby", label: "Ново бебе", image: "/moments/new-baby.webp" },
+  { id: "wedding", label: "Сватба", image: "/themes/couples.webp" },
   { id: "best-friend", label: "За най-добър приятел", image: "/moments/best-friend.webp" },
   { id: "thank-you", label: "Благодаря", image: "/moments/thank-you.webp" },
   { id: "love", label: "Обичам те", image: "/moments/love.webp" },
+  { id: "just-because", label: "Просто така", image: "/moments/just-because.webp" },
 ] as const;
 
 /**

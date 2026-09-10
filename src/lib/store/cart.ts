@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { productById } from "@/lib/shop/products";
+import { quantityDiscount } from "@/lib/shop/quantity";
 import type { Placement } from "@/lib/shop/placement";
 
 /**
@@ -123,18 +124,31 @@ export function cartCount(lines: readonly CartLine[]): number {
 }
 
 /**
- * Goods subtotal in EUR.
+ * Goods subtotal in EUR, with the quantity tier applied.
  *
  * Prices come from the catalogue rather than from the stored line, so a price
  * change is picked up on the next render instead of being frozen into whatever
  * the basket happened to record — the server will price the order again at
  * checkout regardless, and a basket that disagrees with that is worse than one
  * that simply follows the catalogue.
+ *
+ * The tier is read from `quantityDiscount`, the same function the server prices
+ * with, so the number in the header and the number on the invoice agree.
+ * `priceCart` stays the authority; this is a read of the rule, not a second one.
  */
 export function cartSubtotalEUR(lines: readonly CartLine[]): number {
+  const units = lines.reduce((n, l) => n + l.quantity, 0);
+  const off = quantityDiscount(units);
   const total = lines.reduce((sum, l) => {
     const product = productById(l.productId);
-    return product ? sum + product.priceEUR * l.quantity : sum;
+    return product
+      ? sum + Math.round(product.priceEUR * (1 - off) * 100) / 100 * l.quantity
+      : sum;
   }, 0);
   return Math.round(total * 100) / 100;
+}
+
+/** Units in the basket, for the "add two more and save" nudge. */
+export function cartUnits(lines: readonly CartLine[]): number {
+  return lines.reduce((n, l) => n + l.quantity, 0);
 }
