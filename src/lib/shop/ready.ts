@@ -27,6 +27,20 @@ import { PRODUCTS, type MentyProduct } from "./products";
 /** The garment a ready-made design is sold on unless it says otherwise. */
 const BASE_ID = "premium-tee-stanley-stella";
 
+/**
+ * The women's cut, for designs that are worn by women.
+ *
+ * A women's tee is not a men's tee in a smaller size — it has a waist and a
+ * shaped bust — and the whole hen range was being shown on a straight unisex
+ * body, which made it look borrowed from the men's rail. The distinction is by
+ * design category rather than by product, because "Булката" is a women's shirt
+ * whatever blank it is printed on.
+ */
+const BASE_ID_WOMEN = "womens-tee";
+
+/** Categories sold on the women's cut. */
+const WOMENS_CATEGORIES = new Set(["HEN"]);
+
 /** Ready-made ids are `t-<designId>`, so the design is recoverable from the id. */
 export const READY_PREFIX = "t-";
 
@@ -36,10 +50,26 @@ export function designIdOf(productId: string): string | null {
     : null;
 }
 
-function base(): MentyProduct {
-  const b = PRODUCTS.find((p) => p.id === BASE_ID);
-  if (!b) throw new Error(`ready.ts: base product ${BASE_ID} is missing`);
+function base(womens = false): MentyProduct {
+  const id = womens ? BASE_ID_WOMEN : BASE_ID;
+  const b = PRODUCTS.find((p) => p.id === id);
+  if (!b) throw new Error(`ready.ts: base product ${id} is missing`);
   return b;
+}
+
+/**
+ * Which blank a design is shown and sold on.
+ *
+ * Exported because everything that draws a shirt needs the same answer — the
+ * picker, the category grid, the basket thumbnail — and each of them working it
+ * out separately is how a design ends up on a men's body in one place and a
+ * women's in another.
+ */
+export function baseUidForDesign(designId: string): string {
+  const text = TEXT_DESIGNS.find((d) => d.id === designId);
+  const graphic = DESIGNS.find((d) => d.id === designId);
+  const category = text?.category ?? graphic?.category;
+  return category && WOMENS_CATEGORIES.has(category) ? "ce" : "c";
 }
 
 /**
@@ -72,13 +102,14 @@ function make(
   blurb: string,
   forDark: boolean,
   tags: readonly string[],
-  takesName: boolean
+  takesName: boolean,
+  womens = false
 ): MentyProduct {
-  const b = base();
+  const b = base(womens);
   return {
     ...b,
     id: `${READY_PREFIX}${designId}`,
-    title: `Тениска — ${title}`,
+    title: `${womens ? "Дамска тениска" : "Тениска"} — ${title}`,
     blurb,
     // Cleared: a ready-made shirt is not a bestseller row candidate, and
     // inheriting the base product's rank would put fifty of them in it.
@@ -118,7 +149,8 @@ function build(): readonly MentyProduct[] {
       `Готова тениска с щампа „${d.title}“. Избираш размер и цвят — нищо друго.`,
       d.forDark,
       [d.category.toLowerCase()],
-      d.lines.some((l) => l.includes("{name}"))
+      d.lines.some((l) => l.includes("{name}")),
+      WOMENS_CATEGORIES.has(d.category)
     )
   ),
   ...DESIGNS.filter((d) => !d.iconOnly).map((d) =>
@@ -128,7 +160,8 @@ function build(): readonly MentyProduct[] {
       `Готова тениска с щампа „${d.title}“. Избираш размер и цвят — нищо друго.`,
       d.forDark,
       [d.category.toLowerCase()],
-      false
+      false,
+      WOMENS_CATEGORIES.has(d.category)
     )
   ),
   ];

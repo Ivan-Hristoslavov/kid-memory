@@ -48,6 +48,14 @@ const GARMENTS: Garment[] = [
 straight out to the sides, ribbed collar clearly defined, side seams visible. ${LOOK}`,
   },
   {
+    id: "tee-women-front",
+    out: "own-tee-women-front",
+    prompt: `A premium white cotton women's fitted t-shirt, seen from the front, cut for a \
+woman: narrow waist, gently curved side seams, shaped bust with the fabric falling naturally \
+over it, shorter body and slightly capped sleeves. The silhouette must read unmistakably as a \
+women's cut rather than a straight unisex one. ${LOOK}`,
+  },
+  {
     id: "tee-back",
     out: "own-tee-back",
     prompt: `A premium heavyweight white cotton crew-neck t-shirt seen from the BACK, sleeves \

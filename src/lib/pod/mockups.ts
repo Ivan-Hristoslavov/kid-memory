@@ -205,6 +205,15 @@ const B = "Отзад";
 
 const OWN_TEE_PRINT = { x: 0.312, y: 0.322, width: 0.357, height: 0.477 };
 
+/**
+ * The women's cut is narrower, so its field is too.
+ *
+ * Measured the same way: the torso runs x 0.240–0.761 below the sleeves against
+ * the unisex 0.202–0.779, and a print laid out for the wider garment would run
+ * past a fitted one's side seams. 60% of that narrower waist.
+ */
+const OWN_TEE_WOMEN_PRINT = { x: 0.344, y: 0.322, width: 0.3125, height: 0.417 };
+
 const own = (image: string, print = OWN_TEE_PRINT): Mockup => ({
   name: F,
   image,
@@ -221,7 +230,13 @@ const own = (image: string, print = OWN_TEE_PRINT): Mockup => ({
  */
 const OWN_MOCKUPS: Readonly<Record<string, readonly Mockup[]>> = {
   c: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],
-  ce: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],
+  // A women's tee is not a men's tee in a smaller size. It is cut with a waist
+  // and a shaped bust, and showing a straight unisex body for "Булката" made
+  // the whole hen range look like it was borrowed from the men's rail.
+  ce: [
+    own("/mockups/own-tee-women-front.png", OWN_TEE_WOMEN_PRINT),
+    { ...own("/mockups/own-tee-back.png"), name: B },
+  ],
   iidf: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],
   gddfd: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],
   ge: [own("/mockups/own-tee-front.png"), { ...own("/mockups/own-tee-back.png"), name: B }],

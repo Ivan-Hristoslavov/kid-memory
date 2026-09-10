@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { frontMockup } from "@/lib/pod/mockups";
 import { textDesignById } from "@/lib/shop/text-designs";
-import { readyArtwork } from "@/lib/shop/ready";
+import { baseUidForDesign, readyArtwork } from "@/lib/shop/ready";
 import { TextDesignArt } from "./text-design-art";
 
 /**
@@ -21,7 +21,7 @@ export function DesignedShirt({
   designId,
   colorHex,
   name = "",
-  uid = "c",
+  uid,
   priority = false,
 }: {
   designId: string;
@@ -29,11 +29,17 @@ export function DesignedShirt({
   colorHex: string;
   /** Fills a `{name}` slot in a lettering design. */
   name?: string;
-  /** Supplier blank whose mock-up to use. The men's tee unless told otherwise. */
+  /**
+   * Supplier blank whose mock-up to use.
+   *
+   * Defaults to whatever the design is sold on, so a hen design is drawn on the
+   * women's cut everywhere without any caller having to know that. Passed
+   * explicitly only when a page is showing a design on a specific garment.
+   */
   uid?: string;
   priority?: boolean;
 }) {
-  const mock = frontMockup(uid);
+  const mock = frontMockup(uid ?? baseUidForDesign(designId));
   if (!mock) return null;
 
   const text = textDesignById(designId);
