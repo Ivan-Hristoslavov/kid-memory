@@ -1,5 +1,5 @@
 import "server-only";
-import { PodError, type PodOrder, type PodOrderRequest, type PodProvider } from "./types";
+import { PodError, type PodOrder, type PodProvider } from "./types";
 
 /**
  * PrintFactory — the previous supplier.
@@ -20,13 +20,13 @@ export class PrintFactoryProvider implements PodProvider {
     return false;
   }
 
-  async createOrder(_req: PodOrderRequest): Promise<PodOrder> {
+  async createOrder(): Promise<PodOrder> {
     throw new PodError(
       "PrintFactory has no API integration — its orders were placed by hand."
     );
   }
 
-  async getOrder(_id: string): Promise<PodOrder> {
+  async getOrder(): Promise<PodOrder> {
     throw new PodError("PrintFactory has no API integration.");
   }
 }

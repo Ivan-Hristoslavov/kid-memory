@@ -187,7 +187,7 @@ export class PrintOnDemandProvider implements PodProvider {
    * that exist. Tracking therefore has to come from their panel or a webhook
    * until such an endpoint appears.
    */
-  async getOrder(_id: string): Promise<PodOrder> {
+  async getOrder(): Promise<PodOrder> {
     throw new PodError(
       "printondemand.bg CLIENT API v2.2 exposes no per-order status endpoint — " +
         "only /api/nomenclature/order/status, which lists the possible statuses."
