@@ -24,7 +24,18 @@ export type TextLayout = "STACK" | "BANNER";
 export interface TextDesign {
   id: string;
   title: string;
-  category: "BACHELOR" | "HEN" | "GAMING" | "HUMOUR" | "FAMILY";
+  category:
+    | "BACHELOR"
+    | "HEN"
+    | "GAMING"
+    | "HUMOUR"
+    | "FAMILY"
+    | "PROFESSION"
+    | "FITNESS"
+    | "TECH"
+    | "PETS"
+    | "GRADUATION"
+    | "HOLIDAY";
   /** Drawn light, for dark garments. */
   forDark: boolean;
   /** Lines top to bottom. A line containing `{name}` is dropped when empty. */
@@ -96,9 +107,77 @@ export const TEXT_DESIGNS: readonly TextDesign[] = [
   t("txt-no-sleep", "Сънят е за слабите", "GAMING", true, ["СЪНЯТ Е ЗА", "СЛАБИТЕ"], 1, undefined, undefined, undefined, "ico-dice"),
 
   // ── Хумор и семейство ────────────────────────────────────────────────
-  t("txt-coffee-first", "Първо кафе", "HUMOUR", false, ["ПЪРВО", "КАФЕ"], 1, "ROUNDED", "STACK", "#C77D6B"),
-  t("txt-best-dad", "Най-добрият татко", "FAMILY", true, ["НАЙ-ДОБРИЯТ", "ТАТКО", "{name}"], 1, "SERIF"),
-  t("txt-best-mum", "Най-добрата мама", "FAMILY", false, ["НАЙ-ДОБРАТА", "МАМА", "{name}"], 1, "SERIF"),
+  t("txt-coffee-first", "Първо кафе", "HUMOUR", false, ["ПЪРВО", "КАФЕ"], 1, "ROUNDED", "STACK", "#C77D6B", "ico-coffee"),
+  t("txt-best-dad", "Най-добрият татко", "FAMILY", true, ["НАЙ-ДОБРИЯТ", "ТАТКО", "{name}"], 1, "SERIF", undefined, undefined, "ico-hands-heart"),
+  t("txt-best-mum", "Най-добрата мама", "FAMILY", false, ["НАЙ-ДОБРАТА", "МАМА", "{name}"], 1, "SERIF", undefined, undefined, "ico-hands-heart"),
+
+  // ── Ергенско, втора вълна ────────────────────────────────────────────
+  t("txt-maybe-fooled", "Може би прецакан", "BACHELOR", true, ["МОЖЕ БИ", "ПРЕЦАКАН"], 1, "SANS", "STACK", undefined, "ico-couple"),
+  t("txt-groom-oath", "Ергенска клетва", "BACHELOR", true, ["ЕРГЕНСКА", "КЛЕТВА"], 1, "SERIF", "BANNER", undefined, "ico-tophat"),
+  t("txt-everything-allowed", "Днес всичко му е позволено", "BACHELOR", true, ["КУМ", "ДНЕС ВСИЧКО", "МУ Е ПОЗВОЛЕНО"], 0, "SANS", "BANNER", undefined, "ico-bowtie"),
+  t("txt-boys-of-groom", "Момчетата на младоженеца", "BACHELOR", true, ["МОМЧЕТАТА НА", "МЛАДОЖЕНЕЦА"], 1, "SANS", "STACK", undefined, "ico-men-row"),
+  t("txt-last-day-free", "Ерген за последен ден", "BACHELOR", true, ["ЕРГЕН ЗА", "ПОСЛЕДЕН ДЕН"], 1, "SANS", "STACK", undefined, "ico-ring"),
+  t("txt-drinking-team", "Отборът по пиене", "BACHELOR", true, ["ОТБОРЪТ", "ПО ПИЕНЕ"], 1, "SANS", "STACK", undefined, "ico-beer-cheers"),
+  t("txt-caught", "Хванат", "BACHELOR", true, ["ХВАНАТ", "И ЩАСТЛИВ"], 0, "SERIF", "STACK", undefined, "ico-ring"),
+  t("txt-groom-security", "Охраната на младоженеца", "BACHELOR", true, ["ОХРАНАТА НА", "МЛАДОЖЕНЕЦА"], 1, "SANS", "STACK", undefined, "ico-men-row"),
+  t("txt-one-last-round", "Още по едно", "BACHELOR", true, ["ОЩЕ", "ПО ЕДНО"], 1, "ROUNDED", "STACK", undefined, "ico-shots"),
+  t("txt-witness", "Свидетелят", "BACHELOR", true, ["СВИДЕТЕЛЯТ", "{name}"], 0, "SERIF", "BANNER", undefined, "ico-bowtie"),
+
+  // ── Моминско, втора вълна ────────────────────────────────────────────
+  t("txt-bride-squad-bg", "Отрядът на булката", "HEN", false, ["ОТРЯДЪТ НА", "БУЛКАТА"], 1, "SERIF", "STACK", "#C77D6B", "ico-women-row"),
+  t("txt-bridesmaid", "Шаферка", "HEN", false, ["ШАФЕРКА", "{name}"], 0, "SERIF", "BANNER", "#C77D6B", "ico-heels"),
+  t("txt-girls-of-bride", "Момичетата на булката", "HEN", false, ["МОМИЧЕТАТА НА", "БУЛКАТА"], 1, "SERIF", "STACK", undefined, "ico-women-row"),
+  t("txt-bride-looking", "Кумата си търси белята", "HEN", false, ["КУМАТА", "СИ ТЪРСИ БЕЛЯТА"], 0, "ROUNDED", "STACK", "#C77D6B", "ico-lips"),
+  t("txt-team-bride", "Team Bride", "HEN", false, ["TEAM", "BRIDE"], 1, "SERIF", "STACK", "#C77D6B", "ico-tiara"),
+  t("txt-bride-to-be", "Bride to be", "HEN", false, ["BRIDE", "TO BE"], 0, "SERIF", "BANNER", "#C77D6B", "ico-ring"),
+  t("txt-mother-of-bride", "Майката на булката", "HEN", false, ["МАЙКАТА НА", "БУЛКАТА"], 1, "SERIF", "STACK", undefined, "ico-tiara"),
+  t("txt-last-free-night-hen", "Последна свободна нощ", "HEN", false, ["ПОСЛЕДНА", "СВОБОДНА НОЩ"], 1, "SERIF", "STACK", undefined, "ico-champagne"),
+  t("txt-hen-drinking", "Пием за булката", "HEN", false, ["ПИЕМ ЗА", "БУЛКАТА"], 1, "ROUNDED", "STACK", undefined, "ico-champagne"),
+  t("txt-hen-2026", "Моминско 2026", "HEN", false, ["МОМИНСКО", "2026"], 0, "SANS", "BANNER", "#C77D6B", "ico-tiara"),
+
+  // ── Гейминг ───────────────────────────────────────────────────────────
+  t("txt-just-one-more", "Само още един рунд", "GAMING", true, ["САМО ОЩЕ", "ЕДИН РУНД"], 1, "SANS", "STACK", "#7C5CFF", "ico-controller"),
+  t("txt-noob", "Не съм нуб", "GAMING", true, ["НЕ СЪМ НУБ", "ЛАГВА"], 0, "SANS", "STACK", undefined, "ico-controller"),
+  t("txt-lvl-up", "Ниво нагоре", "GAMING", true, ["НИВО", "НАГОРЕ"], 1, "SANS", "STACK", "#3FC1C9", "ico-dice"),
+  t("txt-critical-hit", "Критичен удар", "GAMING", true, ["КРИТИЧЕН", "УДАР"], 1, "SANS", "STACK", "#C77D6B", "ico-dice"),
+  t("txt-save-point", "Точка за запис", "GAMING", true, ["ТОЧКА", "ЗА ЗАПИС"], 1, "ROUNDED", "STACK", undefined, "ico-controller"),
+  t("txt-offline", "Офлайн съм", "GAMING", true, ["ОФЛАЙН", "СЪМ"], 1, "SANS", "STACK", undefined, "ico-controller"),
+
+  // ── Семейство ─────────────────────────────────────────────────────────
+  t("txt-best-grandma", "Най-добрата баба", "FAMILY", false, ["НАЙ-ДОБРАТА", "БАБА", "{name}"], 1, "SERIF", undefined, undefined, "ico-hands-heart"),
+  t("txt-best-grandpa", "Най-добрият дядо", "FAMILY", true, ["НАЙ-ДОБРИЯТ", "ДЯДО", "{name}"], 1, "SERIF", undefined, undefined, "ico-hands-heart"),
+  t("txt-big-brother", "Голямото братче", "FAMILY", false, ["ГОЛЯМОТО", "БРАТЧЕ"], 1, "ROUNDED", undefined, undefined, "ico-baby"),
+  t("txt-big-sister", "Голямата сестричка", "FAMILY", false, ["ГОЛЯМАТА", "СЕСТРИЧКА"], 1, "ROUNDED", undefined, undefined, "ico-baby"),
+  t("txt-new-baby-2026", "Скоро идвам", "FAMILY", false, ["СКОРО", "ИДВАМ"], 1, "ROUNDED", undefined, undefined, "ico-baby"),
+  t("txt-family-name", "Семейство", "FAMILY", true, ["СЕМЕЙСТВО", "{name}"], 1, "SERIF", "BANNER", undefined, "ico-hands-heart"),
+
+  // ── Професии ──────────────────────────────────────────────────────────
+  t("txt-nurse", "Медицинска сестра", "PROFESSION", false, ["СПАСЯВАМ ЖИВОТ", "И ПИЯ КАФЕ"], 0, "ROUNDED", undefined, undefined, "ico-coffee"),
+  t("txt-driver", "Шофьор", "PROFESSION", true, ["ЖИВОТЪТ Е", "ПЪТ"], 1, "SERIF", undefined, undefined, "ico-car"),
+  t("txt-teacher-year", "Най-добрият учител", "PROFESSION", false, ["НАЙ-ДОБРИЯТ", "УЧИТЕЛ", "{name}"], 1, "SERIF", undefined, undefined, "ico-cake"),
+  t("txt-chef", "Готвачът", "PROFESSION", false, ["ГОТВЯ", "СЛЕДОВАТЕЛНО СЪМ"], 0, "SERIF", undefined, undefined, "ico-chef-hat"),
+  t("txt-builder", "Майсторът", "PROFESSION", true, ["МАЙСТОРЪТ", "{name}"], 0, "SANS", "BANNER", undefined, "ico-car"),
+
+  // ── Фитнес и IT ───────────────────────────────────────────────────────
+  t("txt-no-excuses", "Без извинения", "FITNESS", true, ["БЕЗ", "ИЗВИНЕНИЯ"], 1, "SANS", undefined, undefined, "ico-dumbbell"),
+  t("txt-leg-day", "Ден за крака", "FITNESS", true, ["ДЕН ЗА", "КРАКА"], 1, "SANS", undefined, undefined, "ico-dumbbell"),
+  t("txt-works-on-mine", "При мен работи", "TECH", true, ["ПРИ МЕН", "РАБОТИ"], 1, "ROUNDED", undefined, undefined, "ico-laptop"),
+  t("txt-ctrl-z", "Ctrl + Z", "TECH", true, ["CTRL", "+ Z"], 0, "SANS", "STACK", "#3FC1C9", "ico-laptop"),
+
+  // ── Любимци и хумор ───────────────────────────────────────────────────
+  t("txt-dog-dad", "Кучешки татко", "PETS", true, ["КУЧЕШКИ", "ТАТКО"], 1, "ROUNDED", undefined, undefined, "ico-dog"),
+  t("txt-cat-mum", "Котешка мама", "PETS", false, ["КОТЕШКА", "МАМА"], 1, "ROUNDED", undefined, undefined, "ico-cat"),
+  t("txt-dog-name", "Кучето се казва", "PETS", false, ["КУЧЕТО СЕ КАЗВА", "{name}"], 1, "SERIF", "BANNER", undefined, "ico-paw"),
+  t("txt-not-today", "Днес не", "HUMOUR", true, ["ДНЕС", "НЕ"], 1, "SANS", undefined, undefined, "ico-coffee"),
+  t("txt-nap-first", "Първо дрямка", "HUMOUR", false, ["ПЪРВО", "ДРЯМКА"], 1, "ROUNDED", undefined, undefined, "ico-cat"),
+  t("txt-weekend", "Уикендът е характер", "HUMOUR", true, ["УИКЕНДЪТ", "Е ХАРАКТЕР"], 1, "SERIF", undefined, undefined, "ico-coffee"),
+
+  // ── Абитуриентски и празници ─────────────────────────────────────────
+  t("txt-class-2026", "Випуск 2026", "GRADUATION", true, ["ВИПУСК", "2026"], 1, "SERIF", "BANNER", undefined, "ico-grad-cap"),
+  t("txt-graduated", "Успях", "GRADUATION", true, ["УСПЯХ", "{name}"], 0, "SERIF", "BANNER", undefined, "ico-grad-cap"),
+  t("txt-merry", "Весела Коледа", "HOLIDAY", true, ["ВЕСЕЛА", "КОЛЕДА"], 1, "SERIF", undefined, undefined, "ico-tree"),
+  t("txt-new-year", "Честита Нова година", "HOLIDAY", true, ["ЧЕСТИТА", "НОВА ГОДИНА"], 1, "SERIF", undefined, undefined, "ico-snow"),
+  t("txt-first-christmas", "Първата ми Коледа", "HOLIDAY", false, ["ПЪРВАТА МИ", "КОЛЕДА"], 1, "ROUNDED", undefined, undefined, "ico-tree"),
 ];
 
 export function textDesignById(id: string): TextDesign | undefined {

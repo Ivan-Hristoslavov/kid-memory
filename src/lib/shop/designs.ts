@@ -414,6 +414,20 @@ export const DESIGN_ICONS: readonly Design[] = [
   ic("ico-lips", "Устни", "A pair of stylised lips, seen face-on."),
   ic("ico-controller", "Контролер", "A modern game controller seen face-on."),
   ic("ico-dice", "Зар", "A twenty-sided polyhedral dice seen at a three-quarter angle."),
+  ic("ico-cake", "Торта", "A birthday cake with three lit candles on top, seen from the side."),
+  ic("ico-grad-cap", "Абитуриентска шапка", "A graduation mortarboard cap seen at a slight angle with its tassel hanging."),
+  ic("ico-tree", "Елха", "A simple triangular Christmas tree with a star on top and a small trunk."),
+  ic("ico-snow", "Снежинка", "A single six-armed snowflake, symmetrical."),
+  ic("ico-dumbbell", "Дъмбел", "A single dumbbell seen from the side."),
+  ic("ico-laptop", "Лаптоп", "An open laptop seen from a slight three-quarter angle, screen blank."),
+  ic("ico-dog", "Куче", "A sitting dog seen in profile, full body."),
+  ic("ico-cat", "Коте", "A sitting cat seen in profile with its tail curled around its paws."),
+  ic("ico-paw", "Лапа", "A single dog paw print with four toes and a central pad."),
+  ic("ico-baby", "Бебе", "A baby's dummy with a round shield and a ring handle."),
+  ic("ico-hands-heart", "Ръце и сърце", "Two hands cupped together forming a heart shape between them."),
+  ic("ico-coffee", "Кафе", "A coffee cup on a saucer seen from the side with three wisps of steam rising."),
+  ic("ico-car", "Кола", "A lorry cab with a trailer seen from the side."),
+  ic("ico-chef-hat", "Готварска шапка", "A tall chef's toque hat seen face-on."),
 ];
 
 export function designById(id: string): Design | undefined {
