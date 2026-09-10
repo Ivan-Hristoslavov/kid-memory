@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { Maximize2, RotateCcw, ZoomIn } from "lucide-react";
 import type { MentyProduct, PrintArea } from "@/lib/shop/products";
@@ -12,7 +12,7 @@ import {
   type Placement,
   type TextFont,
 } from "@/lib/shop/placement";
-import { frontMockup } from "@/lib/pod/mockups";
+import { mockupsFor } from "@/lib/pod/mockups";
 
 export { DEFAULT_PLACEMENT, type Placement };
 
@@ -50,12 +50,11 @@ export function PhotoPlacer({
    * layout. When there is not (stickers, our own poster), the product photo is
    * the backdrop and the window is drawn on it as before.
    */
-  const mock = frontMockup(product.supplierProductCode);
+  const views = mockupsFor(product.supplierProductCode);
+  const [view, setView] = useState(0);
+  const mock = views[view];
   const frameRef = useRef<HTMLDivElement>(null);
   const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
-  const dragging = useRef<{ px: number; py: number; ox: number; oy: number } | null>(
-    null
-  );
 
   /**
    * How the photo is fitted, and how far past the window it then reaches.
@@ -71,41 +70,52 @@ export function PhotoPlacer({
   const frameAspect = mock?.aspect ?? 1;
   const cover = coverOf(natural, product.printArea, placement.scale, frameAspect);
 
-  const move = useCallback(
-    (nextX: number, nextY: number) => {
-      onChange({
-        ...placement,
-        // Clamped against the ACTUAL overflow so no blank edge can enter the
-        // print. A flat 0..1 was wrong: at x = 0 the photo's centre sits on the
-        // window's left edge, leaving the right half empty.
-        x: clamp(nextX, ...panRange(cover.rx)),
-        y: clamp(nextY, ...panRange(cover.ry)),
-      });
-    },
-    [onChange, placement, cover.rx, cover.ry]
-  );
+  // Plain function, not useCallback: the React Compiler memoizes this for us,
+  // and the hand-written version spread `placement` in a way it could not
+  // preserve — which turned off optimisation for the whole component.
+  function move(nextX: number, nextY: number) {
+    onChange({
+      ...placement,
+      // Clamped against the ACTUAL overflow so no blank edge can enter the
+      // print. A flat 0..1 was wrong: at x = 0 the photo's centre sits on the
+      // window's left edge, leaving the right half empty.
+      x: clamp(nextX, ...panRange(cover.rx)),
+      y: clamp(nextY, ...panRange(cover.ry)),
+    });
+  }
 
-  useEffect(() => {
-    function onUp() {
-      dragging.current = null;
-    }
-    function onMove(e: PointerEvent) {
-      const d = dragging.current;
-      const frame = frameRef.current;
-      if (!d || !frame) return;
-      const rect = frame.getBoundingClientRect();
+  /**
+   * Starts a drag, and wires the listeners for its lifetime.
+   *
+   * Attached here rather than in an effect. An effect would either re-subscribe
+   * on every render, or read `move` through a ref during render, which the
+   * React Compiler rejects — and neither buys anything, because the listeners
+   * are only wanted while a pointer is actually down.
+   */
+  function startDrag(e: React.PointerEvent<HTMLDivElement>) {
+    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+    const from = {
+      px: e.clientX,
+      py: e.clientY,
+      ox: placement.x,
+      oy: placement.y,
+    };
+    const frame = frameRef.current;
+    if (!frame) return;
+
+    function onMove(ev: PointerEvent) {
+      const rect = frame!.getBoundingClientRect();
       move(
-        d.ox + (e.clientX - d.px) / rect.width,
-        d.oy + (e.clientY - d.py) / rect.height
+        from.ox + (ev.clientX - from.px) / rect.width,
+        from.oy + (ev.clientY - from.py) / rect.height
       );
     }
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-    return () => {
+    function onUp() {
       window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
-    };
-  }, [move]);
+    }
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp, { once: true });
+  }
 
   if (!area) return null;
 
@@ -164,17 +174,9 @@ export function PhotoPlacer({
           />
         )}
 
-        <div
+        {view === 0 && <div
           ref={frameRef}
-          onPointerDown={(e) => {
-            (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-            dragging.current = {
-              px: e.clientX,
-              py: e.clientY,
-              ox: placement.x,
-              oy: placement.y,
-            };
-          }}
+          onPointerDown={startDrag}
           style={{
             left: `${area.x * 100}%`,
             top: `${area.y * 100}%`,
@@ -241,7 +243,7 @@ export function PhotoPlacer({
               {text}
             </span>
           )}
-        </div>
+        </div>}
 
         {mock && !mock.overlay && (
           <Image
@@ -258,17 +260,44 @@ export function PhotoPlacer({
 
         {/* The window marker sits above the render, or it would be under the
             garment's own shading and invisible. */}
-        <div
-          aria-hidden
-          style={{
-            left: `${area.x * 100}%`,
-            top: `${area.y * 100}%`,
-            width: `${area.width * 100}%`,
-            height: `${area.height * 100}%`,
-          }}
-          className="pointer-events-none absolute rounded-[2px] outline-dashed outline-2 outline-offset-2 outline-forest/45"
-        />
+        {view === 0 && (
+          <div
+            aria-hidden
+            style={{
+              left: `${area.x * 100}%`,
+              top: `${area.y * 100}%`,
+              width: `${area.width * 100}%`,
+              height: `${area.height * 100}%`,
+            }}
+            className="pointer-events-none absolute rounded-[2px] outline-dashed outline-2 outline-offset-2 outline-forest/45"
+          />
+        )}
       </div>
+
+      {/* Turn the product round.
+          The supplier renders every angle they print on, so there is no reason
+          to show one. The design stays on the front because that is the one
+          print position an order carries today — a second position is another
+          3.08 to produce and needs a price rule before it can be offered. */}
+      {views.length > 1 && (
+        <div className="mt-2.5 flex flex-wrap gap-2">
+          {views.map((v, i) => (
+            <button
+              key={v.name + i}
+              type="button"
+              onClick={() => setView(i)}
+              aria-pressed={view === i}
+              className={`h-8 rounded-lg border px-3 text-xs font-medium transition-colors ${
+                view === i
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border bg-background text-foreground/70 hover:border-foreground/40"
+              }`}
+            >
+              {v.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       {text && (
         <div className="mt-4">
