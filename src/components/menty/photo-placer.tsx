@@ -8,7 +8,9 @@ import type { MentyProduct, PrintArea } from "@/lib/shop/products";
 import {
   DEFAULT_PLACEMENT,
   MIN_PRINT_DPI,
+  TEXT_FONTS,
   type Placement,
+  type TextFont,
 } from "@/lib/shop/placement";
 import { frontMockup } from "@/lib/pod/mockups";
 
@@ -20,14 +22,23 @@ export function PhotoPlacer({
   placement,
   onChange,
   colorHex,
+  text,
 }: {
   product: MentyProduct;
-  /** Signed URL of the uploaded photo. */
-  photoUrl: string;
+  /** Signed URL of the uploaded photo. Absent on a text-only personalisation. */
+  photoUrl?: string;
   placement: Placement;
   onChange: (p: Placement) => void;
   /** The chosen colour, painted behind the mock-up. */
   colorHex?: string;
+  /**
+   * The customer's line, shown where it will actually be printed.
+   *
+   * Typing into a box and being told the result will be fine is not a preview.
+   * It is also the cheapest guard against disappointment: a name that overflows
+   * the print area is visible here rather than at the door.
+   */
+  text?: string;
 }) {
   const area = product.printArea;
   /**
@@ -105,7 +116,9 @@ export function PhotoPlacer({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-foreground">Намести снимката</p>
+        <p className="text-sm font-semibold text-foreground">
+          {photoUrl ? "Намести снимката" : "Ето как ще изглежда"}
+        </p>
         <button
           type="button"
           onClick={() => onChange(DEFAULT_PLACEMENT)}
@@ -138,6 +151,19 @@ export function PhotoPlacer({
           />
         )}
 
+        {mock?.overlay && (
+          <Image
+            src={mock.image}
+            alt={product.title}
+            fill
+            sizes="480px"
+            // This one is an ordinary opaque photograph — a mug, an enamel cup,
+            // a tracksuit. Artwork goes over it, or it goes behind a wall.
+            className="pointer-events-none object-contain"
+            priority
+          />
+        )}
+
         <div
           ref={frameRef}
           onPointerDown={(e) => {
@@ -155,10 +181,13 @@ export function PhotoPlacer({
             width: `${area.width * 100}%`,
             height: `${area.height * 100}%`,
           }}
-          className="absolute cursor-grab overflow-hidden active:cursor-grabbing"
+          // A container so the text can be sized in cqw. Percentage font-size
+          // resolves against the PARENT's font-size, not the box, which set the
+          // line at 6px — technically rendered, practically invisible.
+          className="absolute cursor-grab overflow-hidden [container-type:inline-size] active:cursor-grabbing"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          {photoUrl && <img
             src={photoUrl}
             alt="Твоята снимка върху продукта"
             draggable={false}
@@ -179,12 +208,42 @@ export function PhotoPlacer({
               transform: `translate(-50%, -50%) scale(${placement.scale})`,
               left: `${placement.x * 100}%`,
               top: `${placement.y * 100}%`,
+              // The fade is a mask, not a border: the image simply stops
+              // carrying ink towards its edge, which is what the print does
+              // too. Applied on both axes so a corner fades like a side.
+              ...(placement.feather > 0
+                ? {
+                    WebkitMaskImage: featherMask(placement.feather),
+                    maskImage: featherMask(placement.feather),
+                    WebkitMaskComposite: "source-in",
+                    maskComposite: "intersect",
+                  }
+                : null),
             }}
             className="pointer-events-none absolute max-w-none"
-          />
+          />}
+
+          {text && (
+            <span
+              style={{
+                fontFamily: TEXT_FONTS[placement.font].css,
+                // Sized against the print window itself, so one line looks
+                // right on a mug's narrow band and a hoodie's wide chest.
+                fontSize: "13cqw",
+                lineHeight: 1.15,
+                // Ink that would vanish is not a preview. A pale garment gets
+                // dark type and a dark one gets ivory, which is also the choice
+                // a printer would make.
+                color: isLight(colorHex) ? "#2B2B2B" : "#FEFCF8",
+              }}
+              className="pointer-events-none absolute inset-x-[6%] bottom-[6%] text-center font-semibold [overflow-wrap:anywhere]"
+            >
+              {text}
+            </span>
+          )}
         </div>
 
-        {mock && (
+        {mock && !mock.overlay && (
           <Image
             src={mock.image}
             alt={product.title}
@@ -211,49 +270,133 @@ export function PhotoPlacer({
         />
       </div>
 
-      <div className="mt-3 flex items-center gap-3">
-        <ZoomIn className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
-        <input
-          type="range"
-          min={1}
-          max={3}
-          step={0.02}
-          value={placement.scale}
-          onChange={(e) => {
-            // Zooming OUT shrinks the pannable range, so a position that was
-            // legal at 2x can leave a blank edge at 1.2x. Re-clamp against the
-            // new range rather than only on drag.
-            const scale = Number(e.target.value);
-            const next = coverOf(natural, area, scale, frameAspect);
-            onChange({
-              scale,
-              x: clamp(placement.x, ...panRange(next.rx)),
-              y: clamp(placement.y, ...panRange(next.ry)),
-            });
-          }}
-          aria-label="Мащаб на снимката"
-          className="h-1 w-full flex-1 cursor-pointer appearance-none rounded-full bg-border accent-forest"
-        />
-        <Maximize2 className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
-      </div>
+      {text && (
+        <div className="mt-4">
+          <p className="text-xs font-semibold text-foreground">Шрифт</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {(Object.keys(TEXT_FONTS) as TextFont[]).map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => onChange({ ...placement, font: f })}
+                aria-pressed={placement.font === f}
+                style={{ fontFamily: TEXT_FONTS[f].css }}
+                className={`h-9 rounded-lg border px-3 text-sm transition-colors ${
+                  placement.font === f
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border bg-background text-foreground/80 hover:border-foreground/40"
+                }`}
+              >
+                {TEXT_FONTS[f].label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
-      <p className="mt-2 text-xs text-muted-foreground">
-        Плъзни снимката, за да я наместиш. Отпечатва се само това, което е в
-        рамката — {area.widthMm} × {area.heightMm} мм.
-      </p>
+      {photoUrl && (
+        <div className="mt-4">
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="text-xs font-semibold text-foreground">Меки ръбове</p>
+            <p className="text-xs text-muted-foreground">
+              {placement.feather === 0 ? "Изключено" : `${Math.round(placement.feather * 200)}%`}
+            </p>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={0.3}
+            step={0.01}
+            value={placement.feather}
+            onChange={(e) =>
+              onChange({ ...placement, feather: Number(e.target.value) })
+            }
+            aria-label="Меки ръбове на снимката"
+            className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-border accent-forest"
+          />
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            Разтваря снимката в плата, вместо да я отрязва с ръб.
+          </p>
+        </div>
+      )}
 
-      {/* A photo can look perfect on screen and still be 80 DPI once it is
-          90mm wide on a mug. Saying so before the order beats apologising
-          after the print. */}
-      {lowRes && (
-        <p className="mt-2 rounded-lg bg-clay/10 p-3 text-xs text-clay">
-          Снимката е с ниска резолюция за този размер (около {dpi} DPI). Ще се
-          отпечата, но детайлите ще са меки — по-голяма снимка или по-малко
-          увеличение ще дадат по-добър резултат.
+      {photoUrl && (
+        <>
+        <div className="mt-3 flex items-center gap-3">
+          <ZoomIn className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
+          <input
+            type="range"
+            min={1}
+            max={3}
+            step={0.02}
+            value={placement.scale}
+            onChange={(e) => {
+              // Zooming OUT shrinks the pannable range, so a position that was
+              // legal at 2x can leave a blank edge at 1.2x. Re-clamp against the
+              // new range rather than only on drag.
+              const scale = Number(e.target.value);
+              const next = coverOf(natural, area, scale, frameAspect);
+              onChange({
+                ...placement,
+                scale,
+                x: clamp(placement.x, ...panRange(next.rx)),
+                y: clamp(placement.y, ...panRange(next.ry)),
+              });
+            }}
+            aria-label="Мащаб на снимката"
+            className="h-1 w-full flex-1 cursor-pointer appearance-none rounded-full bg-border accent-forest"
+          />
+          <Maximize2 className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
+        </div>
+
+        <p className="mt-2 text-xs text-muted-foreground">
+          Плъзни снимката, за да я наместиш. Отпечатва се само това, което е в
+          рамката — {area.widthMm} × {area.heightMm} мм.
         </p>
+
+        {/* A photo can look perfect on screen and still be 80 DPI once it is
+            90mm wide on a mug. Saying so before the order beats apologising
+            after the print. */}
+        {lowRes && (
+          <p className="mt-2 rounded-lg bg-clay/10 p-3 text-xs text-clay">
+            Снимката е с ниска резолюция за този размер (около {dpi} DPI). Ще се
+            отпечата, но детайлите ще са меки — по-голяма снимка или по-малко
+            увеличение ще дадат по-добър резултат.
+          </p>
+        )}
+        </>
       )}
     </div>
   );
+}
+
+/**
+ * A soft edge on all four sides, as two crossed linear gradients.
+ *
+ * A radial mask would be the obvious choice and is the wrong one: it fades the
+ * corners of a landscape photo long before its sides, so a group shot loses the
+ * people at the ends. Two linear masks intersected fade each edge by the same
+ * amount whatever the aspect.
+ */
+function featherMask(feather: number): string {
+  const pct = Math.round(feather * 100);
+  const stop = `transparent 0, #000 ${pct}%, #000 ${100 - pct}%, transparent 100%`;
+  return `linear-gradient(to right, ${stop}), linear-gradient(to bottom, ${stop})`;
+}
+
+/**
+ * Whether a garment colour is light enough to need dark type on it.
+ *
+ * Rec. 709 luma rather than a plain average: the eye reads green as far
+ * brighter than blue, so averaging calls a saturated blue "light" and puts
+ * charcoal text on navy.
+ */
+function isLight(hex: string | undefined): boolean {
+  if (!hex || !/^#[0-9a-f]{6}$/i.test(hex)) return true;
+  const n = parseInt(hex.slice(1), 16);
+  const luma =
+    0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255);
+  return luma > 140;
 }
 
 function clamp(v: number, lo: number, hi: number): number {

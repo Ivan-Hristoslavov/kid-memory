@@ -15,16 +15,21 @@
  * rather than ours.
  *
  * ─────────────────────────────────────────────────────────────────────────
- * IMAGES ARE THE SUPPLIER'S OWN PHOTOGRAPHS.
+ * TWO KINDS OF PICTURE, AND THEY DO DIFFERENT JOBS.
  *
- * `images` holds local paths under /public/supplier/, fetched from their S3 on
- * 2026-09-10. They are real photographs of the real blanks, which is what the
- * brief asked for and what the generated stand-ins were never going to be —
- * the picture on a card has to match the parcel at the door.
+ * `images[0]` is a studio shot of the item carrying an EXAMPLE design, under
+ * /public/prints/. It is what sells: the thing being bought is the idea of a
+ * personalised gift, and a blank white t-shirt on a hanger does not convey one.
+ * The garment forms are the real ones, the designs are illustrative, and there
+ * are no people in them — a face makes a mock-up about the model.
  *
- * What they do NOT show is a design on the product. A styled shot of a mug
- * carrying an actual customer's photograph is still worth commissioning; until
- * then the product page's own editor is what shows the artwork in place.
+ * `images[1]` is the supplier's own photograph of the actual blank, fetched to
+ * /public/supplier/. It is the honest one: this is the object that arrives.
+ * Both sit in the gallery, in that order.
+ *
+ * Neither is used for the try-on. That uses lib/pod/mockups.ts, where the print
+ * rectangle is known exactly, and it must stay that way — a preview drawn on a
+ * marketing shot is a preview of nothing.
  * ─────────────────────────────────────────────────────────────────────────
  */
 
@@ -208,9 +213,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/bejdh",
     priceEUR: 9.99,
     priceReferenceBGN: 19.9,
-    images: ["/supplier/bejdh.webp"],
+    images: ["/prints/mug.webp", "/supplier/bejdh.webp"],
     printArea: { x: 0.2367, y: 0.3417, width: 0.5531, height: 0.3417, widthMm: 208, heightMm: 88 },
-    tags: ["for-her", "for-him", "for-parents", "birthday", "anniversary", "thank-you", "just-because", "love"],
+    tags: ["for-her", "for-him", "for-parents", "birthday", "anniversary", "thank-you", "just-because", "love", "theme-kids", "theme-gaming", "theme-office", "theme-birthday", "theme-couples"],
     variants: [{
         label: "Цвят",
         options: ["Неопределен"],
@@ -239,9 +244,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/hejg",
     priceEUR: 13.99,
     priceReferenceBGN: 27.9,
-    images: ["/supplier/hejg.webp"],
+    images: ["/prints/enamel-mug.webp", "/supplier/hejg.webp"],
     printArea: { x: 0.2699, y: 0.3212, width: 0.5531, height: 0.5018, widthMm: 86, heightMm: 38 },
-    tags: ["for-him", "for-her", "birthday", "thank-you", "just-because"],
+    tags: ["for-him", "for-her", "birthday", "thank-you", "just-because", "theme-office", "theme-bachelor"],
     variants: [{
         label: "Цвят",
         options: ["Неопределен"],
@@ -261,9 +266,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/dagdf",
     priceEUR: 13.99,
     priceReferenceBGN: 27.9,
-    images: ["/supplier/dagdf.webp"],
+    images: ["/prints/bottle.webp", "/supplier/dagdf.webp"],
     printArea: { x: 0.2367, y: 0.3097, width: 0.5642, height: 0.6305, widthMm: 182, heightMm: 106 },
-    tags: ["for-him", "for-her", "for-kids", "birthday", "thank-you"],
+    tags: ["for-him", "for-her", "for-kids", "birthday", "thank-you", "theme-kids", "theme-office"],
     variants: [{
         label: "Цвят",
         options: ["Бял", "Сребро"],
@@ -286,9 +291,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/c",
     priceEUR: 16.99,
     priceReferenceBGN: 33.9,
-    images: ["/supplier/c.webp"],
+    images: ["/prints/tee-men.webp", "/supplier/c.webp"],
     printArea: { x: 0.2699, y: 0.1977, width: 0.4425, height: 0.692, widthMm: 377, heightMm: 571 },
-    tags: ["for-him", "for-her", "for-couples", "birthday", "just-because"],
+    tags: ["for-him", "for-her", "for-couples", "birthday", "just-because", "theme-gaming", "theme-birthday", "theme-bachelor", "theme-couples"],
     variants: [
       { label: "Размер", options: ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"] },
       {
@@ -350,9 +355,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ce",
     priceEUR: 15.99,
     priceReferenceBGN: 31.9,
-    images: ["/supplier/ce.webp"],
+    images: ["/prints/tee-women.webp", "/supplier/ce.webp"],
     printArea: { x: 0.3031, y: 0.3018, width: 0.4425, height: 0.5713, widthMm: 342, heightMm: 453 },
-    tags: ["for-her", "birthday", "just-because", "best-friend"],
+    tags: ["for-her", "birthday", "just-because", "best-friend", "theme-birthday", "theme-couples"],
     variants: [
       { label: "Размер", options: ["XS", "S", "M", "L", "XL", "2XL", "3XL"] },
       {
@@ -411,9 +416,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/iidf",
     priceEUR: 17.99,
     priceReferenceBGN: 35.9,
-    images: ["/supplier/iidf.webp"],
+    images: ["/prints/oversize-tee.webp", "/supplier/iidf.webp"],
     printArea: { x: 0.2699, y: 0.2197, width: 0.4867, height: 0.6837, widthMm: 415, heightMm: 571 },
-    tags: ["for-him", "for-her", "for-couples", "birthday", "just-because"],
+    tags: ["for-him", "for-her", "for-couples", "birthday", "just-because", "theme-gaming", "theme-bachelor"],
     variants: [
       { label: "Размер", options: ["XS", "S", "M", "L", "XL", "2XL"] },
       {
@@ -437,9 +442,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gddfd",
     priceEUR: 21.99,
     priceReferenceBGN: 42.9,
-    images: ["/supplier/gddfd.webp"],
+    images: ["/prints/heavy-tee.webp", "/supplier/gddfd.webp"],
     printArea: { x: 0.2699, y: 0.1833, width: 0.4867, height: 0.7331, widthMm: 415, heightMm: 571 },
-    tags: ["for-him", "for-her", "birthday"],
+    tags: ["for-him", "for-her", "birthday", "theme-gaming"],
     variants: [
       { label: "Размер", options: ["XS", "S", "M", "L", "XL", "2XL"] },
       {
@@ -463,9 +468,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ge",
     priceEUR: 13.99,
     priceReferenceBGN: 27.9,
-    images: ["/supplier/ge.webp"],
+    images: ["/prints/kids-tee.webp", "/supplier/ge.webp"],
     printArea: { x: 0.3252, y: 0.2065, width: 0.3982, height: 0.6468, widthMm: 225, heightMm: 325 },
-    tags: ["for-kids", "for-parents", "birthday", "just-because"],
+    tags: ["for-kids", "for-parents", "birthday", "just-because", "theme-kids", "theme-birthday"],
     variants: [
       { label: "Размер", options: ["1-2 Години", "2-3 Години", "3-4 Години", "4-5 Години", "5-6 Години", "6-8 Години", "7-8 Години", "9-11 Години", "12-13 Години", "14-15 Години"] },
       {
@@ -502,9 +507,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gdab",
     priceEUR: 13.99,
     priceReferenceBGN: 27.9,
-    images: ["/supplier/gdab.webp"],
+    images: ["/prints/bodysuit.webp", "/supplier/gdab.webp"],
     printArea: { x: 0.3252, y: 0.1836, width: 0.3982, height: 0.5752, widthMm: 164, heightMm: 208 },
-    tags: ["new-baby", "for-parents", "for-kids", "thank-you"],
+    tags: ["new-baby", "for-parents", "for-kids", "thank-you", "theme-kids"],
     variants: [
       { label: "Размер", options: ["3 Месеца", "6 Месеца", "9 Месеца", "12 Месеца"] },
       {
@@ -532,7 +537,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ddejj",
     priceEUR: 13.99,
     priceReferenceBGN: 27.9,
-    images: ["/supplier/ddejj.webp"],
+    images: ["/prints/crop-top.webp", "/supplier/ddejj.webp"],
     printArea: { x: 0.2478, y: 0.4926, width: 0.4867, height: 0.3284, widthMm: 376, heightMm: 239 },
     tags: ["for-her", "birthday", "best-friend", "just-because"],
     variants: [
@@ -558,9 +563,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/de",
     priceEUR: 13.99,
     priceReferenceBGN: 27.9,
-    images: ["/supplier/de.webp"],
+    images: ["/prints/tank-men.webp", "/supplier/de.webp"],
     printArea: { x: 0.2699, y: 0.2371, width: 0.4867, height: 0.6683, widthMm: 383, heightMm: 574 },
-    tags: ["for-him", "birthday", "just-because"],
+    tags: ["for-him", "birthday", "just-because", "theme-bachelor"],
     variants: [
       { label: "Размер", options: ["S", "M", "L", "XL", "2XL", "3XL"] },
       {
@@ -588,7 +593,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gh",
     priceEUR: 12.99,
     priceReferenceBGN: 25.9,
-    images: ["/supplier/gh.webp"],
+    images: ["/prints/tank-women.webp", "/supplier/gh.webp"],
     printArea: { x: 0.2699, y: 0.3028, width: 0.5531, height: 0.6392, widthMm: 347, heightMm: 452 },
     tags: ["for-her", "birthday", "just-because"],
     variants: [
@@ -617,9 +622,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/dcc",
     priceEUR: 17.99,
     priceReferenceBGN: 35.9,
-    images: ["/supplier/dcc.webp"],
+    images: ["/prints/polo.webp", "/supplier/dcc.webp"],
     printArea: { x: 0.3142, y: 0.1855, width: 0.3761, height: 0.7884, widthMm: 374, heightMm: 576 },
-    tags: ["for-him", "thank-you", "just-because"],
+    tags: ["for-him", "thank-you", "just-because", "theme-office"],
     variants: [
       { label: "Размер", options: ["S", "M", "L", "XL", "2XL", "3XL"] },
       {
@@ -663,9 +668,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ca",
     priceEUR: 27.99,
     priceReferenceBGN: 54.9,
-    images: ["/supplier/ca.webp"],
+    images: ["/prints/hoodie.webp", "/supplier/ca.webp"],
     printArea: { x: 0.281, y: 0.3665, width: 0.4425, height: 0.5174, widthMm: 377, heightMm: 522 },
-    tags: ["for-him", "for-her", "for-couples", "birthday", "anniversary"],
+    tags: ["for-him", "for-her", "for-couples", "birthday", "anniversary", "theme-gaming", "theme-couples"],
     variants: [
       { label: "Размер", options: ["S", "M", "L", "XL", "2XL", "3XL"] },
       {
@@ -690,9 +695,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/cj",
     priceEUR: 23.99,
     priceReferenceBGN: 46.9,
-    images: ["/supplier/cj.webp"],
+    images: ["/prints/sweatshirt.webp", "/supplier/cj.webp"],
     printArea: { x: 0.2699, y: 0.249, width: 0.4425, height: 0.473, widthMm: 377, heightMm: 528 },
-    tags: ["for-him", "for-her", "birthday", "just-because"],
+    tags: ["for-him", "for-her", "birthday", "just-because", "theme-couples"],
     variants: [
       { label: "Размер", options: ["S", "M", "L", "XL", "2XL", "3XL"] },
       {
@@ -716,7 +721,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/eaccd",
     priceEUR: 32.99,
     priceReferenceBGN: 64.9,
-    images: ["/supplier/eaccd.webp"],
+    images: ["/prints/oversize-hoodie.webp", "/supplier/eaccd.webp"],
     printArea: { x: 0.3142, y: 0.3641, width: 0.4425, height: 0.5461, widthMm: 526, heightMm: 522 },
     tags: ["for-him", "for-her", "for-couples", "birthday"],
     variants: [
@@ -745,7 +750,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gcjg",
     priceEUR: 33.99,
     priceReferenceBGN: 66.9,
-    images: ["/supplier/gcjg.webp"],
+    images: ["/prints/zip-hoodie.webp", "/supplier/gcjg.webp"],
     printArea: { x: 0.281, y: 0.399, width: 0.4425, height: 0.5633, widthMm: 377, heightMm: 522 },
     tags: ["for-him", "for-her", "birthday", "anniversary"],
     variants: [
@@ -770,7 +775,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/eaij",
     priceEUR: 25.99,
     priceReferenceBGN: 50.9,
-    images: ["/supplier/eaij.webp"],
+    images: ["/prints/tracksuit.webp", "/supplier/eaij.webp"],
     printArea: { x: 0.2699, y: 0.0433, width: 0.531, height: 0.8662, widthMm: 480, heightMm: 909 },
     tags: ["for-him", "birthday", "anniversary"],
     variants: [
@@ -795,7 +800,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gdah",
     priceEUR: 22.99,
     priceReferenceBGN: 44.9,
-    images: ["/supplier/gdah.webp"],
+    images: ["/prints/shorts.webp", "/supplier/gdah.webp"],
     printArea: { x: 0.0929, y: 0.2649, width: 0.8407, height: 0.6844, widthMm: 345, heightMm: 388 },
     tags: ["for-him", "just-because"],
     variants: [
@@ -822,9 +827,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ebih",
     priceEUR: 9.99,
     priceReferenceBGN: 19.9,
-    images: ["/supplier/ebih.webp"],
+    images: ["/prints/tote.webp", "/supplier/ebih.webp"],
     printArea: { x: 0.2699, y: 0.4425, width: 0.4867, height: 0.4867, widthMm: 373, heightMm: 373 },
-    tags: ["for-her", "for-him", "thank-you", "just-because", "best-friend"],
+    tags: ["for-her", "for-him", "thank-you", "just-because", "best-friend", "theme-office"],
     variants: [{
         label: "Цвят",
         options: ["Натурален", "Черен"],
@@ -845,9 +850,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/debd",
     priceEUR: 10.99,
     priceReferenceBGN: 21.9,
-    images: ["/supplier/debd.webp"],
+    images: ["/prints/cap.webp", "/supplier/debd.webp"],
     printArea: { x: 0.2699, y: 0.2434, width: 0.4867, height: 0.3097, widthMm: 122, heightMm: 93 },
-    tags: ["for-him", "for-her", "birthday", "just-because"],
+    tags: ["for-him", "for-her", "birthday", "just-because", "theme-gaming", "theme-bachelor"],
     variants: [{
         label: "Цвят",
         options: ["Черен", "Бял", "Червено(40)", "Сиво 4C", "Тъмно Кралско Съньо DR", "Тъмно зелено ABG", "Тъмно синьо(AZ)", "Каки(3М)"],
@@ -874,9 +879,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/dchc",
     priceEUR: 11.99,
     priceReferenceBGN: 23.9,
-    images: ["/supplier/dchc.webp"],
+    images: ["/prints/trucker.webp", "/supplier/dchc.webp"],
     printArea: { x: 0.2257, y: 0.1991, width: 0.5752, height: 0.354, widthMm: 124, heightMm: 70 },
-    tags: ["for-him", "birthday", "just-because"],
+    tags: ["for-him", "birthday", "just-because", "theme-bachelor"],
     variants: [{
         label: "Цвят",
         options: ["Черен"],
@@ -896,9 +901,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/djbh",
     priceEUR: 13.99,
     priceReferenceBGN: 27.9,
-    images: ["/supplier/djbh.webp"],
+    images: ["/prints/bucket.webp", "/supplier/djbh.webp"],
     printArea: { x: 0.2699, y: 0.3097, width: 0.4867, height: 0.2655, widthMm: 122, heightMm: 80 },
-    tags: ["for-him", "for-her", "birthday", "just-because"],
+    tags: ["for-him", "for-her", "birthday", "just-because", "theme-bachelor"],
     variants: [{
         label: "Цвят",
         options: ["Черен", "Бял", "Графитено сиво(GL)", "Каки(3М)", "Маслинено зелено(59)", "Тъмно синьо(AZ)"],
@@ -923,9 +928,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/bbahe",
     priceEUR: 3.49,
     priceReferenceBGN: 6.9,
-    images: ["/supplier/bbahe.webp"],
+    images: ["/prints/stickers.webp", "/supplier/bbahe.webp"],
     printArea: { x: 0.1, y: 0.1, width: 0.8, height: 0.8, widthMm: 105, heightMm: 105 },
-    tags: ["for-kids", "for-her", "for-him", "just-because", "best-friend"],
+    tags: ["for-kids", "for-her", "for-him", "just-because", "best-friend", "theme-kids", "theme-gaming", "theme-birthday"],
     variants: [{ label: "Размер", options: ["5 × 5 см", "7 × 7 см", "10 × 10 см"] }],
     personalization: ["PHOTO", "TEXT", "DESIGN"],
   },
@@ -941,9 +946,9 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplierUrl: "https://printondemand.bg/v2/catalog/create/bbfcc",
     priceEUR: 3.49,
     priceReferenceBGN: 6.9,
-    images: ["/supplier/bbfcc.webp"],
+    images: ["/prints/gift-box.webp", "/supplier/bbfcc.webp"],
     printArea: { x: 0.115, y: 0.2643, width: 0.8186, height: 0.5507, widthMm: 264, heightMm: 192 },
-    tags: ["birthday", "anniversary", "thank-you", "love"],
+    tags: ["birthday", "anniversary", "thank-you", "love", "theme-birthday"],
     variants: [{
         label: "Цвят",
         options: ["Черен", "Бял"],

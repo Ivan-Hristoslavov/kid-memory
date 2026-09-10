@@ -106,8 +106,28 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
 
   const wrapPrice = ADDONS.GIFT_WRAP.priceEUR;
 
+  /**
+   * The preview leads, and it appears before anything is uploaded.
+   *
+   * Sitting it below the upload button meant the page opened on a form. It also
+   * meant text-only products — an embroidered polo, a hoodie with a name — had
+   * no preview at all, because the old gate required a photograph.
+   */
+  const showPreview = Boolean(product.printArea) && (takesPhoto || takesText);
+
   return (
     <div className="space-y-6">
+      {showPreview && (
+        <PhotoPlacer
+          product={product}
+          photoUrl={photoUrl || undefined}
+          placement={placement}
+          onChange={setPlacement}
+          colorHex={selectedHex}
+          text={text.trim() || undefined}
+        />
+      )}
+
       {product.variants.map((axis) => (
         <div key={axis.label}>
           <div className="flex items-baseline justify-between gap-3">
@@ -195,17 +215,6 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
           </button>
           <p className="mt-1.5 text-xs text-muted-foreground">JPG, PNG или HEIC, до 8 MB</p>
 
-          {photoKey && photoUrl && product.printArea && (
-            <div className="mt-5">
-              <PhotoPlacer
-                product={product}
-                photoUrl={photoUrl}
-                placement={placement}
-                onChange={setPlacement}
-                colorHex={selectedHex}
-              />
-            </div>
-          )}
         </div>
       )}
 

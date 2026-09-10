@@ -47,6 +47,16 @@ export interface MockupPrintRect {
 }
 
 export interface Mockup {
+  /**
+   * Whether the artwork must be drawn ON TOP of this PNG rather than under it.
+   *
+   * Most of their mock-ups are greyscale-plus-alpha, so artwork belongs behind
+   * the shading. A handful are ordinary opaque photographs — the mugs, the
+   * enamel cup, the tracksuit — and behind one of those the artwork is simply
+   * invisible. Measured from the pixels rather than assumed: alpha at the
+   * centre of each render, 255 meaning opaque.
+   */
+  overlay?: boolean;
   /** Their name for the view: "Отпред", "Отзад", "Отляво", "Отдясно". */
   name: string;
   /** Local path under /public/mockups/. */
@@ -107,8 +117,8 @@ export const MOCKUPS: Readonly<Record<string, readonly Mockup[]>> = {
     { name: "Отзад", image: "/mockups/crop_top_back_2.png", aspect: 0.914, print: { x: 0.2699, y: 0.2831, width: 0.4867, height: 0.4449 } },
   ],
   eaij: [
-    { name: "Отпред", image: "/mockups/front.png", aspect: 0.9788, print: { x: 0.2699, y: 0.0433, width: 0.531, height: 0.8662 } },
-    { name: "Отзад", image: "/mockups/GRYB 468.png", aspect: 0.8847, print: { x: 0.1814, y: 0.0391, width: 0.6416, height: 0.8808 } },
+    { name: "Отпред", image: "/mockups/front.png", aspect: 0.9788, overlay: true, print: { x: 0.2699, y: 0.0433, width: 0.531, height: 0.8662 } },
+    { name: "Отзад", image: "/mockups/GRYB 468.png", aspect: 0.8847, overlay: true, print: { x: 0.1814, y: 0.0391, width: 0.6416, height: 0.8808 } },
   ],
   gdah: [
     { name: "Отпред", image: "/mockups/pants_front.png", aspect: 0.9979, print: { x: 0.0929, y: 0.2649, width: 0.8407, height: 0.6844 } },
@@ -149,14 +159,14 @@ export const MOCKUPS: Readonly<Record<string, readonly Mockup[]>> = {
     { name: "Отпред", image: "/mockups/GEO_mockup_470.png", aspect: 1, print: { x: 0.2699, y: 0.3097, width: 0.4867, height: 0.2655 } },
   ],
   hejg: [
-    { name: "Отпред", image: "/mockups/kanche_all.png", aspect: 1.8147, print: { x: 0.2699, y: 0.3212, width: 0.5531, height: 0.5018 } },
-    { name: "Отляво", image: "/mockups/kanche_left.png", aspect: 1, print: { x: 0.3584, y: 0.3097, width: 0.531, height: 0.4867 } },
-    { name: "Отдясно", image: "/mockups/kanche_right.png", aspect: 1, print: { x: 0.1593, y: 0.3097, width: 0.531, height: 0.4867 } },
+    { name: "Отпред", image: "/mockups/kanche_all.png", aspect: 1.8147, overlay: true, print: { x: 0.2699, y: 0.3212, width: 0.5531, height: 0.5018 } },
+    { name: "Отляво", image: "/mockups/kanche_left.png", aspect: 1, overlay: true, print: { x: 0.3584, y: 0.3097, width: 0.531, height: 0.4867 } },
+    { name: "Отдясно", image: "/mockups/kanche_right.png", aspect: 1, overlay: true, print: { x: 0.1593, y: 0.3097, width: 0.531, height: 0.4867 } },
   ],
   bejdh: [
-    { name: "Отпред", image: "/mockups/chasha_center_1.png", aspect: 1.1031, print: { x: 0.2367, y: 0.3417, width: 0.5531, height: 0.3417 } },
-    { name: "Отляво", image: "/mockups/chasha_left.png", aspect: 1.0723, print: { x: 0.3805, y: 0.3203, width: 0.3097, height: 0.427 } },
-    { name: "Отдясно", image: "/mockups/chasha_right.png", aspect: 1.0723, print: { x: 0.3473, y: 0.3203, width: 0.3097, height: 0.427 } },
+    { name: "Отпред", image: "/mockups/chasha_center_1.png", aspect: 1.1031, overlay: true, print: { x: 0.2367, y: 0.3417, width: 0.5531, height: 0.3417 } },
+    { name: "Отляво", image: "/mockups/chasha_left.png", aspect: 1.0723, overlay: true, print: { x: 0.3805, y: 0.3203, width: 0.3097, height: 0.427 } },
+    { name: "Отдясно", image: "/mockups/chasha_right.png", aspect: 1.0723, overlay: true, print: { x: 0.3473, y: 0.3203, width: 0.3097, height: 0.427 } },
   ],
   dagdf: [
     { name: "Отпред", image: "/mockups/double aluminium_bottle_r.png", aspect: 1, print: { x: 0.2367, y: 0.3097, width: 0.5642, height: 0.6305 } },

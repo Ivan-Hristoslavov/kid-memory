@@ -42,6 +42,10 @@ export const cartLineInput = z.object({
       x: z.number().min(-5).max(6),
       y: z.number().min(-5).max(6),
       scale: z.number().min(1).max(3),
+      // Optional so a basket saved before feathering existed still validates
+      // at checkout rather than silently dropping its line.
+      feather: z.number().min(0).max(0.5).optional(),
+      font: z.enum(["SERIF", "ROUNDED", "SANS"]).optional(),
     })
     .optional(),
   text: z.string().max(60).optional(),
@@ -110,8 +114,12 @@ export function priceCart(input: CartLineInput[]): PricedCart | null {
       variants,
       photoKey: raw.photoKey,
       // A line with a photo always carries a placement, so the print renderer
-      // never has to guess: an absent one means "centred, no zoom".
-      placement: raw.placement ?? DEFAULT_PLACEMENT,
+      // never has to guess: an absent one means "centred, no zoom". The two
+      // newer fields are filled from the default for the same reason — a basket
+      // saved before they existed must still price, not fail.
+      placement: raw.placement
+        ? { ...DEFAULT_PLACEMENT, ...raw.placement }
+        : DEFAULT_PLACEMENT,
       text: raw.text?.trim() || undefined,
       giftWrap: raw.giftWrap,
       unitPriceEUR: unit,

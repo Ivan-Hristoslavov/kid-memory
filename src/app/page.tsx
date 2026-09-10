@@ -8,6 +8,7 @@ import { Transformation } from "@/components/menty/transformation";
 import { CategoryStrip } from "@/components/menty/category-strip";
 import { PersonalizeBanner } from "@/components/menty/personalize-banner";
 import { Bestsellers } from "@/components/menty/bestsellers";
+import { Themes } from "@/components/menty/themes";
 import { Occasions } from "@/components/menty/occasions";
 import { HowItWorks } from "@/components/menty/how-it-works";
 import { Reviews } from "@/components/menty/reviews";
@@ -50,6 +51,10 @@ export default function Home() {
         <Transformation />
         <PersonalizeBanner />
         <Bestsellers />
+        {/* Themes before occasions: "he plays games" is a thought people arrive
+            with, "it is her birthday on Tuesday" is one they arrive with too,
+            but the first has no other door into the catalogue. */}
+        <Themes />
         <Occasions />
         <HowItWorks />
         <Reviews />

@@ -58,6 +58,26 @@ blush #D4A59A, clay #C77D6B and deep forest green #1F2F28 — no other colours, 
 saturated, no neon, no heavy colour grading. Premium editorial product photography for \
 a boutique gifting brand. No people's faces, no watermark, no border.`;
 
+/**
+ * Art direction for the shots that show a PRINT on a product.
+ *
+ * Deliberately not `LOOK`. That palette bans anything saturated, which is right
+ * for packaging and wrong here: the whole point of these is the artwork on the
+ * garment, and a gaming print in sand and blush is not a gaming print. So the
+ * SCENE stays in the brand's neutrals and the DESIGN is free.
+ *
+ * Every prompt forbids lettering. Image models garble small type — the earlier
+ * run produced "CIFTS" and "CITTE FOR EERE ROMENTS" — and a mock-up with a
+ * misspelt word on the chest is worse than one with none.
+ */
+const PRINTED = `Photographed flat on a seamless warm ivory #FEFCF8 background, seen from \
+directly above, soft even studio light, gentle contact shadow, generous negative space. The \
+garment itself is a plain solid colour; only the printed design carries colour and detail. \
+The design is a single clean graphic illustration inside the chest print area, crisp and \
+well-registered as a direct-to-film print on fabric. \
+ABSOLUTELY NO TEXT, no letters, no numbers, no words, no logos, no watermark, no border, \
+no people, no faces, no hands.`;
+
 const ASSETS: Asset[] = [
   // ── Branded packaging: the brand sheet's bottom row ──────────────────────
   {
@@ -165,6 +185,264 @@ focus. ${LOOK}`,
 
   // ── The rest of the catalogue. Same note as above: stand-ins for supplier
   //    photography, describing the real item forms. ────────────────────────
+  // ── Theme tiles: how a gift shop is actually browsed ─────────────────────
+  // Somebody arrives knowing it is a colleague's leaving do, not knowing they
+  // want a polo shirt. These are the entrances.
+  {
+    id: "theme-kids",
+    out: "themes/kids",
+    size: "1024x1024",
+    prompt: `A small child's white cotton t-shirt laid flat on a seamless warm ivory background, \
+seen from directly above, printed on the chest with a friendly illustrated dinosaur in soft \
+greens and warm yellow. Beside it a folded pair of small dungarees and a wooden toy, softly out \
+of focus. ${PRINTED}`,
+  },
+  {
+    id: "theme-gaming",
+    out: "themes/gaming",
+    size: "1024x1024",
+    prompt: `A black cotton t-shirt laid flat on a seamless warm ivory background, seen from \
+directly above, printed across the chest with a bold graphic illustration of a retro game \
+controller in electric violet and cyan on black. Beside it a coiled braided cable, softly out \
+of focus. ${PRINTED}`,
+  },
+  {
+    id: "theme-office",
+    out: "themes/office",
+    size: "1024x1024",
+    prompt: `A deep navy polo shirt laid flat on a seamless warm ivory background, seen from \
+directly above, with a small tidy embroidered abstract mark on the left chest — a simple \
+geometric shape, no letters. Beside it a white ceramic mug and a closed notebook, softly out of \
+focus. ${PRINTED}`,
+  },
+  {
+    id: "theme-birthday",
+    out: "themes/birthday",
+    size: "1024x1024",
+    prompt: `A white ceramic mug standing on a seamless warm ivory background beside a kraft gift \
+box tied with a blush ribbon and a few paper streamers. Printed on the mug is a colourful \
+illustrated birthday cake with candles. Soft studio light, gentle shadow. ${PRINTED}`,
+  },
+  {
+    id: "theme-bachelor",
+    out: "themes/bachelor",
+    size: "1024x1024",
+    prompt: `Three black cotton t-shirts laid flat side by side on a seamless warm ivory \
+background, seen from directly above, each printed on the chest with the same bold white \
+graphic crown illustration in slightly different sizes. Clean symmetrical arrangement. \
+${PRINTED}`,
+  },
+  {
+    id: "theme-couples",
+    out: "themes/couples",
+    size: "1024x1024",
+    prompt: `Two cotton t-shirts laid flat side by side on a seamless warm ivory background, seen \
+from directly above — one sand-coloured, one deep forest green — each printed on the chest with \
+one half of a single illustrated heart, so the two halves face each other. ${PRINTED}`,
+  },
+
+  // ── Products carrying an example design ──────────────────────────────────
+  {
+    id: "print-tee-men",
+    out: "prints/tee-men",
+    size: "1024x1024",
+    prompt: `A black unisex cotton t-shirt laid flat on a seamless warm ivory background, seen \
+from directly above, printed across the chest with a bold illustrated mountain range and sun in \
+warm terracotta and cream. ${PRINTED}`,
+  },
+  {
+    id: "print-tee-women",
+    out: "prints/tee-women",
+    size: "1024x1024",
+    prompt: `A soft blush-pink fitted women's cotton t-shirt laid flat on a seamless warm ivory \
+background, seen from directly above, printed on the chest with a delicate illustrated bunch of \
+wildflowers in muted sage and clay. ${PRINTED}`,
+  },
+  {
+    id: "print-oversize-tee",
+    out: "prints/oversize-tee",
+    size: "1024x1024",
+    prompt: `A heavy oversized black cotton t-shirt laid flat on a seamless warm ivory \
+background, seen from directly above, printed large across the chest with a graphic illustrated \
+wave in deep blue and white. Visibly thick fabric, dropped shoulders. ${PRINTED}`,
+  },
+  {
+    id: "print-hoodie",
+    out: "prints/hoodie",
+    size: "1024x1024",
+    prompt: `A deep forest green hooded sweatshirt with a kangaroo pocket, laid flat and neatly \
+arranged on a seamless warm ivory background, seen from directly above, printed on the chest \
+with a small illustrated pine forest in cream. ${PRINTED}`,
+  },
+  {
+    id: "print-sweatshirt",
+    out: "prints/sweatshirt",
+    size: "1024x1024",
+    prompt: `A cream crew-neck sweatshirt without a hood, laid flat on a seamless warm ivory \
+background, seen from directly above, printed on the chest with an illustrated sleeping cat in \
+charcoal and clay. ${PRINTED}`,
+  },
+  {
+    id: "print-kids-tee",
+    out: "prints/kids-tee",
+    size: "1024x1024",
+    prompt: `A small child's sky-blue cotton t-shirt laid flat on a seamless warm ivory \
+background, seen from directly above, printed on the chest with a cheerful illustrated rocket \
+and stars in warm yellow and coral. ${PRINTED}`,
+  },
+  {
+    id: "print-bodysuit",
+    out: "prints/bodysuit",
+    size: "1024x1024",
+    prompt: `A white baby bodysuit with press studs, laid flat on a seamless warm ivory \
+background, seen from directly above, printed on the chest with a tiny illustrated bear cub in \
+soft brown. Beside it a folded muslin cloth, softly out of focus. ${PRINTED}`,
+  },
+  {
+    id: "print-crop-top",
+    out: "prints/crop-top",
+    size: "1024x1024",
+    prompt: `A short white cropped women's t-shirt laid flat on a seamless warm ivory background, \
+seen from directly above, printed small and centred on the chest with an illustrated crescent \
+moon and stars in muted gold. ${PRINTED}`,
+  },
+  {
+    id: "print-polo",
+    out: "prints/polo",
+    size: "1024x1024",
+    prompt: `A white cotton polo shirt with a collar and two buttons, laid flat on a seamless \
+warm ivory background, seen from directly above, with a small neat embroidered abstract leaf \
+mark on the left chest. ${PRINTED}`,
+  },
+  {
+    id: "print-tote",
+    out: "prints/tote",
+    size: "1024x1024",
+    prompt: `A natural undyed cotton tote bag with long handles, laid flat and neatly arranged on \
+a seamless warm ivory background, seen from directly above, printed on the front panel with an \
+illustrated bunch of herbs in sage green. ${PRINTED}`,
+  },
+  {
+    id: "print-cap",
+    out: "prints/cap",
+    size: "1024x1024",
+    prompt: `A black cotton baseball cap resting on a seamless warm ivory background, seen from \
+slightly above and in front, with a small neat embroidered abstract mountain mark on the front \
+panel. ${PRINTED}`,
+  },
+  {
+    id: "print-mug",
+    out: "prints/mug",
+    size: "1024x1024",
+    prompt: `A white glossy ceramic mug standing centred on a seamless warm ivory background, \
+printed on its side with an illustrated pair of dogs in charcoal and clay. Soft studio light, \
+gentle contact shadow. ${PRINTED}`,
+  },
+  {
+    id: "print-enamel-mug",
+    out: "prints/enamel-mug",
+    size: "1024x1024",
+    prompt: `A white enamel camping mug with a dark rim, standing on a seamless warm ivory \
+background, printed on its side with an illustrated campfire and pine trees in warm orange and \
+deep green. ${PRINTED}`,
+  },
+  {
+    id: "print-bottle",
+    out: "prints/bottle",
+    size: "1024x1024",
+    prompt: `A brushed aluminium water bottle with a screw cap, standing upright on a seamless \
+warm ivory background, printed down its side with an illustrated wave pattern in deep teal. \
+${PRINTED}`,
+  },
+  {
+    id: "print-stickers",
+    out: "prints/stickers",
+    size: "1024x1024",
+    prompt: `Six square die-cut vinyl stickers arranged in a loose grid on a seamless warm ivory \
+background, seen from directly above, each printed with a different simple illustration — a \
+cactus, a cat, a mountain, a rocket, a flower, a paw print — in warm muted colours with a white \
+border around each sticker. ${PRINTED}`,
+  },
+  {
+    id: "print-heavy-tee",
+    out: "prints/heavy-tee",
+    size: "1024x1024",
+    prompt: `A very heavy sand-coloured oversized cotton t-shirt laid flat on a seamless warm \
+ivory background, seen from directly above, printed across the chest with a bold illustrated \
+sun and desert horizon in burnt orange and cream. Visibly thick ribbed collar. ${PRINTED}`,
+  },
+  {
+    id: "print-tank-men",
+    out: "prints/tank-men",
+    size: "1024x1024",
+    prompt: `A white cotton men's tank top with wide shoulder straps, laid flat on a seamless \
+warm ivory background, seen from directly above, printed on the chest with an illustrated palm \
+leaf in deep green. ${PRINTED}`,
+  },
+  {
+    id: "print-tank-women",
+    out: "prints/tank-women",
+    size: "1024x1024",
+    prompt: `A black fitted women's tank top laid flat on a seamless warm ivory background, seen \
+from directly above, printed small and centred on the chest with an illustrated hummingbird in \
+teal and gold. ${PRINTED}`,
+  },
+  {
+    id: "print-oversize-hoodie",
+    out: "prints/oversize-hoodie",
+    size: "1024x1024",
+    prompt: `A heavy oversized olive-green hooded sweatshirt with drawstrings, laid flat and \
+neatly arranged on a seamless warm ivory background, seen from directly above, printed on the \
+chest with an illustrated mountain ridge in cream. Dropped shoulders, thick cuffs. ${PRINTED}`,
+  },
+  {
+    id: "print-zip-hoodie",
+    out: "prints/zip-hoodie",
+    size: "1024x1024",
+    prompt: `A black zip-up hooded sweatshirt with a full metal zip and side pockets, laid flat \
+and neatly arranged on a seamless warm ivory background, seen from directly above, with a small \
+illustrated wolf head printed on the left chest in white. ${PRINTED}`,
+  },
+  {
+    id: "print-tracksuit",
+    out: "prints/tracksuit",
+    size: "1024x1024",
+    prompt: `A black fleece tracksuit — a crew sweatshirt above and matching jogging bottoms \
+below — laid flat and neatly arranged on a seamless warm ivory background, seen from directly \
+above, with a small illustrated abstract mark printed on the chest in cream. ${PRINTED}`,
+  },
+  {
+    id: "print-shorts",
+    out: "prints/shorts",
+    size: "1024x1024",
+    prompt: `A pair of black cotton jersey shorts with a drawstring waist, laid flat and neatly \
+folded on a seamless warm ivory background, seen from directly above, with a small illustrated \
+wave printed on one leg in white. ${PRINTED}`,
+  },
+  {
+    id: "print-trucker",
+    out: "prints/trucker",
+    size: "1024x1024",
+    prompt: `A black and white trucker cap with a mesh back panel and a curved bill, resting on \
+a seamless warm ivory background, seen from slightly above and in front, with a small \
+illustrated cactus embroidered on the front panel. ${PRINTED}`,
+  },
+  {
+    id: "print-bucket",
+    out: "prints/bucket",
+    size: "1024x1024",
+    prompt: `A khaki cotton bucket hat with a soft downturned brim, resting on a seamless warm \
+ivory background, seen from slightly above and in front, with a small illustrated fish \
+embroidered on the side. ${PRINTED}`,
+  },
+  {
+    id: "print-gift-box",
+    out: "prints/gift-box",
+    size: "1024x1024",
+    prompt: `A closed matte black cardboard gift box with a lid, standing on a seamless warm \
+ivory background at a slight three-quarter angle, printed on the lid with a delicate \
+illustrated botanical wreath in blush pink. A folded blush ribbon resting beside it. ${PRINTED}`,
+  },
 ];
 
 /** gpt-image-1 list price per image, in USD. */
