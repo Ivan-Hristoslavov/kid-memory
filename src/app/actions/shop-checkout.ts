@@ -144,9 +144,15 @@ export async function placeShopOrder(
           unitPriceEUR: l.unitPriceEUR,
           variants: l.variants as Prisma.InputJsonValue,
           photoKey: l.photoKey ?? null,
-          placement: l.photoKey
-            ? { x: l.placement.x, y: l.placement.y, scale: l.placement.scale }
-            : undefined,
+          designId: l.designId ?? null,
+          // Every field of the placement, not three of them. `feather` and
+          // `font` were dropped here while the print renderer did not exist;
+          // now that it does, a line saved without them prints a hard-edged
+          // photo and the wrong face.
+          placement:
+            l.photoKey || l.designId
+              ? (l.placement as unknown as Prisma.InputJsonValue)
+              : undefined,
           text: l.text ?? null,
           giftWrap: l.giftWrap,
         })),

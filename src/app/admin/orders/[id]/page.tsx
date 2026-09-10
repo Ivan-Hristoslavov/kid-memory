@@ -185,6 +185,16 @@ export default async function AdminOrderPage({
                               Подаръчна опаковка
                             </p>
                           )}
+                          {/* The print file, rendered on demand from the
+                              original upload rather than stored: the placement
+                              is the record, and a file generated at order time
+                              would be stale the moment the print area changed. */}
+                          <a
+                            href={`/admin/print/${line.id}`}
+                            className="mt-2 inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-primary-foreground"
+                          >
+                            ⬇ Печатен файл (300 DPI)
+                          </a>
                         </div>
 
                         <p className="shrink-0 text-sm font-semibold tabular-nums">
