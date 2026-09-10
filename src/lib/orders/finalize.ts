@@ -50,18 +50,50 @@ const DIGITAL_LINK_TTL_LABEL = "24 часа";
  * the order is visible in the admin queue regardless.
  */
 export async function finalizeConfirmedOrder(orderId: string): Promise<void> {
-  const order = await prisma.order.findUnique({ where: { id: orderId } });
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { lines: { orderBy: { createdAt: "asc" } } },
+  });
   if (!order) return;
 
   const sent = Array.isArray(order.emailsSent) ? (order.emailsSent as string[]) : [];
   if (sent.includes("ORDER_RECEIVED")) return;
 
+  /**
+   * A shop order has lines; a poster order has none. That is the whole
+   * discriminator, the same one the admin uses.
+   *
+   * It matters here because `productType` is null on a shop order and used to
+   * default to POSTER_A4 — so somebody who bought six t-shirts was sent a
+   * receipt itemising an A4 poster and its add-ons. The total was right, which
+   * is exactly what made it hard to notice.
+   */
+  const isShopOrder = order.lines.length > 0;
   const productId = (order.productType ?? "POSTER_A4") as ProductId;
   const product = PRODUCTS[productId];
-  const addons = order.addons.filter((a): a is AddonId => a in ADDONS);
-  const subtotalEUR = calcTotalEUR(productId, addons);
-  const deliveryEUR = calcDeliveryEUR(productId, subtotalEUR);
-  const totalEUR = order.priceEUR ? Number(order.priceEUR) : subtotalEUR + deliveryEUR;
+  const addons = isShopOrder
+    ? []
+    : order.addons.filter((a): a is AddonId => a in ADDONS);
+
+  const shopLines = order.lines.map((l) => ({
+    title: l.title,
+    quantity: l.quantity,
+    totalEUR: Math.round(Number(l.unitPriceEUR) * l.quantity * 100) / 100,
+  }));
+  const goodsEUR = Math.round(
+    shopLines.reduce((sum, l) => sum + l.totalEUR, 0) * 100
+  ) / 100;
+
+  const subtotalEUR = isShopOrder ? goodsEUR : calcTotalEUR(productId, addons);
+  const totalEUR = order.priceEUR
+    ? Number(order.priceEUR)
+    : subtotalEUR + calcDeliveryEUR(productId, subtotalEUR);
+  // Derived from the total rather than recomputed: the cart already applied the
+  // quantity tier and the free-delivery threshold, and a second calculation
+  // here could disagree with what the customer was charged.
+  const deliveryEUR = isShopOrder
+    ? Math.round((totalEUR - subtotalEUR) * 100) / 100
+    : calcDeliveryEUR(productId, subtotalEUR);
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const settings = await getSettings();
@@ -103,6 +135,7 @@ export async function finalizeConfirmedOrder(orderId: string): Promise<void> {
         totalEUR,
         deliveryDays: settings.deliveryDays,
         paid,
+        lines: isShopOrder ? shopLines : undefined,
         confirmUrl: order.confirmToken ? `${site}/potvurdi/${order.confirmToken}` : undefined,
         trackUrl: `${site}/proverka?order=${order.orderNumber}`,
       });
@@ -141,9 +174,16 @@ export async function finalizeConfirmedOrder(orderId: string): Promise<void> {
       childName: order.childName,
       customerName: order.customerName ?? "",
       phone: order.phone ?? "",
-      productName: product.name,
+      // The owner's alert says what to make. On a shop order that is the
+      // basket, not a poster's product name — this is the mail that decides
+      // what gets pulled off the shelf.
+      productName: isShopOrder
+        ? `${order.lines.length} ${order.lines.length === 1 ? "артикул" : "артикула"}`
+        : product.name,
       total: `${formatPrice(totalEUR)}${paid ? " (платено)" : " (наложен платеж)"}`,
-      addons: addons.map((a) => ADDONS[a]?.name ?? a),
+      addons: isShopOrder
+        ? shopLines.map((l) => `${l.quantity} × ${l.title}`)
+        : addons.map((a) => ADDONS[a]?.name ?? a),
       adminUrl: `${site}/admin/orders/${order.id}`,
     });
   } catch (err) {

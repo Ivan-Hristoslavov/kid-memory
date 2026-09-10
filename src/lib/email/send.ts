@@ -87,6 +87,16 @@ export interface OrderReceivedEmailData extends OrderEmailData {
   trackUrl: string;
   /** True when the money is already in. Changes the whole message, not a line. */
   paid?: boolean;
+  /**
+   * The basket, when this is a shop order rather than a poster.
+   *
+   * Present or absent is the discriminator, exactly as `order.lines` is in the
+   * admin. Without it a customer who bought six t-shirts received a receipt
+   * describing a poster: `productType` is null on a shop order and defaulted to
+   * POSTER_A4, so the item row, the add-on rows and the subtotal were all the
+   * wrong catalogue's.
+   */
+  lines?: { title: string; quantity: number; totalEUR: number }[];
 }
 
 /**
@@ -100,6 +110,9 @@ export interface OrderReceivedEmailData extends OrderEmailData {
  */
 export async function sendOrderReceivedEmail(data: OrderReceivedEmailData): Promise<void> {
   const product = PRODUCTS[data.productType];
+  const shopRows = (data.lines ?? [])
+    .map((l) => row(`${l.quantity} × ${l.title}`, formatPrice(l.totalEUR)))
+    .join("");
   const addonRows = data.addons
     .map((id) => {
       const a = ADDONS[id as AddonId];
@@ -143,11 +156,15 @@ export async function sendOrderReceivedEmail(data: OrderReceivedEmailData): Prom
     shell(
       paid ? "Плащането мина ❤️" : "Получихме твоята поръчка ❤️",
       `<p style="font-size:16px;line-height:1.6;">Здравей, ${esc(data.customerName)}!</p>
-       <p style="font-size:16px;line-height:1.6;">Спомен №<strong>${esc(data.orderNumber)}</strong> за <strong>${esc(data.childName)}</strong> вече е при нас.</p>
+       <p style="font-size:16px;line-height:1.6;">${
+         shopRows
+           ? `Поръчка №<strong>${esc(data.orderNumber)}</strong> вече е при нас.`
+           : `Спомен №<strong>${esc(data.orderNumber)}</strong> за <strong>${esc(data.childName)}</strong> вече е при нас.`
+       }</p>
 
        <table style="width:100%;font-size:15px;margin:20px 0;border-collapse:collapse;">
-         ${row(product.name, formatPrice(product.priceEUR))}
-         ${addonRows}
+         ${shopRows || row(product.name, formatPrice(product.priceEUR))}
+         ${shopRows ? "" : addonRows}
          ${isDigital ? "" : row("Доставка", data.deliveryEUR === 0 ? "безплатна" : formatPrice(data.deliveryEUR))}
        </table>
 
