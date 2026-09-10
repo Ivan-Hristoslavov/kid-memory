@@ -142,12 +142,13 @@ export const ADDON_ORDER: readonly AddonId[] = [
  * 4.90 is roughly what Econt and Speedy actually charge to an office, so the
  * shop neither subsidises nor profits from it. The threshold is the lever: at
  * 35 a single tee at 17.90 was nowhere near it and the customer simply paid the
- * fee, whereas at 30 a tee plus a mug is 29.80 — close enough that adding the
- * mug is cheaper than not adding it. That is the whole point of the number.
+ * fee. At 29.99 a tee at 16.99 plus a mug at 9.99 is 26.98 — three euro short of
+ * free delivery that costs 4.90, so the cheapest way out of the fee is to add
+ * something. That is the whole point of the number, and why it is not round.
  */
 export const DELIVERY = {
   feeEUR: 4.9,
-  freeAboveEUR: 30,
+  freeAboveEUR: 29.99,
 } as const;
 
 /** Money helper — avoids float drift like 27.9 + 2.9 = 30.799999999999997. */

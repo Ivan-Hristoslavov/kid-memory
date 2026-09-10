@@ -177,10 +177,14 @@ export const BGN_PER_EUR = 1.95583;
  * reorganises their storage should not empty our product grid.
  *
  * Prices are ours, and they are set for volume rather than for the fattest
- * margin per order. Roughly 2× the landed cost across the board, easing to
- * about 1.8× on the expensive garments — a mug at 11.90 and a hoodie at 32.90
- * are prices a Bulgarian buyer recognises, where 14.90 and 42.90 were prices
- * they compare against somewhere else and then leave.
+ * margin per order: about 1.6–1.8× the landed cost, and 2× only on the two
+ * cheapest blanks, where the absolute margin is small however it is multiplied.
+ * A mug at 9.99 and a tee at 16.99 are prices somebody buys without opening
+ * another tab; at 14.90 and 26.90 they open the tab.
+ *
+ * Endings are .99 rather than .90. It is a small trick and a real one — the
+ * left digit is what gets read, so 9.99 lands as "nine something" while 10.90
+ * lands as "eleven".
  *
  * Landed cost is the blank plus ONE print position at the middle band (3.08;
  * 1.61 on hats and stickers, whose print never reaches 30 cm of side). A second
@@ -935,8 +939,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "bbfcc",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/bbfcc",
-    priceEUR: 2.99,
-    priceReferenceBGN: 5.9,
+    priceEUR: 3.49,
+    priceReferenceBGN: 6.9,
     images: ["/supplier/bbfcc.webp"],
     printArea: { x: 0.115, y: 0.2643, width: 0.8186, height: 0.5507, widthMm: 264, heightMm: 192 },
     tags: ["birthday", "anniversary", "thank-you", "love"],
