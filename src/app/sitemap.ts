@@ -3,7 +3,7 @@ import { SITE_URL } from "@/lib/seo";
 import { ARTICLES } from "@/lib/articles";
 import { ALL_PRODUCTS } from "@/lib/shop/products";
 import { DESIGN_CATEGORIES } from "@/lib/shop/designs";
-import { GIFT_AUDIENCES, GIFT_OCCASIONS, GIFT_THEMES } from "@/lib/brand";
+import { GIFT_AUDIENCES, GIFT_OCCASIONS } from "@/lib/brand";
 
 type Freq = MetadataRoute.Sitemap[number]["changeFrequency"];
 
@@ -54,7 +54,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     ...[
       ...new Set(
-        [...GIFT_AUDIENCES, ...GIFT_OCCASIONS, ...GIFT_THEMES].map((c) => c.id)
+        [...GIFT_AUDIENCES, ...GIFT_OCCASIONS].map((c) => c.id)
       ),
     ].map((id) => ({
       url: `${SITE_URL}/za-povoda/${id}`,

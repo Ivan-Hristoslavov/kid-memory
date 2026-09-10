@@ -9,9 +9,10 @@ import { GIFT_THEMES } from "@/lib/brand";
  * shopper who knows the date is already halfway to a decision; one who only
  * knows their nephew plays games needs a door, and "Гейминг" is that door.
  *
- * Each tile is a real product with an example design on it rather than a
- * lifestyle photograph, so the rail sells the idea and shows the goods at the
- * same time.
+ * The door leads to the design category, not to a collection of its own. These
+ * used to be their own collections, which meant "Гейминг" existed twice — once
+ * here and once under /dizaini — and that duplication is most of why the site
+ * stopped being navigable.
  */
 export function Themes() {
   return (
@@ -38,7 +39,7 @@ export function Themes() {
           {GIFT_THEMES.map((t) => (
             <li key={t.id}>
               <Link
-                href={`/za-povoda/${t.id}`}
+                href={`/dizaini/${t.id}`}
                 className="group block overflow-hidden rounded-xl bg-background ring-1 ring-border transition-shadow hover:shadow-lg"
               >
                 <div className="relative aspect-square overflow-hidden">

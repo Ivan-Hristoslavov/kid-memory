@@ -13,7 +13,8 @@ import {
 } from "@/lib/shop/designs";
 import { TEXT_DESIGNS } from "@/lib/shop/text-designs";
 import { TextDesignArt } from "@/components/menty/text-design-art";
-import { ALL_PRODUCTS } from "@/lib/shop/products";
+import { ALL_PRODUCTS, byTag } from "@/lib/shop/products";
+import { ProductCard } from "@/components/menty/bestsellers";
 import { formatPrice } from "@/lib/catalog";
 
 export function generateStaticParams() {
@@ -22,6 +23,19 @@ export function generateStaticParams() {
 
 /** The list above is every category, so anything else is a dead URL. */
 export const dynamicParams = false;
+
+/**
+ * Which product tag matches a design category. Only some have one — a category
+ * without a tag simply shows no product row, which is the right failure.
+ */
+const SUITED_TAG: Partial<Record<string, string>> = {
+  GAMING: "theme-gaming",
+  BACHELOR: "theme-bachelor",
+  HEN: "theme-couples",
+  PETS: "theme-kids",
+  HOLIDAY: "theme-birthday",
+  PROFESSION: "theme-office",
+};
 
 function metaFor(slug: string) {
   return DESIGN_CATEGORIES.find((c) => c.id.toLowerCase() === slug);
@@ -65,6 +79,15 @@ export default async function DesignCategoryPage({
 
   const designs = designsInCategory(meta.id as DesignCategory);
   const words = TEXT_DESIGNS.filter((t) => t.category === meta.id);
+  /**
+   * The products that suit this world.
+   *
+   * This is where the theme collections went. They used to be a parallel set of
+   * collection pages that duplicated these categories; the hand-assigned tags
+   * survived, and doing this job is a better use of them than running a second
+   * navigation system.
+   */
+  const suited = byTag(SUITED_TAG[meta.id] ?? "");
   /**
    * Where a design tile lands.
    *
@@ -168,6 +191,21 @@ export default async function DesignCategoryPage({
               </li>
             ))}
           </ul>
+
+          {suited.length > 0 && (
+            <section className="mt-16 border-t border-border pt-12">
+              <h2 className="font-heading text-xl font-bold tracking-tight">
+                Върху какво да го сложим
+              </h2>
+              <ul className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {suited.slice(0, 4).map((p) => (
+                  <li key={p.id}>
+                    <ProductCard product={p} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
       </main>
       <MentyFooter />

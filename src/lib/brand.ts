@@ -55,25 +55,22 @@ export const GIFT_AUDIENCES = [
 ] as const;
 
 /**
- * The theme tiles — the third way into the catalogue.
+ * Themes were a third browsing system and they duplicated the design
+ * categories: `theme-gaming` and `/dizaini/gaming` were the same shelf with two
+ * doors, which is how a shop stops making sense to the person who runs it.
  *
- * Audiences answer "who is it for" and occasions answer "what is the day".
- * Neither catches the person who arrives knowing only the WORLD the gift lives
- * in: the nephew who plays games, the colleague leaving the office, the stag
- * weekend. Those are the searches that bring somebody to a print shop rather
- * than a florist, and until now the site had no door for them.
- *
- * Each tile is a product carrying an example design, not a lifestyle photo of
- * strangers. That is the honest picture — it shows what the shop actually
- * makes — and it does the selling, because the idea is the thing being bought.
+ * What survives is the mapping. The homepage rail still shows these worlds —
+ * they are a good way in — but each tile now leads to the design category that
+ * owns it, and the old collection ids redirect there. See
+ * `docs/site-structure.md`.
  */
 export const GIFT_THEMES = [
-  { id: "theme-kids", label: "За детето", image: "/themes/kids.webp" },
-  { id: "theme-gaming", label: "Гейминг", image: "/themes/gaming.webp" },
-  { id: "theme-office", label: "За офиса", image: "/themes/office.webp" },
-  { id: "theme-birthday", label: "Рожден ден", image: "/themes/birthday.webp" },
-  { id: "theme-bachelor", label: "Ергенско", image: "/themes/bachelor.webp" },
-  { id: "theme-couples", label: "За двамата", image: "/themes/couples.webp" },
+  { id: "gaming", label: "Гейминг", image: "/themes/gaming.webp" },
+  { id: "bachelor", label: "Ергенско", image: "/themes/bachelor.webp" },
+  { id: "hen", label: "Моминско", image: "/themes/couples.webp" },
+  { id: "pets", label: "За любимеца", image: "/themes/kids.webp" },
+  { id: "holiday", label: "Празници", image: "/themes/birthday.webp" },
+  { id: "profession", label: "По професия", image: "/themes/office.webp" },
 ] as const;
 
 /**

@@ -9,7 +9,10 @@ import { Logo } from "./logo";
 const SHOP = [
   { href: "/produkti", label: "Всички продукти" },
   { href: "/dizaini", label: "Готови дизайни" },
-  { href: "/personalizirani", label: "Персонализирани" },
+  { href: "/za-povoda", label: "За повода" },
+  { href: "/create", label: "Постер по снимка" },
+  { href: "/prikazka", label: "Детска книжка" },
+  { href: "/personalizirani", label: "Как работи" },
   { href: "/biznes-podaratsi", label: "Бизнес подаръци" },
   { href: "/proverka", label: "Провери поръчка" },
   { href: "/otzivi", label: "Отзиви" },

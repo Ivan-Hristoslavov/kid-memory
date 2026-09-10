@@ -5,11 +5,11 @@ import { notFound } from "next/navigation";
 import { MentyHeader } from "@/components/menty/header";
 import { MentyFooter } from "@/components/menty/footer";
 import { ProductCard } from "@/components/menty/bestsellers";
-import { GIFT_AUDIENCES, GIFT_OCCASIONS, GIFT_THEMES } from "@/lib/brand";
+import { GIFT_AUDIENCES, GIFT_OCCASIONS } from "@/lib/brand";
 import { byTag } from "@/lib/shop/products";
 
-/** All three rails point here: an audience, an occasion, or a theme. */
-const COLLECTIONS = [...GIFT_AUDIENCES, ...GIFT_OCCASIONS, ...GIFT_THEMES];
+/** Two rails point here: an audience, or an occasion. Themes moved to /dizaini. */
+const COLLECTIONS = [...GIFT_AUDIENCES, ...GIFT_OCCASIONS];
 
 /** Ids are duplicated across the two rails (birthday appears in both). */
 function collectionById(id: string) {

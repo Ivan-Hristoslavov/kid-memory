@@ -18,15 +18,23 @@ import { Logo } from "./logo";
  * a lozenge. So it is a plain sticky bar on the page's own ivory, separated by
  * a hairline — the reference's own treatment.
  */
+/**
+ * Five items, and each one answers a different question.
+ *
+ * It was six, and two of them ("Персонализирани", "Бизнес подаръци") were
+ * explanations rather than places to browse — those moved to the footer. The
+ * poster wizard, which is the one thing this shop makes end to end, was not in
+ * the navigation at all.
+ *
+ * Order is what a visitor decides in: what it is, what is on it, who it is for,
+ * then the two made-to-order products. See docs/site-structure.md.
+ */
 const NAV = [
   { href: "/produkti", label: "Продукти" },
-  // Second, not last: for a shopper without a photograph this is the shortest
-  // route to a basket, and it is the page that ranks for what they type.
-  { href: "/dizaini", label: "Готови дизайни" },
+  { href: "/dizaini", label: "Дизайни" },
   { href: "/za-povoda", label: "За повода" },
-  { href: "/personalizirani", label: "Персонализирани" },
+  { href: "/create", label: "Постер" },
   { href: "/prikazka", label: "Детска книжка" },
-  { href: "/biznes-podaratsi", label: "Бизнес подаръци" },
 ];
 
 export function MentyHeader() {
