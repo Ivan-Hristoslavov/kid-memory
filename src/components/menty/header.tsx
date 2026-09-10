@@ -43,6 +43,7 @@ export function MentyHeader() {
   const [panel, setPanel] = useState(false);
   const pathname = usePathname();
 
+
   /**
    * At the very top the header sits on the hero's own sand and needs no line;
    * once the page moves under it, it has to separate itself from whatever is
@@ -109,46 +110,81 @@ export function MentyHeader() {
             return (
               <div
                 key={l.href}
-                className="relative"
-                // Hover opens it and a click still goes through to the page.
-                // A panel that can only be opened by hovering is unusable with
-                // a keyboard, so focus opens it too.
-                onMouseEnter={() => l.panel && setPanel(true)}
-                onMouseLeave={() => l.panel && setPanel(false)}
-                onFocus={() => l.panel && setPanel(true)}
-                onBlur={(e) => {
-                  if (l.panel && !e.currentTarget.contains(e.relatedTarget)) {
-                    setPanel(false);
-                  }
+                // z-50 keeps the trigger ABOVE the dismiss layer below.
+                // Without it the backdrop rendered over the button the instant
+                // the panel opened, and the tail of the very click that opened
+                // it landed on the backdrop and shut it again — a button that
+                // looked broken while behaving exactly as written.
+                className="relative z-50"
+                // Click, not hover.
+                //
+                // Hover looks nicer and fought itself: opening on enter and
+                // closing on leave meant a click opened the panel and the
+                // pointer leaving shut it again a moment later, so the button
+                // appeared dead. Hover is also unavailable on a phone and
+                // awkward on a keyboard. One trigger, one behaviour.
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setPanel(false);
                 }}
               >
-                <Link
-                  href={l.href}
-                  aria-current={active ? "page" : undefined}
-                  aria-expanded={l.panel ? panel : undefined}
-                  className={`relative flex items-center gap-1 py-2 text-sm transition-colors ${
-                    active
-                      ? "font-semibold text-foreground"
-                      : "font-medium text-foreground/70 hover:text-foreground"
-                  }`}
-                >
-                  {l.label}
+                {/* z-50 on the trigger itself, not only on its wrapper. The
+                    dismiss layer is a sibling INSIDE that wrapper, so lifting
+                    the wrapper moved both of them together and the backdrop
+                    still painted over the button — the panel opened and could
+                    not be closed by the control that opened it. */}
+                <span className="relative z-50 flex items-center gap-1">
+                  <Link
+                    href={l.href}
+                    aria-current={active ? "page" : undefined}
+                    // Closed on the way out rather than in an effect: the
+                    // React Compiler rejects setState during render, and the
+                    // click that navigates is the right moment anyway.
+                    onClick={() => setPanel(false)}
+                    className={`relative py-2 text-sm transition-colors ${
+                      active
+                        ? "font-semibold text-foreground"
+                        : "font-medium text-foreground/70 hover:text-foreground"
+                    }`}
+                  >
+                    {l.label}
+                    {/* A rule under the current section rather than a coloured
+                        pill — the page already tells you where you are, this
+                        only has to confirm it. */}
+                    {active && (
+                      <span className="absolute -bottom-px left-0 h-0.5 w-full rounded-full bg-clay" />
+                    )}
+                  </Link>
+                  {/* The chevron is its own button, not decoration inside the
+                      link. Hover alone would have left the panel unreachable by
+                      touch and by keyboard, and the link still has to be able
+                      to go to the page — one control cannot do both. */}
                   {l.panel && (
-                    <ChevronDown
-                      className={`size-3.5 transition-transform ${panel ? "rotate-180" : ""}`}
-                      strokeWidth={2}
-                    />
+                    <button
+                      type="button"
+                      onClick={() => setPanel((v) => !v)}
+                      aria-expanded={panel}
+                      aria-label={`${l.label} — категории`}
+                      className="grid size-5 place-items-center rounded text-foreground/60 transition-colors hover:text-foreground"
+                    >
+                      <ChevronDown
+                        className={`size-3.5 transition-transform ${panel ? "rotate-180" : ""}`}
+                        strokeWidth={2}
+                      />
+                    </button>
                   )}
-                  {/* A rule under the current section rather than a coloured
-                      pill — the page already tells you where you are, this only
-                      has to confirm it. */}
-                  {active && (
-                    <span className="absolute -bottom-px left-0 h-0.5 w-full rounded-full bg-clay" />
-                  )}
-                </Link>
+                </span>
 
                 {l.panel && panel && (
-                  <div className="absolute left-1/2 top-full z-50 w-[34rem] -translate-x-1/2 pt-3">
+                  <>
+                    {/* Anywhere else closes it. A menu that can only be
+                        dismissed by finding its own button again is a trap. */}
+                    <button
+                      type="button"
+                      aria-label="Затвори"
+                      onClick={() => setPanel(false)}
+                      className="fixed inset-0 z-40 cursor-default"
+                    />
+                    <div className="absolute left-1/2 top-full z-50 w-[34rem] -translate-x-1/2 pt-3">
                     <ul className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-background p-2 shadow-xl">
                       {PRODUCT_GROUPS.map((g) => (
                         <li key={g.id}>
@@ -166,8 +202,9 @@ export function MentyHeader() {
                           </Link>
                         </li>
                       ))}
-                    </ul>
-                  </div>
+                      </ul>
+                    </div>
+                  </>
                 )}
               </div>
             );
