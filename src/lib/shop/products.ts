@@ -188,22 +188,14 @@ export const PRODUCTS: readonly MentyProduct[] = [
     personalization: ["PHOTO", "TEXT"],
     bestsellerRank: 1,
   },
-  {
-    id: "magic-mug",
-    title: "Магическа чаша",
-    blurb: "Черна отвън, снимката се появява с горещото питие.",
-    family: "DRINKWARE",
-    supplier: "PRINTONDEMAND",
-    supplierProductCode: "gehah",
-    supplierUrl: "https://printondemand.bg/v2/catalog/create/gehah",
-    priceEUR: 17.9,
-    priceReferenceBGN: 34.9,
-    images: ["/supplier/gehah.webp"],
-    printArea: { x: 0.3, y: 0.36, width: 0.36, height: 0.32, widthMm: 208, heightMm: 88 },
-    tags: ["for-her", "for-him", "birthday", "just-because", "love"],
-    variants: [{ label: "Цвят", options: ["Черна"] }],
-    personalization: ["PHOTO", "TEXT"],
-  },
+  // The magic mug is missing on purpose, not by oversight.
+  //
+  // printondemand.bg stocks one (uid `gehah`, 3.27 wholesale), but every image
+  // they have for it — the catalogue thumbnail and all three editor mock-ups —
+  // is the same plain white mug they use for the ordinary ceramic one. Two
+  // identical-looking cards three euro apart tell a customer nothing, and the
+  // rule this file opens with is that the picture has to match the parcel. It
+  // comes back the moment there is a photograph of the actual mug.
   {
     id: "enamel-mug",
     title: "Емайлирано канче",
