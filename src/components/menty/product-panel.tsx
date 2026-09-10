@@ -36,6 +36,18 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
   const [giftWrap, setGiftWrap] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
+  /**
+   * The chosen colour's hex, for the preview to paint behind the mock-up.
+   *
+   * Found by asking each axis rather than looking for a label called "Цвят":
+   * the axis that carries swatches is the colour one by definition, and that
+   * survives a supplier who names it something else.
+   */
+  const selectedHex = product.variants.reduce<string | undefined>(
+    (found, axis) => found ?? axis.swatch?.[variants[axis.label] ?? ""],
+    undefined
+  );
+
   const takesPhoto = product.personalization.includes("PHOTO");
   const takesText =
     product.personalization.includes("TEXT") ||
@@ -98,10 +110,36 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
     <div className="space-y-6">
       {product.variants.map((axis) => (
         <div key={axis.label}>
-          <p className="text-sm font-semibold text-foreground">{axis.label}</p>
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="text-sm font-semibold text-foreground">{axis.label}</p>
+            {/* A t-shirt has thirty-nine colours. Naming the chosen one beside
+                the label is what makes a grid of dots readable. */}
+            {axis.swatch && variants[axis.label] && (
+              <p className="text-xs text-muted-foreground">{variants[axis.label]}</p>
+            )}
+          </div>
           <div className="mt-2.5 flex flex-wrap gap-2">
             {axis.options.map((opt) => {
               const active = variants[axis.label] === opt;
+              const hex = axis.swatch?.[opt];
+              if (hex) {
+                return (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setVariants((v) => ({ ...v, [axis.label]: opt }))}
+                    aria-pressed={active}
+                    aria-label={opt}
+                    title={opt}
+                    className={`size-8 rounded-full ring-1 ring-inset ring-foreground/15 transition-[box-shadow] ${
+                      active
+                        ? "ring-2 ring-offset-2 ring-offset-background ring-foreground"
+                        : "hover:ring-foreground/40"
+                    }`}
+                    style={{ backgroundColor: hex }}
+                  />
+                );
+              }
               return (
                 <button
                   key={opt}
@@ -164,6 +202,7 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
                 photoUrl={photoUrl}
                 placement={placement}
                 onChange={setPlacement}
+                colorHex={selectedHex}
               />
             </div>
           )}

@@ -10,6 +10,7 @@ import {
   MIN_PRINT_DPI,
   type Placement,
 } from "@/lib/shop/placement";
+import { frontMockup } from "@/lib/pod/mockups";
 
 export { DEFAULT_PLACEMENT, type Placement };
 
@@ -18,14 +19,27 @@ export function PhotoPlacer({
   photoUrl,
   placement,
   onChange,
+  colorHex,
 }: {
   product: MentyProduct;
   /** Signed URL of the uploaded photo. */
   photoUrl: string;
   placement: Placement;
   onChange: (p: Placement) => void;
+  /** The chosen colour, painted behind the mock-up. */
+  colorHex?: string;
 }) {
   const area = product.printArea;
+  /**
+   * The supplier's flat render of this blank, or nothing.
+   *
+   * When there is one, the preview is built the way their own editor builds it
+   * — a solid colour, the artwork, then the greyscale PNG over the top — and
+   * `printArea` lines up with it exactly, because both came from the same
+   * layout. When there is not (stickers, our own poster), the product photo is
+   * the backdrop and the window is drawn on it as before.
+   */
+  const mock = frontMockup(product.supplierProductCode);
   const frameRef = useRef<HTMLDivElement>(null);
   const [natural, setNatural] = useState<{ w: number; h: number } | null>(null);
   const dragging = useRef<{ px: number; py: number; ox: number; oy: number } | null>(
@@ -43,7 +57,8 @@ export function PhotoPlacer({
    * Computed before the callbacks because the pan clamp depends on it, and
    * hooks cannot run after the `!area` early return below.
    */
-  const cover = coverOf(natural, product.printArea, placement.scale);
+  const frameAspect = mock?.aspect ?? 1;
+  const cover = coverOf(natural, product.printArea, placement.scale, frameAspect);
 
   const move = useCallback(
     (nextX: number, nextY: number) => {
@@ -100,11 +115,19 @@ export function PhotoPlacer({
         </button>
       </div>
 
-      {/* The product photograph, with the print window cut into it. Everything
-          outside the window is dimmed, so what will actually be printed is
-          unmistakable. */}
-      <div className="relative mt-2.5 aspect-square w-full overflow-hidden rounded-xl bg-sand ring-1 ring-border">
-        {product.images[0] && (
+      {/* The try-on.
+          Colour, then artwork, then the supplier's greyscale render on top —
+          the same order their editor uses, which is why the print looks like it
+          is ON the cloth and why anything spilling past the garment is masked
+          by the render's own opaque surround. */}
+      <div
+        className="relative mt-2.5 w-full overflow-hidden rounded-xl ring-1 ring-border"
+        style={{
+          aspectRatio: mock ? String(mock.aspect) : "1",
+          backgroundColor: mock ? (colorHex ?? "#E8E8E8") : undefined,
+        }}
+      >
+        {!mock && product.images[0] && (
           <Image
             src={product.images[0]}
             alt=""
@@ -132,7 +155,7 @@ export function PhotoPlacer({
             width: `${area.width * 100}%`,
             height: `${area.height * 100}%`,
           }}
-          className="absolute cursor-grab overflow-hidden outline outline-2 outline-offset-2 outline-forest/70 active:cursor-grabbing"
+          className="absolute cursor-grab overflow-hidden active:cursor-grabbing"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -160,6 +183,32 @@ export function PhotoPlacer({
             className="pointer-events-none absolute max-w-none"
           />
         </div>
+
+        {mock && (
+          <Image
+            src={mock.image}
+            alt={product.title}
+            fill
+            sizes="480px"
+            // Above the artwork on purpose: this PNG is only folds and shadow
+            // over the garment, and opaque everywhere else.
+            className="pointer-events-none object-contain"
+            priority
+          />
+        )}
+
+        {/* The window marker sits above the render, or it would be under the
+            garment's own shading and invisible. */}
+        <div
+          aria-hidden
+          style={{
+            left: `${area.x * 100}%`,
+            top: `${area.y * 100}%`,
+            width: `${area.width * 100}%`,
+            height: `${area.height * 100}%`,
+          }}
+          className="pointer-events-none absolute rounded-[2px] outline-dashed outline-2 outline-offset-2 outline-forest/45"
+        />
       </div>
 
       <div className="mt-3 flex items-center gap-3">
@@ -175,7 +224,7 @@ export function PhotoPlacer({
             // legal at 2x can leave a blank edge at 1.2x. Re-clamp against the
             // new range rather than only on drag.
             const scale = Number(e.target.value);
-            const next = coverOf(natural, area, scale);
+            const next = coverOf(natural, area, scale, frameAspect);
             onChange({
               scale,
               x: clamp(placement.x, ...panRange(next.rx)),
@@ -228,12 +277,14 @@ function panRange(r: number): [number, number] {
 function coverOf(
   natural: { w: number; h: number } | null,
   area: PrintArea | undefined,
-  scale: number
+  scale: number,
+  frameAspect: number
 ): { axis: "width" | "height"; rx: number; ry: number } {
   if (!natural || !area) return { axis: "width", rx: scale, ry: scale };
-  // The product mock-ups are square, so the window's rendered aspect is the
-  // ratio of the print area's own fractions.
-  const windowAspect = area.width / area.height;
+  // The window's fractions are of the frame, and the frame is not square — a
+  // t-shirt render is 458x410. Assuming square here put the pinned side on the
+  // wrong axis and let a blank edge into the print.
+  const windowAspect = (area.width / area.height) * frameAspect;
   const photoAspect = natural.w / natural.h;
   return photoAspect > windowAspect
     ? { axis: "height", rx: (photoAspect / windowAspect) * scale, ry: scale }
