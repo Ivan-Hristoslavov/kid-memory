@@ -13,7 +13,9 @@ import {
 } from "@/lib/catalog";
 import { cartSubtotalEUR, cartUnits, useCart, type CartLine } from "@/lib/store/cart";
 import { nextTier, quantityDiscount } from "@/lib/shop/quantity";
-import { hasImages, productById } from "@/lib/shop/products";
+import { hasImages, productById, type MentyProduct } from "@/lib/shop/products";
+import { designIdOf } from "@/lib/shop/ready";
+import { DesignedShirt } from "./designed-shirt";
 
 /**
  * The basket.
@@ -200,14 +202,25 @@ function CartRow({
         href={`/produkt/${product.id}`}
         className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-sand ring-1 ring-border sm:size-24"
       >
-        {hasImages(product) && (
-          <Image
-            src={product.images[0]}
-            alt=""
-            fill
-            sizes="96px"
-            className="object-cover"
+        {/* A ready-made shirt owns no file — it is composited, here as
+            everywhere else, so the thumbnail shows the actual design and the
+            actual colour rather than a stock photo of a blank. */}
+        {designIdOf(product.id) ? (
+          <DesignedShirt
+            designId={designIdOf(product.id)!}
+            colorHex={swatchOf(product, line.variants)}
+            name={line.text ?? ""}
           />
+        ) : (
+          hasImages(product) && (
+            <Image
+              src={product.images[0]}
+              alt=""
+              fill
+              sizes="96px"
+              className="object-contain"
+            />
+          )
         )}
       </Link>
 
@@ -275,4 +288,16 @@ function CartRow({
       </p>
     </li>
   );
+}
+
+/** The chosen colour's hex, or a sensible black when the line predates it. */
+function swatchOf(
+  product: MentyProduct,
+  variants: Record<string, string>
+): string {
+  for (const axis of product.variants) {
+    const hex = axis.swatch?.[variants[axis.label] ?? ""];
+    if (hex) return hex;
+  }
+  return "#1B1B1B";
 }

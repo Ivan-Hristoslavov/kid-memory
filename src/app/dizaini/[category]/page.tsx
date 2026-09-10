@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
@@ -7,13 +6,13 @@ import { MentyHeader } from "@/components/menty/header";
 import { MentyFooter } from "@/components/menty/footer";
 import {
   DESIGN_CATEGORIES,
-  designImage,
   designsInCategory,
   type DesignCategory,
 } from "@/lib/shop/designs";
 import { TEXT_DESIGNS } from "@/lib/shop/text-designs";
-import { TextDesignArt } from "@/components/menty/text-design-art";
-import { ALL_PRODUCTS, byTag } from "@/lib/shop/products";
+import { DesignedShirt } from "@/components/menty/designed-shirt";
+import { ALL_PRODUCTS, byTag, productById } from "@/lib/shop/products";
+import { formatPrice as fp } from "@/lib/catalog";
 import { ProductCard } from "@/components/menty/bestsellers";
 import { formatPrice } from "@/lib/catalog";
 
@@ -150,20 +149,21 @@ export default async function DesignCategoryPage({
             {words.map((w) => (
               <li key={w.id}>
                 <Link
-                  href={landing ? `/produkt/${landing.id}?design=${w.id}` : "/produkti"}
+                  href={`/produkt/t-${w.id}`}
                   className="group block overflow-hidden rounded-xl ring-1 ring-border transition-shadow hover:shadow-lg"
                 >
-                  <div
-                    className={`relative aspect-square p-8 ${w.forDark ? "bg-forest" : "bg-sand"}`}
-                  >
-                    <TextDesignArt
-                      design={w}
-                      color={w.forDark ? "#FEFCF8" : "#2B2B2B"}
+                  <div className="bg-gradient-to-b from-ivory to-sand p-3">
+                    <DesignedShirt
+                      designId={w.id}
+                      colorHex={w.forDark ? "#1B1B1B" : "#E8E8E8"}
                     />
                   </div>
-                  <p className="bg-background p-3 text-center text-sm font-medium text-foreground">
-                    {w.title}
-                  </p>
+                  <div className="bg-background p-3 text-center">
+                    <p className="text-sm font-medium text-foreground">{w.title}</p>
+                    <p className="mt-0.5 text-sm font-semibold text-foreground">
+                      {fp(productById(`t-${w.id}`)?.priceEUR ?? 0)}
+                    </p>
+                  </div>
                 </Link>
               </li>
             ))}
@@ -178,25 +178,21 @@ export default async function DesignCategoryPage({
             {designs.map((d) => (
               <li key={d.id}>
                 <Link
-                  href={landing ? `/produkt/${landing.id}?design=${d.id}` : "/produkti"}
+                  href={`/produkt/t-${d.id}`}
                   className="group block overflow-hidden rounded-xl ring-1 ring-border transition-shadow hover:shadow-lg"
                 >
-                  {/* Light artwork on a dark tile, dark artwork on sand — half
-                      of these are drawn for black garments and vanish on white. */}
-                  <div
-                    className={`relative aspect-square ${d.forDark ? "bg-forest" : "bg-sand"}`}
-                  >
-                    <Image
-                      src={designImage(d.id)}
-                      alt={d.title}
-                      fill
-                      sizes="(max-width: 640px) 50vw, 220px"
-                      className="object-contain p-5 transition-transform duration-500 group-hover:scale-105"
+                  <div className="bg-gradient-to-b from-ivory to-sand p-3">
+                    <DesignedShirt
+                      designId={d.id}
+                      colorHex={d.forDark ? "#1B1B1B" : "#E8E8E8"}
                     />
                   </div>
-                  <p className="bg-background p-3 text-center text-sm font-medium text-foreground">
-                    {d.title}
-                  </p>
+                  <div className="bg-background p-3 text-center">
+                    <p className="text-sm font-medium text-foreground">{d.title}</p>
+                    <p className="mt-0.5 text-sm font-semibold text-foreground">
+                      {fp(productById(`t-${d.id}`)?.priceEUR ?? 0)}
+                    </p>
+                  </div>
                 </Link>
               </li>
             ))}

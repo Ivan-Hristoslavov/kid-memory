@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
 import { ARTICLES } from "@/lib/articles";
 import { ALL_PRODUCTS } from "@/lib/shop/products";
+import { readyProducts } from "@/lib/shop/ready";
 import { DESIGN_CATEGORIES } from "@/lib/shop/designs";
 import { GIFT_AUDIENCES, GIFT_OCCASIONS } from "@/lib/brand";
 
@@ -40,7 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // The catalogue was missing from here entirely: every product page, every
     // collection and every design category was unlisted, which is a strange
     // thing for a shop to hide from a crawler.
-    ...ALL_PRODUCTS.map((p) => ({
+    ...[...ALL_PRODUCTS, ...readyProducts()].map((p) => ({
       url: `${SITE_URL}/produkt/${p.id}`,
       lastModified,
       changeFrequency: "weekly" as const,

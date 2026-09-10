@@ -19,13 +19,34 @@ WHAT is the occasion, and WHAT WORLD is it from — under one route, with ids in
 two different shapes (`for-her` beside `theme-gaming`). A visitor could not tell
 which door to use, and neither could the person who built it.
 
+## The bigger mistake, fixed after the first pass
+
+Everything routed through an editor. Pick a blank, pick a design, place it,
+choose a font — and only then buy. That is the wrong default: most people do not
+want to design anything. They want the shirt that says "Кумът", in black, size
+L, delivered. The competition sells exactly that, as a product with a price and
+an add-to-cart button and no step in between.
+
+So every design is now also a product. `t-<designId>` is a ready-made shirt with
+a title, a price, three colours and a size — no upload, no placement, no editor.
+A lettering design with a `{name}` slot keeps one field, because "Кумът Мартин"
+is worth an input; nothing else survives.
+
+None of them has a picture. The card, the gallery and the basket thumbnail all
+composite the same three layers the preview uses — colour, artwork, the
+supplier's greyscale render — so a hundred and sixty shirts cost a hundred and
+sixty lines rather than a hundred and sixty files to generate and keep in step.
+
+The editor did not go away. It became a button: **Създай свой**, beside the
+navigation rather than inside it, because it is an action and not a place.
+
 ## The rule now
 
 Every page answers exactly one question, and each question has one home.
 
 ```
-WHAT IS IT            /produkti          grouped by family: чаши, дрехи, аксесоари…
-WHAT IS ON IT         /dizaini           15 design categories, 108 designs
+READY TO BUY          /dizaini           160 finished shirts, by category
+SOMETHING TO PERSONALISE  /produkti      the blanks, and the editor — the "Създай свой" button
 WHO / WHEN            /za-povoda         audiences and occasions, in two labelled sections
 ```
 

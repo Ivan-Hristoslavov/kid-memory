@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
+import { Menu, Search, ShoppingBag, User, Wand2, X } from "lucide-react";
 import { SearchDialog } from "./search-dialog";
 import { ThemeToggle } from "./theme-toggle";
 import { cartCount, useCart } from "@/lib/store/cart";
@@ -19,21 +19,21 @@ import { Logo } from "./logo";
  * a hairline — the reference's own treatment.
  */
 /**
- * Five items, and each one answers a different question.
+ * Browsing, and nothing else.
  *
- * It was six, and two of them ("Персонализирани", "Бизнес подаръци") were
- * explanations rather than places to browse — those moved to the footer. The
- * poster wizard, which is the one thing this shop makes end to end, was not in
- * the navigation at all.
+ * Ready-made shirts lead: most people do not want to design anything, they want
+ * to buy the one that says "Кумът". Making them walk through an editor to get
+ * there was the shop's biggest mistake, and it was the default path.
  *
- * Order is what a visitor decides in: what it is, what is on it, who it is for,
- * then the two made-to-order products. See docs/site-structure.md.
+ * The editor is not in this list. It is a button beside it — see the header —
+ * because it is an action, not a place, and it deserves to look like one.
+ *
+ * See docs/site-structure.md.
  */
 const NAV = [
-  { href: "/produkti", label: "Продукти" },
-  { href: "/dizaini", label: "Дизайни" },
+  { href: "/dizaini", label: "Готови тениски" },
+  { href: "/produkti", label: "Подаръци" },
   { href: "/za-povoda", label: "За повода" },
-  { href: "/create", label: "Постер" },
   { href: "/prikazka", label: "Детска книжка" },
 ];
 
@@ -129,6 +129,17 @@ export function MentyHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-1 lg:ml-0">
+          {/* The custom route, as a button rather than a nav item.
+              It is an action — "make me one" — and it used to be the only way
+              in, which is why nobody who just wanted a shirt ever got one. Now
+              it is one obvious thing to press for the people who do want it. */}
+          <Link
+            href="/produkti"
+            className="mr-2 hidden h-10 items-center gap-1.5 rounded-lg bg-forest px-4 text-sm font-semibold text-ivory transition-colors hover:bg-forest/90 sm:inline-flex"
+          >
+            <Wand2 className="size-4" strokeWidth={1.75} />
+            Създай свой
+          </Link>
           <IconButton label="Търсене" onClick={() => setSearchOpen(true)}>
             <Search className="size-5" />
           </IconButton>
@@ -185,6 +196,17 @@ export function MentyHeader() {
                 </Link>
               </li>
             ))}
+            {/* The button has no room in the mobile bar, so it leads the menu. */}
+            <li className="pb-2 pt-1">
+              <Link
+                href="/produkti"
+                onClick={() => setOpen(false)}
+                className="flex h-12 items-center justify-center gap-2 rounded-lg bg-forest text-sm font-semibold text-ivory"
+              >
+                <Wand2 className="size-4" strokeWidth={1.75} />
+                Създай свой дизайн
+              </Link>
+            </li>
           </ul>
         </nav>
       )}

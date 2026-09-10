@@ -11,10 +11,12 @@ import { ProductAccordions } from "@/components/menty/product-accordions";
 import { ProductCard } from "@/components/menty/bestsellers";
 import { formatPrice, DELIVERY } from "@/lib/catalog";
 import { ALL_PRODUCTS, productById } from "@/lib/shop/products";
+import { designIdOf, readyProducts } from "@/lib/shop/ready";
+import { ReadyShirtView } from "@/components/menty/ready-shirt-view";
 
 /** Every catalogue entry is a known id, so the routes can be prerendered. */
 export function generateStaticParams() {
-  return ALL_PRODUCTS.map((p) => ({ id: p.id }));
+  return [...ALL_PRODUCTS, ...readyProducts()].map((p) => ({ id: p.id }));
 }
 
 /**
@@ -63,6 +65,54 @@ export default async function ProductPage({
   const { id } = await params;
   const product = productById(id);
   if (!product) notFound();
+
+  /**
+   * A ready-made shirt is a different page, not this one with parts hidden.
+   *
+   * It has no gallery to switch, no print area to place anything in and no
+   * editor — the design is the product. Sharing the layout would mean threading
+   * "is this ready-made" through the gallery, the panel and the accordions, and
+   * every one of those would be the poorer for it.
+   */
+  if (designIdOf(product.id)) {
+    return (
+      <>
+        <MentyHeader />
+        <main className="flex-1">
+          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+            <nav
+              aria-label="Пътека"
+              className="flex items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              <Link href="/" className="transition-colors hover:text-foreground">
+                Начало
+              </Link>
+              <ChevronRight className="size-3" />
+              <Link
+                href="/dizaini"
+                className="transition-colors hover:text-foreground"
+              >
+                Готови тениски
+              </Link>
+              <ChevronRight className="size-3" />
+              <span className="text-foreground">{product.title}</span>
+            </nav>
+
+            <div className="mt-6">
+              <ReadyShirtView product={product} />
+            </div>
+
+            <ul className="mt-10 grid gap-3 sm:grid-cols-3">
+              <Reassurance icon={Truck} title="Доставка 1–3 дни" text="Еконт и Спиди" />
+              <Reassurance icon={Sparkles} title="Печат в България" text="По поръчка" />
+              <Reassurance icon={RotateCcw} title="Дефект — подмяна" text="Безплатно" />
+            </ul>
+          </div>
+        </main>
+        <MentyFooter />
+      </>
+    );
+  }
 
   const related = ALL_PRODUCTS.filter(
     (p) => p.id !== product.id && p.family === product.family

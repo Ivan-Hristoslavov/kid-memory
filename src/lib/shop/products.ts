@@ -34,6 +34,7 @@
  */
 
 import type { PodSupplierId } from "@/lib/pod/types";
+import { readyById } from "./ready";
 
 /** What can be personalised on an item — drives the product page controls. */
 export type PersonalizationKind =
@@ -1003,8 +1004,17 @@ export function hasImages(product: MentyProduct): boolean {
   return product.images.length > 0;
 }
 
+/**
+ * Any product, blank or ready-made.
+ *
+ * The ready-made shirts are resolved through a late import rather than being
+ * put in `ALL_PRODUCTS`: they are derived FROM a product in this file, so
+ * importing them at the top would be a cycle, and they must not appear in the
+ * family grid on /produkti — a hundred and sixty of them would bury the twenty-
+ * six things a customer can actually personalise.
+ */
 export function productById(id: string): MentyProduct | undefined {
-  return ALL_PRODUCTS.find((p) => p.id === id);
+  return ALL_PRODUCTS.find((p) => p.id === id) ?? readyById(id);
 }
 
 /**
