@@ -143,9 +143,12 @@ export interface MentyProduct {
  * September 2026 would ship a storefront quoting a currency the country has
  * retired, and would disagree with the amount the courier actually collects.
  *
- * So prices render in euro and `priceReferenceBGN` records what the reference
- * showed. Conversion is at the fixed statutory rate of 1 EUR = 1.95583 BGN,
- * rounded to a retail-looking .90 ending rather than left as a raw division.
+ * So prices render in euro and `priceReferenceBGN` carries the lev figure
+ * alongside. It began as the reference mockup's own number; now that prices are
+ * set from real supplier costs it is simply the conversion, at the fixed
+ * statutory rate of 1 EUR = 1.95583 BGN, rounded to the nearest .90 ending
+ * rather than left as a raw division. Keep it: dual display is what shoppers
+ * still read a year into the changeover.
  */
 export const BGN_PER_EUR = 1.95583;
 
@@ -164,10 +167,21 @@ export const BGN_PER_EUR = 1.95583;
  * than hot-linked: their S3 bucket is not a CDN we control, and a supplier who
  * reorganises their storage should not empty our product grid.
  *
- * Prices are ours. Each is roughly 2.5–3× the landed cost for small items and
- * about 2.2× for the expensive garments, because a 50-euro hoodie will not sell
- * at the multiple a 15-euro mug does. `landedCostEUR` in the catalogue module
- * is the number to check them against when they need revisiting.
+ * Prices are ours, and they are set for volume rather than for the fattest
+ * margin per order. Roughly 2× the landed cost across the board, easing to
+ * about 1.8× on the expensive garments — a mug at 11.90 and a hoodie at 32.90
+ * are prices a Bulgarian buyer recognises, where 14.90 and 42.90 were prices
+ * they compare against somewhere else and then leave.
+ *
+ * Landed cost is the blank plus ONE print position at the middle band (3.08;
+ * 1.61 on hats and stickers, whose print never reaches 30 cm of side). A second
+ * position is charged again, so a two-sided design eats 3.08 of the margin
+ * below unless the product page charges for it. `landedCostEUR` in the
+ * catalogue module is the number to check any change against.
+ *
+ * The thinnest lines are the stickers and the gift box, at about 1.5×. Both are
+ * add-ons rather than reasons to visit: they exist to lift an order that has
+ * already been decided, and 3.90 is a price nobody thinks about.
  */
 export const PRODUCTS: readonly MentyProduct[] = [
   // ── Чаши и бутилки ────────────────────────────────────────────────────
@@ -179,8 +193,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "bejdh",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/bejdh",
-    priceEUR: 14.9,
-    priceReferenceBGN: 28.9,
+    priceEUR: 11.9,
+    priceReferenceBGN: 22.9,
     images: ["/supplier/bejdh.webp"],
     printArea: { x: 0.3, y: 0.36, width: 0.36, height: 0.32, widthMm: 208, heightMm: 88 },
     tags: ["for-her", "for-him", "for-parents", "birthday", "anniversary", "thank-you", "just-because", "love"],
@@ -204,8 +218,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "hejg",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/hejg",
-    priceEUR: 19.9,
-    priceReferenceBGN: 38.9,
+    priceEUR: 15.9,
+    priceReferenceBGN: 30.9,
     images: ["/supplier/hejg.webp"],
     printArea: { x: 0.28, y: 0.34, width: 0.4, height: 0.3, widthMm: 86, heightMm: 38 },
     tags: ["for-him", "for-her", "birthday", "thank-you", "just-because"],
@@ -220,8 +234,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "dagdf",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/dagdf",
-    priceEUR: 19.9,
-    priceReferenceBGN: 38.9,
+    priceEUR: 15.9,
+    priceReferenceBGN: 30.9,
     images: ["/supplier/dagdf.webp"],
     printArea: { x: 0.34, y: 0.25, width: 0.32, height: 0.5, widthMm: 182, heightMm: 106 },
     tags: ["for-him", "for-her", "for-kids", "birthday", "thank-you"],
@@ -238,8 +252,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "c",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/c",
-    priceEUR: 26.9,
-    priceReferenceBGN: 52.9,
+    priceEUR: 19.9,
+    priceReferenceBGN: 38.9,
     images: ["/supplier/c.webp"],
     printArea: { x: 0.34, y: 0.3, width: 0.32, height: 0.34, widthMm: 377, heightMm: 571 },
     tags: ["for-him", "for-her", "for-couples", "birthday", "just-because"],
@@ -258,8 +272,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ce",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ce",
-    priceEUR: 24.9,
-    priceReferenceBGN: 48.9,
+    priceEUR: 17.9,
+    priceReferenceBGN: 34.9,
     images: ["/supplier/ce.webp"],
     printArea: { x: 0.34, y: 0.3, width: 0.32, height: 0.34, widthMm: 342, heightMm: 453 },
     tags: ["for-her", "birthday", "just-because", "best-friend"],
@@ -277,8 +291,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "iidf",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/iidf",
-    priceEUR: 27.9,
-    priceReferenceBGN: 54.9,
+    priceEUR: 21.9,
+    priceReferenceBGN: 42.9,
     images: ["/supplier/iidf.webp"],
     printArea: { x: 0.34, y: 0.3, width: 0.32, height: 0.34, widthMm: 415, heightMm: 571 },
     tags: ["for-him", "for-her", "for-couples", "birthday", "just-because"],
@@ -296,8 +310,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gddfd",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gddfd",
-    priceEUR: 32.9,
-    priceReferenceBGN: 63.9,
+    priceEUR: 26.9,
+    priceReferenceBGN: 52.9,
     images: ["/supplier/gddfd.webp"],
     printArea: { x: 0.34, y: 0.3, width: 0.32, height: 0.34, widthMm: 415, heightMm: 571 },
     tags: ["for-him", "for-her", "birthday"],
@@ -315,8 +329,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ge",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ge",
-    priceEUR: 22.9,
-    priceReferenceBGN: 44.9,
+    priceEUR: 16.9,
+    priceReferenceBGN: 32.9,
     images: ["/supplier/ge.webp"],
     printArea: { x: 0.34, y: 0.3, width: 0.32, height: 0.34, widthMm: 225, heightMm: 325 },
     tags: ["for-kids", "for-parents", "birthday", "just-because"],
@@ -334,8 +348,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gdab",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gdab",
-    priceEUR: 22.9,
-    priceReferenceBGN: 44.9,
+    priceEUR: 16.9,
+    priceReferenceBGN: 32.9,
     images: ["/supplier/gdab.webp"],
     printArea: { x: 0.34, y: 0.3, width: 0.32, height: 0.34, widthMm: 164, heightMm: 208 },
     tags: ["new-baby", "for-parents", "for-kids", "thank-you"],
@@ -353,8 +367,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ddejj",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ddejj",
-    priceEUR: 22.9,
-    priceReferenceBGN: 44.9,
+    priceEUR: 16.9,
+    priceReferenceBGN: 32.9,
     images: ["/supplier/ddejj.webp"],
     printArea: { x: 0.34, y: 0.32, width: 0.32, height: 0.24, widthMm: 376, heightMm: 239 },
     tags: ["for-her", "birthday", "best-friend", "just-because"],
@@ -372,8 +386,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "de",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/de",
-    priceEUR: 22.9,
-    priceReferenceBGN: 44.9,
+    priceEUR: 16.9,
+    priceReferenceBGN: 32.9,
     images: ["/supplier/de.webp"],
     printArea: { x: 0.35, y: 0.28, width: 0.3, height: 0.38, widthMm: 383, heightMm: 574 },
     tags: ["for-him", "birthday", "just-because"],
@@ -391,8 +405,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gh",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gh",
-    priceEUR: 21.9,
-    priceReferenceBGN: 42.9,
+    priceEUR: 15.9,
+    priceReferenceBGN: 30.9,
     images: ["/supplier/gh.webp"],
     printArea: { x: 0.35, y: 0.28, width: 0.3, height: 0.38, widthMm: 347, heightMm: 452 },
     tags: ["for-her", "birthday", "just-because"],
@@ -410,8 +424,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "dcc",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/dcc",
-    priceEUR: 27.9,
-    priceReferenceBGN: 54.9,
+    priceEUR: 21.9,
+    priceReferenceBGN: 42.9,
     images: ["/supplier/dcc.webp"],
     printArea: { x: 0.36, y: 0.3, width: 0.28, height: 0.34, widthMm: 374, heightMm: 576 },
     tags: ["for-him", "thank-you", "just-because"],
@@ -431,8 +445,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ca",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ca",
-    priceEUR: 42.9,
-    priceReferenceBGN: 83.9,
+    priceEUR: 32.9,
+    priceReferenceBGN: 63.9,
     images: ["/supplier/ca.webp"],
     printArea: { x: 0.34, y: 0.32, width: 0.32, height: 0.3, widthMm: 377, heightMm: 522 },
     tags: ["for-him", "for-her", "for-couples", "birthday", "anniversary"],
@@ -451,8 +465,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "cj",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/cj",
-    priceEUR: 36.9,
-    priceReferenceBGN: 71.9,
+    priceEUR: 27.9,
+    priceReferenceBGN: 54.9,
     images: ["/supplier/cj.webp"],
     printArea: { x: 0.34, y: 0.32, width: 0.32, height: 0.26, widthMm: 377, heightMm: 528 },
     tags: ["for-him", "for-her", "birthday", "just-because"],
@@ -470,8 +484,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "eaccd",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/eaccd",
-    priceEUR: 49.9,
-    priceReferenceBGN: 97.9,
+    priceEUR: 38.9,
+    priceReferenceBGN: 75.9,
     images: ["/supplier/eaccd.webp"],
     printArea: { x: 0.34, y: 0.32, width: 0.32, height: 0.3, widthMm: 526, heightMm: 522 },
     tags: ["for-him", "for-her", "for-couples", "birthday"],
@@ -489,8 +503,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gcjg",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gcjg",
-    priceEUR: 49.9,
-    priceReferenceBGN: 97.9,
+    priceEUR: 39.9,
+    priceReferenceBGN: 77.9,
     images: ["/supplier/gcjg.webp"],
     printArea: { x: 0.34, y: 0.32, width: 0.32, height: 0.3, widthMm: 377, heightMm: 522 },
     tags: ["for-him", "for-her", "birthday", "anniversary"],
@@ -508,8 +522,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "eaij",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/eaij",
-    priceEUR: 39.9,
-    priceReferenceBGN: 77.9,
+    priceEUR: 29.9,
+    priceReferenceBGN: 58.9,
     images: ["/supplier/eaij.webp"],
     printArea: { x: 0.36, y: 0.3, width: 0.28, height: 0.36, widthMm: 480, heightMm: 909 },
     tags: ["for-him", "birthday", "anniversary"],
@@ -527,8 +541,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "gdah",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/gdah",
-    priceEUR: 34.9,
-    priceReferenceBGN: 67.9,
+    priceEUR: 26.9,
+    priceReferenceBGN: 52.9,
     images: ["/supplier/gdah.webp"],
     printArea: { x: 0.32, y: 0.3, width: 0.36, height: 0.34, widthMm: 345, heightMm: 388 },
     tags: ["for-him", "just-because"],
@@ -548,8 +562,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "ebih",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/ebih",
-    priceEUR: 16.9,
-    priceReferenceBGN: 32.9,
+    priceEUR: 11.9,
+    priceReferenceBGN: 22.9,
     images: ["/supplier/ebih.webp"],
     printArea: { x: 0.25, y: 0.28, width: 0.5, height: 0.44, widthMm: 373, heightMm: 373 },
     tags: ["for-her", "for-him", "thank-you", "just-because", "best-friend"],
@@ -564,8 +578,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "debd",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/debd",
-    priceEUR: 16.9,
-    priceReferenceBGN: 32.9,
+    priceEUR: 12.9,
+    priceReferenceBGN: 24.9,
     images: ["/supplier/debd.webp"],
     printArea: { x: 0.32, y: 0.38, width: 0.36, height: 0.2, widthMm: 122, heightMm: 93 },
     tags: ["for-him", "for-her", "birthday", "just-because"],
@@ -580,8 +594,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "dchc",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/dchc",
-    priceEUR: 19.9,
-    priceReferenceBGN: 38.9,
+    priceEUR: 14.9,
+    priceReferenceBGN: 28.9,
     images: ["/supplier/dchc.webp"],
     printArea: { x: 0.32, y: 0.38, width: 0.36, height: 0.2, widthMm: 124, heightMm: 70 },
     tags: ["for-him", "birthday", "just-because"],
@@ -596,8 +610,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "djbh",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/djbh",
-    priceEUR: 21.9,
-    priceReferenceBGN: 42.9,
+    priceEUR: 16.9,
+    priceReferenceBGN: 32.9,
     images: ["/supplier/djbh.webp"],
     printArea: { x: 0.32, y: 0.4, width: 0.36, height: 0.18, widthMm: 122, heightMm: 80 },
     tags: ["for-him", "for-her", "birthday", "just-because"],
@@ -612,8 +626,8 @@ export const PRODUCTS: readonly MentyProduct[] = [
     supplier: "PRINTONDEMAND",
     supplierProductCode: "bbahe",
     supplierUrl: "https://printondemand.bg/v2/catalog/create/bbahe",
-    priceEUR: 4.9,
-    priceReferenceBGN: 9.9,
+    priceEUR: 3.9,
+    priceReferenceBGN: 7.9,
     images: ["/supplier/bbahe.webp"],
     printArea: { x: 0.1, y: 0.1, width: 0.8, height: 0.8, widthMm: 105, heightMm: 105 },
     tags: ["for-kids", "for-her", "for-him", "just-because", "best-friend"],

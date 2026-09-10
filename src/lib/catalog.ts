@@ -138,10 +138,16 @@ export const ADDON_ORDER: readonly AddonId[] = [
  * summary and the confirmation email — a shopper who is quoted one number and
  * asked for a bigger one at the counter simply refuses the parcel, and a
  * personalised poster that comes back is a total loss.
+ *
+ * 4.90 is roughly what Econt and Speedy actually charge to an office, so the
+ * shop neither subsidises nor profits from it. The threshold is the lever: at
+ * 35 a single tee at 17.90 was nowhere near it and the customer simply paid the
+ * fee, whereas at 30 a tee plus a mug is 29.80 — close enough that adding the
+ * mug is cheaper than not adding it. That is the whole point of the number.
  */
 export const DELIVERY = {
   feeEUR: 4.9,
-  freeAboveEUR: 35,
+  freeAboveEUR: 30,
 } as const;
 
 /** Money helper — avoids float drift like 27.9 + 2.9 = 30.799999999999997. */
