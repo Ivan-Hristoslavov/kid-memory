@@ -116,7 +116,7 @@ export const TEXT_DESIGNS: readonly TextDesign[] = [
   t("txt-groom-oath", "Ергенска клетва", "BACHELOR", true, ["ЕРГЕНСКА", "КЛЕТВА"], 1, "SERIF", "BANNER", undefined, "ico-tophat"),
   t("txt-everything-allowed", "Днес всичко му е позволено", "BACHELOR", true, ["КУМ", "ДНЕС ВСИЧКО", "МУ Е ПОЗВОЛЕНО"], 0, "SANS", "BANNER", undefined, "ico-bowtie"),
   t("txt-boys-of-groom", "Момчетата на младоженеца", "BACHELOR", true, ["МОМЧЕТАТА НА", "МЛАДОЖЕНЕЦА"], 1, "SANS", "STACK", undefined, "ico-men-row"),
-  t("txt-last-day-free", "Ерген за последен ден", "BACHELOR", true, ["ЕРГЕН ЗА", "ПОСЛЕДЕН ДЕН"], 1, "SANS", "STACK", undefined, "ico-ring"),
+  t("txt-last-day-free", "Ерген за последен ден", "BACHELOR", true, ["{name} Е ЕРГЕН", "ЗА ПОСЛЕДЕН ДЕН"], 0, "SANS", "STACK", undefined, "ico-couple"),
   t("txt-drinking-team", "Отборът по пиене", "BACHELOR", true, ["ОТБОРЪТ", "ПО ПИЕНЕ"], 1, "SANS", "STACK", undefined, "ico-beer-cheers"),
   t("txt-caught", "Хванат", "BACHELOR", true, ["ХВАНАТ", "И ЩАСТЛИВ"], 0, "SERIF", "STACK", undefined, "ico-ring"),
   t("txt-groom-security", "Охраната на младоженеца", "BACHELOR", true, ["ОХРАНАТА НА", "МЛАДОЖЕНЕЦА"], 1, "SANS", "STACK", undefined, "ico-men-row"),
@@ -178,6 +178,9 @@ export const TEXT_DESIGNS: readonly TextDesign[] = [
   t("txt-merry", "Весела Коледа", "HOLIDAY", true, ["ВЕСЕЛА", "КОЛЕДА"], 1, "SERIF", undefined, undefined, "ico-tree"),
   t("txt-new-year", "Честита Нова година", "HOLIDAY", true, ["ЧЕСТИТА", "НОВА ГОДИНА"], 1, "SERIF", undefined, undefined, "ico-snow"),
   t("txt-first-christmas", "Първата ми Коледа", "HOLIDAY", false, ["ПЪРВАТА МИ", "КОЛЕДА"], 1, "ROUNDED", undefined, undefined, "ico-tree"),
+  t("txt-getting-married", "Женя се", "BACHELOR", true, ["{name}", "СЕ ЖЕНИ"], 0, "SANS", "STACK", undefined, "ico-couple"),
+  t("txt-wedding-day", "Сватбата на", "HEN", false, ["СВАТБАТА НА", "{name}"], 0, "SERIF", "BANNER", "#C77D6B", "ico-ring"),
+  t("txt-just-married", "Младоженци", "HEN", false, ["МЛАДОЖЕНЦИ", "{name}"], 0, "SERIF", "BANNER", "#C77D6B", "ico-couple"),
 ];
 
 export function textDesignById(id: string): TextDesign | undefined {

@@ -10,6 +10,11 @@ import { HERO_SLIDES } from "@/lib/brand";
 
 const AUTOPLAY_MS = 5000;
 
+/** Slides that must not be cropped. Narrowed here so the JSX stays readable. */
+function isPortrait(slide: (typeof HERO_SLIDES)[number]): boolean {
+  return "portrait" in slide && slide.portrait === true;
+}
+
 /**
  * The hero visual: real product mock-ups rotating, each carrying an example
  * design.
@@ -68,19 +73,33 @@ export function HeroCarousel() {
               aria-label={slide.label}
               className="relative block h-full w-full"
             >
+              {/* A poster is a tall artwork with lettering along its top and
+                  bottom edges — cropping it to a landscape frame cuts the title
+                  off, which is the whole point of the sample. So it is
+                  contained, and the space either side is filled with a blurred,
+                  darkened copy of the poster itself rather than left as two
+                  bands of flat sand. The frame stays full-bleed, the artwork
+                  stays whole, and the colour behind it always belongs to the
+                  picture in front. */}
+              {isPortrait(slide) && (
+                <Image
+                  src={slide.image}
+                  alt=""
+                  aria-hidden
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 640px"
+                  className="scale-110 object-cover blur-2xl brightness-[0.85] saturate-150"
+                />
+              )}
               <Image
                 src={slide.image}
                 alt={slide.label}
                 fill
                 priority={index === 0}
                 sizes="(max-width: 1024px) 100vw, 640px"
-                /* A poster is a tall artwork with lettering along its top and
-                   bottom edges — cropping it to a landscape frame cuts the
-                   title off, which is the whole point of the sample. Product
-                   mock-ups are shot for this frame and fill it. */
                 className={
-                  "portrait" in slide && slide.portrait
-                    ? "object-contain p-4"
+                  isPortrait(slide)
+                    ? "object-contain p-6 drop-shadow-[0_12px_28px_rgba(31,47,40,0.35)]"
                     : "object-cover"
                 }
               />

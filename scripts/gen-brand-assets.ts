@@ -443,6 +443,50 @@ embroidered on the side. ${PRINTED}`,
 ivory background at a slight three-quarter angle, printed on the lid with a delicate \
 illustrated botanical wreath in blush pink. A folded blush ribbon resting beside it. ${PRINTED}`,
   },
+  // ── Hero carousel, second wave ──────────────────────────────────────────
+  // Wide scenes that fill the frame edge to edge. The posters in the rotation
+  // are portrait and can only ever be contained; these are what give the hero
+  // its full-bleed slides.
+  {
+    id: "hero-stag",
+    out: "hero/stag",
+    size: "1536x1024",
+    prompt: `Five black cotton t-shirts laid flat side by side on a pale oak table, seen from \
+directly above, each printed on the chest with a simple cream graphic. Beside them two beer \
+steins and a set of keys. Warm daylight from one side, soft shadows. ${LOOK}`,
+  },
+  {
+    id: "hero-hen",
+    out: "hero/hen",
+    size: "1536x1024",
+    prompt: `Four soft blush-pink t-shirts laid flat in a neat row on a warm plaster surface, \
+seen from directly above, each printed with a small delicate floral graphic. Beside them dried \
+eucalyptus, two coupe glasses and a length of satin ribbon. ${LOOK}`,
+  },
+  {
+    id: "hero-hoodie",
+    out: "hero/hoodie",
+    size: "1536x1024",
+    prompt: `A deep forest green hooded sweatshirt laid flat on a pale oak surface, seen from \
+slightly above, printed on the chest with a small cream illustrated mountain range. A folded \
+kraft gift box and a sprig of dried eucalyptus beside it. ${LOOK}`,
+  },
+  {
+    id: "hero-kids",
+    out: "hero/kids",
+    size: "1536x1024",
+    prompt: `A small child's white cotton t-shirt laid flat on a pale oak surface beside a \
+folded pair of dungarees and a wooden toy train, seen from directly above, the t-shirt printed \
+with a friendly illustrated dinosaur in soft green and warm yellow. ${LOOK}`,
+  },
+  {
+    id: "hero-desk",
+    out: "hero/desk",
+    size: "1536x1024",
+    prompt: `A white ceramic mug printed with an illustrated pair of dogs, standing on a pale \
+oak desk beside a closed linen notebook, a natural cotton tote bag folded flat, and three small \
+die-cut stickers. Soft morning light from a window on the left. ${LOOK}`,
+  },
 ];
 
 /** gpt-image-1 list price per image, in USD. */

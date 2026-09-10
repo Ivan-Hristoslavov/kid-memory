@@ -105,52 +105,68 @@ export const GIFT_OCCASIONS = [
  */
 export const HERO_SLIDES = [
   /**
-   * Real product mock-ups, each carrying an example design.
+   * Seven slides, alternating wide scene and poster.
    *
-   * The poster comes first on purpose. It is the one thing this shop makes end
-   * to end — the illustration, the Bulgarian lettering, the print — and its
-   * samples carry actual submissions ("апум" for паун, "Цитатите на Митко"),
-   * which is the only place on the page where the product sounds like a person
-   * rather than a category. Leading with a mug made the shop look like a
-   * reseller of other people's blanks.
+   * It used to be nine, two of which were the same poster of Боби shot twice —
+   * so the carousel opened by showing the visitor the same picture twice — and
+   * one of which was the supplier's stock photograph of two children, who are
+   * models rather than customers and belong to nobody.
+   *
+   * The order alternates on purpose: a wide, full-bleed scene, then a poster.
+   * The scenes fill the frame and show the range; the posters are portrait and
+   * can only ever be contained, so putting two together left two letterboxed
+   * slides in a row. Nothing similar now sits next to anything similar.
+   *
+   * The stag set leads. It is the biggest order this shop takes, it shows five
+   * shirts at once, and it says "we make things for a group" before a word of
+   * copy does.
    */
+  {
+    id: "stag-set",
+    image: "/hero/stag.webp",
+    label: "Комплект за ергенско",
+    href: "/dizaini/bachelor",
+  },
   {
     id: "poster-framed",
     image: "/samples/hero-wall.webp",
     label: "Постер по твоя снимка",
     href: "/create",
-  },
-  {
-    id: "poster-kid",
-    image: "/samples/storybook.webp",
-    label: "„Думичките на Боби“",
-    href: "/create?template=KID_WORDS",
     /** A poster is a tall artwork: show it whole, never cropped. */
     portrait: true,
   },
-  { id: "mug", image: "/hero/mug.webp", label: "Чаша със снимка", href: "/produkt/photo-mug-330" },
+  {
+    id: "desk",
+    image: "/hero/desk.webp",
+    label: "Чаши, чанти и стикери",
+    href: "/produkti",
+  },
   {
     id: "poster-portrait",
     image: "/samples/realistic.webp",
     label: "„Цитатите на Митко“",
     href: "/create?template=PORTRAIT_LINES",
-    /** A poster is a tall artwork: show it whole, never cropped. */
     portrait: true,
   },
-  { id: "tee", image: "/hero/tee.webp", label: "Тениска с печат", href: "/produkt/premium-tee-stanley-stella" },
+  {
+    id: "hen-set",
+    image: "/hero/hen.webp",
+    label: "Комплект за моминско",
+    href: "/dizaini/hen",
+  },
   {
     id: "poster-pet",
     image: "/samples/disney.webp",
     label: "„Такъв е Рекс“",
     href: "/create?template=PET",
-    /** A poster is a tall artwork: show it whole, never cropped. */
     portrait: true,
   },
-  // The puzzle that used to sit here was a PrintFactory product. Our printer
-  // does not make one, so the slide shows something they do — their own
-  // photograph of the blank, until we have styled shots of our own.
-  { id: "kids-tee", image: "/supplier/ge.webp", label: "Детска тениска", href: "/produkt/kids-tee" },
-  { id: "tote", image: "/hero/tote.webp", label: "Памучна чанта", href: "/produkt/organic-tote" },
+  {
+    id: "kids",
+    image: "/hero/kids.webp",
+    label: "Детска тениска",
+    href: "/produkt/kids-tee",
+  },
 ] as const;
 
 export const LIFESTYLE = {
