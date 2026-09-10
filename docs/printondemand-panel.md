@@ -135,3 +135,21 @@ capability existing internally. That is the argument to make.
 - Endpoints in v2.2 we have not wired yet: `/api/deliveries`, `/api/recipients`,
   `/api/extra/types`, `/api/extra/stikers`, `/api/labels`, and the
   `order/payments` + `delivery/signature` nomenclatures.
+
+## The assortment itself
+
+`src/lib/pod/catalog.ts` holds their 30 blanks as read from `/v2/cat/view/prd`,
+with wholesale costs from the price list at `/v2/info-center/prices` — EUR,
+VAT included, because the account is already in euro. Their own photograph of
+each blank is in `/public/supplier/<uid>.webp` rather than hot-linked from their
+S3.
+
+Reading it settled something the shop had wrong. The catalogue listed a photo
+puzzle, two keychains, printed socks and a waistpack. **printondemand.bg makes
+none of them** — they were PrintFactory items that survived the move, so the
+site was advertising five products nobody could have produced. They are gone;
+`lib/shop/products.ts` is now 26 products that all map to a real blank.
+
+Printing is charged per position, on top of the blank: 1.61 when the artwork's
+sides sum to under 30 cm, 3.08 under 70 cm, 4.60 for the full field. A quote
+that forgets the second print position on a mug is short by at least 1.61.

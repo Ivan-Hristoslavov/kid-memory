@@ -122,7 +122,10 @@ export const HERO_SLIDES = [
     /** A poster is a tall artwork: show it whole, never cropped. */
     portrait: true,
   },
-  { id: "puzzle", image: "/hero/puzzle.webp", label: "Фото пъзел", href: "/produkt/photo-puzzle-a4" },
+  // The puzzle that used to sit here was a PrintFactory product. Our printer
+  // does not make one, so the slide shows something they do — their own
+  // photograph of the blank, until we have styled shots of our own.
+  { id: "kids-tee", image: "/supplier/ge.webp", label: "Детска тениска", href: "/produkt/kids-tee" },
   { id: "tote", image: "/hero/tote.webp", label: "Памучна чанта", href: "/produkt/organic-tote" },
 ] as const;
 

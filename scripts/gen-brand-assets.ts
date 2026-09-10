@@ -113,38 +113,6 @@ cream card. A kraft box in the corner carries ${LOGO}. Calm, tidy, room to breat
   },
 
   // ── Bestsellers row. See the note at the top of this file. ───────────────
-  {
-    id: "product-mug",
-    out: "products/photo-mug-330",
-    size: "1024x1024",
-    prompt: `Product photograph of a plain white glossy ceramic mug, 330ml, standard straight-sided \
-shape with a simple rounded handle, standing centred on a seamless ivory background. A soft \
-photographic image is printed on its side. Even studio light, gentle contact shadow. ${LOOK}`,
-  },
-  {
-    id: "product-tee",
-    out: "products/premium-tee-stanley-stella",
-    size: "1024x1024",
-    prompt: `Product photograph of a plain white unisex organic cotton t-shirt, relaxed straight cut \
-with ribbed crew neck, laid flat and neatly arranged on a seamless ivory background, seen from \
-directly above. A small soft print on the chest. Even studio light. ${LOOK}`,
-  },
-  {
-    id: "product-hoodie",
-    out: "products/organic-hoodie",
-    size: "1024x1024",
-    prompt: `Product photograph of a deep forest green unisex organic cotton hooded sweatshirt with a \
-kangaroo pocket and drawstring hood, laid flat and neatly arranged on a seamless ivory background, \
-seen from directly above, with ${LOGO} embroidered small on the left chest. Even studio light. ${LOOK}`,
-  },
-  {
-    id: "product-keychain",
-    out: "products/photo-leather-keychain",
-    size: "1024x1024",
-    prompt: `Product photograph of a small rectangular brown leather keychain with a brushed metal \
-ring, lying flat on a seamless ivory background, a soft photographic image printed on the leather. \
-Close, even studio light, gentle contact shadow. ${LOOK}`,
-  },
 
   // ── Hero carousel: real product mock-ups carrying example artwork ────────
   // Not brand packaging. The hero has to show what a customer actually
@@ -183,14 +151,6 @@ flowers beside it, warm plaster wall behind. ${LOOK}`,
 soft photographic image of a dog. Beside it a linen jacket, softly out of focus. Warm daylight from \
 the side. ${LOOK}`,
   },
-  {
-    id: "hero-puzzle",
-    out: "hero/puzzle",
-    size: "1536x1024",
-    prompt: `A rectangular photo jigsaw puzzle lying partly assembled on a pale oak table, the image on \
-it a warm family photograph, a few loose pieces beside it and two hands reaching in to place one. \
-Soft daylight, shallow depth of field. ${LOOK}`,
-  },
 
   // ── Replacement: the couples category shot ───────────────────────────────
   {
@@ -205,55 +165,6 @@ focus. ${LOOK}`,
 
   // ── The rest of the catalogue. Same note as above: stand-ins for supplier
   //    photography, describing the real item forms. ────────────────────────
-  {
-    id: "product-color-mug",
-    out: "products/color-handle-mug",
-    size: "1024x1024",
-    prompt: `Product photograph of a white glossy ceramic mug with a deep forest green handle and a \
-matching green glazed interior, standard straight-sided 330ml shape, standing centred on a seamless \
-ivory background. A soft photographic image printed on its white outer side. Even studio light, gentle \
-contact shadow. ${LOOK}`,
-  },
-  {
-    id: "product-metal-keychain",
-    out: "products/metal-keychain-2sided",
-    size: "1024x1024",
-    prompt: `Product photograph of a small rectangular brushed-metal keychain with rounded corners and a \
-split metal ring, lying flat on a seamless ivory background, a soft photographic image printed across \
-its face. Close, even studio light, gentle contact shadow. ${LOOK}`,
-  },
-  {
-    id: "product-puzzle",
-    out: "products/photo-puzzle-a4",
-    size: "1024x1024",
-    prompt: `Product photograph of a rectangular A4 cardboard jigsaw puzzle lying flat and fully \
-assembled on a seamless ivory background, a soft photographic image printed across it, the die-cut \
-piece edges faintly visible. Two loose pieces resting beside it. Even studio light. ${LOOK}`,
-  },
-  {
-    id: "product-tote",
-    out: "products/organic-tote",
-    size: "1024x1024",
-    prompt: `Product photograph of a natural undyed cotton tote bag with long shoulder handles, laid \
-flat and neatly arranged on a seamless ivory background, seen from directly above, a soft photographic \
-print centred on the front panel. Even studio light. ${LOOK}`,
-  },
-  {
-    id: "product-socks",
-    out: "products/printed-socks",
-    size: "1024x1024",
-    prompt: `Product photograph of a folded pair of white cotton crew socks on a seamless ivory \
-background, seen from above, with a small repeating printed pattern across them. Even studio light, \
-gentle contact shadow. ${LOOK}`,
-  },
-  {
-    id: "product-waistpack",
-    out: "products/studio-waistpack",
-    size: "1024x1024",
-    prompt: `Product photograph of a compact black fabric belt bag — a waistpack with a zipped front \
-pocket and an adjustable webbing strap coiled beside it — lying on a seamless ivory background, seen \
-from slightly above. Even studio light, gentle contact shadow. ${LOOK}`,
-  },
 ];
 
 /** gpt-image-1 list price per image, in USD. */

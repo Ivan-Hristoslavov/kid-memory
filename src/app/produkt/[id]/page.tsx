@@ -16,6 +16,16 @@ export function generateStaticParams() {
   return ALL_PRODUCTS.map((p) => ({ id: p.id }));
 }
 
+/**
+ * The list above is the whole catalogue, so anything else is a dead URL.
+ *
+ * Without this, an unknown id renders the not-found page with a 200 beside it,
+ * which tells a crawler the page is fine and leaves it in the index. That
+ * started mattering the day the catalogue was rebuilt around a real supplier
+ * and half a dozen product URLs stopped existing.
+ */
+export const dynamicParams = false;
+
 export async function generateMetadata({
   params,
 }: {
