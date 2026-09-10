@@ -121,6 +121,16 @@ export default async function DesignCategoryPage({
             {meta.label}
           </h1>
           <p className="mt-2 text-muted-foreground">{meta.blurb}</p>
+          {/* The set offer belongs on exactly these two pages: a stag or hen
+              order is never one shirt, and this is the page somebody lands on
+              from a search for "тениски за ергенско парти". */}
+          {(meta.id === "BACHELOR" || meta.id === "HEN") && (
+            <p className="mt-4 inline-block rounded-lg bg-forest/8 px-4 py-3 text-sm text-forest">
+              <span className="font-semibold">За цялата компания:</span> 4 броя
+              −10%, 6 броя −15%, 10 броя −20%. Различни размери, цветове и имена
+              в една поръчка.
+            </p>
+          )}
           {landing && (
             <p className="mt-1 text-sm text-muted-foreground">
               Върху тениска от {formatPrice(landing.priceEUR)}, или върху суичър,

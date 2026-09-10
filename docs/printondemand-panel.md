@@ -153,3 +153,23 @@ site was advertising five products nobody could have produced. They are gone;
 Printing is charged per position, on top of the blank: 1.61 when the artwork's
 sides sum to under 30 cm, 3.08 under 70 cm, 4.60 for the full field. A quote
 that forgets the second print position on a mug is short by at least 1.61.
+
+## The sample, and the question that goes with it
+
+The print geometry derived from their editor gives 377 × 571 mm for a men's
+t-shirt front. Their DTF stock is 60 cm wide so it is not impossible, but it is
+large enough to be worth one order rather than an assumption — a DPI warning
+built on a wrong number is worse than none, and it is the figure the customer is
+shown.
+
+One sample settles it. Order any t-shirt through the panel with a design whose
+size is known, measure what arrives, and compare. While ordering it, the two
+questions for their support:
+
+> 1. Панелът създава продукт с дизайн през `POST /v2/crt-spd` (base64 PNG в
+>    `files[].src`). Може ли същото да се извика с Bearer токена от CLIENT API
+>    v2.2? Правим персонализирани продукти — всяка поръчка е нов дизайн.
+>
+> 2. Какъв е реалният максимален размер на печата отпред на мъжка тениска в мм?
+>    От редактора излиза 377 × 571 мм и искаме да го потвърдим, преди да го
+>    показваме на клиентите.
