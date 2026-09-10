@@ -74,7 +74,15 @@ export function HeroCarousel() {
                 fill
                 priority={index === 0}
                 sizes="(max-width: 1024px) 100vw, 640px"
-                className="object-cover"
+                /* A poster is a tall artwork with lettering along its top and
+                   bottom edges — cropping it to a landscape frame cuts the
+                   title off, which is the whole point of the sample. Product
+                   mock-ups are shot for this frame and fill it. */
+                className={
+                  "portrait" in slide && slide.portrait
+                    ? "object-contain p-4"
+                    : "object-cover"
+                }
               />
             </Link>
           </motion.div>

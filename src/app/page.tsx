@@ -3,6 +3,8 @@ import { BRAND } from "@/lib/brand";
 import { MentyHeader } from "@/components/menty/header";
 import { MentyHero } from "@/components/menty/hero";
 import { TrustRow } from "@/components/menty/trust-row";
+import { WordMarquee } from "@/components/menty/word-marquee";
+import { Transformation } from "@/components/menty/transformation";
 import { CategoryStrip } from "@/components/menty/category-strip";
 import { PersonalizeBanner } from "@/components/menty/personalize-banner";
 import { Bestsellers } from "@/components/menty/bestsellers";
@@ -39,7 +41,13 @@ export default function Home() {
       <main className="flex-1">
         <MentyHero />
         <TrustRow />
+        {/* The voice, immediately under the hero: real submissions rather than
+            another row of category labels. */}
+        <WordMarquee />
         <CategoryStrip />
+        {/* What you give and what comes back — the differentiator the page
+            otherwise only described in icons. */}
+        <Transformation />
         <PersonalizeBanner />
         <Bestsellers />
         <Occasions />

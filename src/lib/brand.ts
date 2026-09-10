@@ -80,9 +80,48 @@ export const GIFT_OCCASIONS = [
  * somebody's family on it does. Order is the rotation order.
  */
 export const HERO_SLIDES = [
+  /**
+   * Real product mock-ups, each carrying an example design.
+   *
+   * The poster comes first on purpose. It is the one thing this shop makes end
+   * to end — the illustration, the Bulgarian lettering, the print — and its
+   * samples carry actual submissions ("апум" for паун, "Цитатите на Митко"),
+   * which is the only place on the page where the product sounds like a person
+   * rather than a category. Leading with a mug made the shop look like a
+   * reseller of other people's blanks.
+   */
+  {
+    id: "poster-framed",
+    image: "/samples/hero-wall.webp",
+    label: "Постер по твоя снимка",
+    href: "/create",
+  },
+  {
+    id: "poster-kid",
+    image: "/samples/storybook.webp",
+    label: "„Думичките на Боби“",
+    href: "/create?template=KID_WORDS",
+    /** A poster is a tall artwork: show it whole, never cropped. */
+    portrait: true,
+  },
   { id: "mug", image: "/hero/mug.webp", label: "Чаша със снимка", href: "/produkt/photo-mug-330" },
-  { id: "frame", image: "/hero/frame.webp", label: "Постер в рамка", href: "/produkt/photo-poster-framed" },
+  {
+    id: "poster-portrait",
+    image: "/samples/realistic.webp",
+    label: "„Цитатите на Митко“",
+    href: "/create?template=PORTRAIT_LINES",
+    /** A poster is a tall artwork: show it whole, never cropped. */
+    portrait: true,
+  },
   { id: "tee", image: "/hero/tee.webp", label: "Тениска с печат", href: "/produkt/premium-tee-stanley-stella" },
+  {
+    id: "poster-pet",
+    image: "/samples/disney.webp",
+    label: "„Такъв е Рекс“",
+    href: "/create?template=PET",
+    /** A poster is a tall artwork: show it whole, never cropped. */
+    portrait: true,
+  },
   { id: "puzzle", image: "/hero/puzzle.webp", label: "Фото пъзел", href: "/produkt/photo-puzzle-a4" },
   { id: "tote", image: "/hero/tote.webp", label: "Памучна чанта", href: "/produkt/organic-tote" },
 ] as const;
