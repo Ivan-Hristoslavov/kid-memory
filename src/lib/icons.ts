@@ -1,4 +1,11 @@
 import {
+  Anchor,
+  Flame,
+  Footprints,
+  Moon,
+  Rocket,
+  Trees,
+  Waves,
   Aperture,
   Baby,
   Bird,
@@ -32,6 +39,14 @@ import {
 
 /** Maps catalog `icon` names (animals, styles, templates, occasions) to lucide components. */
 const ICON_MAP: Record<string, LucideIcon> = {
+  // book adventures
+  Anchor,
+  Flame,
+  Footprints,
+  Moon,
+  Rocket,
+  Trees,
+  Waves,
   // animals
   Dog,
   Cat,
