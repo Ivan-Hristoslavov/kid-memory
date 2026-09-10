@@ -180,3 +180,44 @@ questions for their support:
 > 2. Какъв е реалният максимален размер на печата отпред на мъжка тениска в мм?
 >    От редактора излиза 377 × 571 мм и искаме да го потвърдим, преди да го
 >    показваме на клиентите.
+
+## What they sell that we do not
+
+Checked against the live API and the panel on 2026-09-10, not from memory.
+
+| Service | What it is | Why it is not on the site |
+| --- | --- | --- |
+| **Бродерия** | They digitise artwork to a `.DST` stitch file for a one-off fee (5.50), then charge per stitch on every order (0.0004/stitch). Up to 3 working days; needs flat colours and letters at least 5 mm tall. | Nine products advertised it and none could deliver it — no file upload, no quote, no instruction to the printer. The claim is removed; the service is worth building. |
+| **Трансферни етикети** | They cut out the blank's own neck label and heat-transfer YOURS inside the collar. Placement itself is free; you pay to print a batch of transfers, which they store and apply on request. | This is what turns a print shop into a clothing brand. Nothing in the shop touches it. `/api/labels` is empty — none ordered. |
+| **Заявка за кройка** | Bespoke pattern making from a sample or a sketch: digitising, grading, plotting. Your own cut, not a printed blank. | A different business. Belongs on the B2B page as an enquiry, if anywhere. |
+| **Екстра продукти** | `CS-STIKER` and `CS-GIFT-BOX` — sticker and box formats beyond the standard catalogue, requested rather than picked. | `/api/extra/stikers` is empty; nothing requested. |
+| **DTF / UV DTF на ролка** | Print media by the 60 cm x 100 m roll, priced per square metre. | Not a gift. Belongs on the business page. |
+| **Fulfilment продукти** | They hold stock you own and ship it on your orders. | Requires owning stock. `/api/fulfilment-products` is empty. |
+| **Payment split** | Three modes: the customer pays everything, or we cover the product, or we cover the delivery. | We use one. The other two are how a shop absorbs delivery on a promotion. |
+
+### Two account gaps that are not products
+
+`/api/deliveries` returns nothing — **no sender profile exists**, and that is what
+a courier label is issued against. `/api/recipients` returns nothing either, so
+no invoice recipient is set. Both are panel settings and both are worth having
+before the first live order rather than during it.
+
+Also worth knowing: `/api/nomenclature/print-types` exposes exactly one type,
+**DTF**. Sublimation and embroidery happen — the mugs are sublimation — but the
+API does not name them, which is another thing to raise with their support.
+
+## What we have that they do not
+
+They sell blanks and printing. Everything below is ours, and none of it is
+something a competitor buying from the same printer gets for free:
+
+- **The illustrated poster** (`/create`) — an AI pipeline from a customer's
+  photograph to a print file, end to end.
+- **The personalised children's book** (`/prikazka`) — a written story with
+  character consistency across twenty-odd illustrations.
+- **163 ready-made designs**, of which 86 are lettering set as SVG with live
+  name substitution. The printer sells shirts; nobody there sells "Кумът Мартин".
+- **The try-on**, built on their own print geometry, which their panel has and
+  their customers' shops do not.
+- **Party pricing** — a quantity tier that counts units across the basket, for
+  the six-shirt order that is this market's largest.

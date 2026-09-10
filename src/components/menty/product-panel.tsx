@@ -76,9 +76,9 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
     designId && !textDesign ? designImage(designId) : textDesign ? "" : photoUrl;
 
   const takesPhoto = product.personalization.includes("PHOTO");
-  const takesText =
-    product.personalization.includes("TEXT") ||
-    product.personalization.includes("EMBROIDERY");
+  // EMBROIDERY used to fall through to the same text box, which is how nine
+  // products came to advertise stitching and deliver a print.
+  const takesText = product.personalization.includes("TEXT");
 
   async function onFile(file: File) {
     setDesignId("");

@@ -42,6 +42,20 @@ export type PersonalizationKind =
   | "TEXT"
   | "DATE"
   | "DESIGN"
+  /**
+   * Stitched, not printed.
+   *
+   * Nine products claimed this and none of them could deliver it. The supplier
+   * DOES embroider — it is a separate service: they digitise the artwork to a
+   * .DST stitch file for a one-off fee, then charge per stitch on every order —
+   * but nothing in this shop asked for a file, quoted a price, or told the
+   * printer to stitch rather than print. A customer choosing "embroidery" got a
+   * text box and a DTF print.
+   *
+   * The value stays in the type because the service is real and worth selling.
+   * It is not on any product until there is a way to order it. See
+   * docs/printondemand-panel.md.
+   */
   | "EMBROIDERY";
 
 /**
@@ -724,7 +738,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
         },
       },
     ],
-    personalization: ["TEXT", "DESIGN", "EMBROIDERY"],
+    personalization: ["TEXT", "DESIGN"],
   },
 
   // ── Суичъри и долнища ─────────────────────────────────────────────────
@@ -753,7 +767,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
         },
       },
     ],
-    personalization: ["TEXT", "DESIGN", "EMBROIDERY"],
+    personalization: ["TEXT", "DESIGN"],
     bestsellerRank: 4,
   },
   {
@@ -781,7 +795,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
         },
       },
     ],
-    personalization: ["TEXT", "DESIGN", "EMBROIDERY"],
+    personalization: ["TEXT", "DESIGN"],
   },
   {
     id: "oversize-hoodie",
@@ -811,7 +825,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
         },
       },
     ],
-    personalization: ["TEXT", "DESIGN", "EMBROIDERY"],
+    personalization: ["TEXT", "DESIGN"],
   },
   {
     id: "zip-hoodie",
@@ -837,7 +851,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
         },
       },
     ],
-    personalization: ["TEXT", "DESIGN", "EMBROIDERY"],
+    personalization: ["TEXT", "DESIGN"],
   },
   {
     id: "mens-tracksuit",
@@ -863,7 +877,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
         },
       },
     ],
-    personalization: ["TEXT", "DESIGN", "EMBROIDERY"],
+    personalization: ["TEXT", "DESIGN"],
   },
   {
     id: "shorts",
@@ -945,7 +959,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
         "Каки(3М)": "#917D60",
         },
       }],
-    personalization: ["TEXT", "DESIGN", "EMBROIDERY"],
+    personalization: ["TEXT", "DESIGN"],
   },
   {
     id: "trucker-hat",
@@ -968,7 +982,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
         "Черен": "#1B1B1B",
         },
       }],
-    personalization: ["TEXT", "DESIGN", "EMBROIDERY"],
+    personalization: ["TEXT", "DESIGN"],
   },
   {
     id: "bucket-hat",
@@ -996,7 +1010,7 @@ export const PRODUCTS: readonly MentyProduct[] = [
         "Тъмно синьо(AZ)": "#060E36",
         },
       }],
-    personalization: ["TEXT", "DESIGN", "EMBROIDERY"],
+    personalization: ["TEXT", "DESIGN"],
   },
   {
     id: "photo-stickers",
