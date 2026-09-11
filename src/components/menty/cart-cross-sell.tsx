@@ -41,7 +41,7 @@ export function CartCrossSell({ inCart }: { inCart: string[] }) {
       <h2 className="font-heading text-lg font-bold tracking-tight">
         Добави и това
       </h2>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className="mt-1 text-base text-muted-foreground">
         Дребни неща, които правят подаръка завършен.
       </p>
 

@@ -50,10 +50,14 @@ export function ProductCard({ product }: { product: MentyProduct }) {
       href={`/produkt/${product.id}`}
       className="group flex h-full flex-col overflow-hidden rounded-2xl bg-card ring-1 ring-border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-forest/10 hover:ring-foreground/20"
     >
-      {/* A soft ground rather than flat sand, and the product contained rather
+      {/* Fixed grounds, not theme tokens: `sand` and `ivory` invert in dark
+          mode and would put a product photograph on near-black. A card is a
+          window onto a physical object; it does not follow the interface.
+
+          A soft ground rather than flat sand, and the product contained rather
           than cropped. The studio shots are square but the supplier's are
           portrait, and `cover` was filling cards with a slice of a sleeve. */}
-      <span className="relative block aspect-square overflow-hidden bg-gradient-to-b from-ivory to-sand">
+      <span className="relative block aspect-square overflow-hidden bg-gradient-to-b from-ground-paper to-ground-light">
         {hasImages(product) ? (
           <Image
             src={product.images[0]}

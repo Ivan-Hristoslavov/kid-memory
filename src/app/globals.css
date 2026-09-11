@@ -21,6 +21,46 @@
      longer the logo, which is set in --font-heading. */
   --font-logo: var(--font-logo-face), ui-rounded, ui-sans-serif, sans-serif;
   --font-mono: ui-monospace, monospace;
+
+  /* ── LETTER-SPACING, RE-TUNED FOR CYRILLIC ────────────────────────────
+     Tailwind ships `tracking-tight` at -0.025em, drawn for Latin display
+     type where tightening a 60px headline is what makes it look set rather
+     than typed.
+
+     Bulgarian does not have Latin's word shapes. и, н, п, ц, ш and щ are all
+     the same two or three vertical stems with different joins, and „сайт“ or
+     „подарък“ is mostly stems standing next to each other. Take 1.5px out at
+     60px and „ър“ closes up into one glyph. The word stops being read and
+     starts being guessed at.
+
+     -0.01em still does the optical job on a headline — 0.6px at 60px — and
+     leaves the stems apart. The class names stay the same, so nothing has to
+     be renamed; only what they mean changes. */
+  --tracking-tighter: -0.022em;
+  --tracking-tight: -0.01em;
+
+  /* ── GROUNDS THAT STAND IN FOR A PHYSICAL THING ───────────────────────
+     `forest` and `sand` are UI tokens and they INVERT in dark mode — forest
+     lightens to 0.72, sand darkens to 0.24 — which is right for text and
+     borders and catastrophic behind artwork.
+
+     A cream design sits on `bg-forest` so it can be seen. In dark mode that
+     ground turned pale and the cream design vanished; a dark design on
+     `bg-sand` turned near-black and vanished the other way. The whole design
+     catalogue was invisible in dark mode, both halves of it, for opposite
+     reasons.
+
+     These two do not move. They are not a theme, they are a garment and a
+     sheet of paper. */
+  --color-ground-dark: oklch(0.288 0.025 166);
+  --color-ground-light: oklch(0.956 0.011 63);
+  --color-ground-paper: oklch(0.991 0.006 85);
+  /* The same idea applied to the one solid clay chip that carries text — the
+     cart count. Brand clay is an accent drawn for rules and bars, and ivory on
+     it measures 3.12:1 in light and 2.29:1 in dark: below AA in BOTH themes,
+     which is why swapping the theme never revealed it. Four steps darker takes
+     the same hue to 5.61:1 and is still unmistakably clay. */
+  --color-ground-clay: oklch(0.52 0.097 34);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

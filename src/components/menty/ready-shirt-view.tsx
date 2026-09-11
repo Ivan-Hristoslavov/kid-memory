@@ -205,7 +205,7 @@ export function ReadyShirtView({ product }: { product: MentyProduct }) {
           <button
             type="button"
             onClick={onAdd}
-            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-lg bg-forest text-sm font-semibold text-ivory transition-colors hover:bg-forest/90"
+            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             <ShoppingBag className="size-4" strokeWidth={1.75} /> Добави в
             количката

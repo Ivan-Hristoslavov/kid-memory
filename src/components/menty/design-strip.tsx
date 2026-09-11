@@ -37,7 +37,7 @@ export function DesignStrip() {
             <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
               Нямаш снимка? Няма нужда.
             </h2>
-            <p className="mt-1.5 text-sm text-muted-foreground">
+            <p className="mt-1.5 text-base text-muted-foreground">
               {DESIGNS.length} готови дизайна — избираш и го носиш.
             </p>
           </div>
@@ -56,7 +56,7 @@ export function DesignStrip() {
                 href="/dizaini"
                 title={d.title}
                 className={`group block aspect-square overflow-hidden rounded-xl ring-1 ring-border ${
-                  d.forDark ? "bg-forest" : "bg-sand"
+                  d.forDark ? "bg-ground-dark" : "bg-ground-light"
                 }`}
               >
                 <div className="relative size-full">

@@ -68,7 +68,7 @@ export function DesignPicker({
                 aria-pressed={active}
                 title={w.title}
                 className={`relative block aspect-square w-full overflow-hidden rounded-lg border p-2 transition-colors ${
-                  w.forDark ? "bg-forest" : "bg-sand"
+                  w.forDark ? "bg-ground-dark" : "bg-ground-light"
                 } ${
                   active
                     ? "border-foreground ring-1 ring-foreground"

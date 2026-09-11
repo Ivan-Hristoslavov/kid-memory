@@ -58,7 +58,7 @@ function Group({
                 sizes="(max-width: 640px) 50vw, 300px"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-forest/75 to-transparent p-4 pt-12 font-semibold text-ivory">
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ground-dark/75 to-transparent p-4 pt-12 font-semibold text-ground-paper">
                 {c.label}
               </span>
             </Link>

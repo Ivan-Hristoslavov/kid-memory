@@ -151,7 +151,12 @@ export function MentyHeader() {
                     // React Compiler rejects setState during render, and the
                     // click that navigates is the right moment anyway.
                     onClick={() => setPanel(null)}
-                    className={`relative py-2 text-sm transition-colors ${
+                    // 15px, not Tailwind's 14: the nav is the one place every
+                    // visitor reads, and Bulgarian sets wider than English at
+                    // the same size — „Персонализирани“ at 14px is a row of
+                    // stems. A single step up costs nothing in the bar and is
+                    // the difference between scanning and squinting.
+                    className={`relative py-2 text-[0.9375rem] transition-colors ${
                       active
                         ? "font-semibold text-foreground"
                         : "font-medium text-foreground/70 hover:text-foreground"
@@ -199,7 +204,10 @@ export function MentyHeader() {
               it is one obvious thing to press for the people who do want it. */}
           <Link
             href="/produkti"
-            className="mr-2 hidden h-10 items-center gap-1.5 rounded-lg bg-forest px-4 text-sm font-semibold text-ivory transition-colors hover:bg-forest/90 sm:inline-flex"
+            // bg-primary, not bg-forest. The primary token already swaps
+            // fill and text on a dark ground; --forest lightens while --ivory
+            // stays white, which left this CTA at 2.16:1 in dark mode.
+            className="mr-2 hidden h-10 items-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:inline-flex"
           >
             <Wand2 className="size-4" strokeWidth={1.75} />
             Създай свой
@@ -224,7 +232,7 @@ export function MentyHeader() {
           >
             <ShoppingBag className="size-5" />
             {count > 0 && (
-              <span className="absolute -right-0.5 -top-0.5 grid min-w-[1.15rem] place-items-center rounded-full bg-clay px-1 text-[0.65rem] font-bold leading-[1.15rem] text-ivory">
+              <span className="absolute -right-0.5 -top-0.5 grid min-w-[1.15rem] place-items-center rounded-full bg-ground-clay px-1 text-[0.65rem] font-bold leading-[1.15rem] text-ground-paper">
                 {count}
               </span>
             )}
@@ -290,7 +298,7 @@ export function MentyHeader() {
                         <Link
                           href={i.href}
                           onClick={() => setOpen(false)}
-                          className="block rounded-lg px-2 py-2 text-sm text-foreground/75 transition-colors hover:bg-muted hover:text-foreground"
+                          className="block rounded-lg px-2 py-2 text-[0.9375rem] text-foreground/75 transition-colors hover:bg-muted hover:text-foreground"
                         >
                           {i.label}
                         </Link>
@@ -305,7 +313,7 @@ export function MentyHeader() {
               <Link
                 href="/produkti"
                 onClick={() => setOpen(false)}
-                className="flex h-12 items-center justify-center gap-2 rounded-lg bg-forest text-sm font-semibold text-ivory"
+                className="flex h-12 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground"
               >
                 <Wand2 className="size-4" strokeWidth={1.75} />
                 Създай свой дизайн
@@ -484,7 +492,7 @@ function MenuColumn({
             <Link
               href={i.href}
               onClick={onNavigate}
-              className="block whitespace-nowrap rounded-lg px-2 py-1.5 text-sm text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+              className="block whitespace-nowrap rounded-lg px-2 py-1.5 text-[0.9375rem] text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
             >
               {i.label}
             </Link>

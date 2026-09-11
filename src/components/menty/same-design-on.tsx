@@ -48,7 +48,7 @@ export function SameDesignOn({
       <h2 className="font-heading text-xl font-bold tracking-tight">
         Същият дизайн върху
       </h2>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className="mt-1 text-base text-muted-foreground">
         Избираш продукта, дизайнът идва с теб.
       </p>
 
@@ -59,7 +59,7 @@ export function SameDesignOn({
               href={`/produkt/${p.id}?design=${designId}`}
               className="group block overflow-hidden rounded-2xl bg-card ring-1 ring-border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-forest/10"
             >
-              <span className="relative block aspect-square bg-gradient-to-b from-ivory to-sand">
+              <span className="relative block aspect-square bg-gradient-to-b from-ground-paper to-ground-light">
                 <Image
                   src={p.images[0]}
                   alt={p.title}
@@ -106,7 +106,7 @@ export function MoreFromCategory({
       <h2 className="font-heading text-xl font-bold tracking-tight">
         За същата компания
       </h2>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className="mt-1 text-base text-muted-foreground">
         4 броя −10%, 6 броя −15%. Размерите и имената може да са различни.
       </p>
 
@@ -119,7 +119,7 @@ export function MoreFromCategory({
                 href={`/produkt/t-${d.id}`}
                 className="group block overflow-hidden rounded-2xl bg-card ring-1 ring-border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-forest/10"
               >
-                <span className="block bg-gradient-to-b from-ivory to-sand p-2">
+                <span className="block bg-gradient-to-b from-ground-paper to-ground-light p-2">
                   <DesignedShirt
                     designId={d.id}
                     colorHex={d.forDark ? "#1B1B1B" : "#E8E8E8"}

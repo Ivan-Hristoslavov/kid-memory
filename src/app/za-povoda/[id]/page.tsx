@@ -108,15 +108,15 @@ export default async function CollectionPage({
             sizes="100vw"
             className="-z-10 object-cover"
           />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-forest/90 via-forest/70 to-forest/20" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-ground-dark/90 via-ground-dark/70 to-ground-dark/20" />
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ivory/70">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ground-paper/70">
               Подаръци за повода
             </p>
-            <h1 className="mt-3 max-w-2xl font-heading text-4xl font-bold tracking-tight text-ivory sm:text-5xl">
+            <h1 className="mt-3 max-w-2xl font-heading text-4xl font-bold tracking-tight text-ground-paper sm:text-5xl">
               {collection.label}
             </h1>
-            <p className="mt-3 max-w-xl text-ivory/85">
+            <p className="mt-3 max-w-xl text-ground-paper/85">
               {shirts.length > 0
                 ? `${shirts.length} готови тениски и ${items.length} продукта за персонализиране.`
                 : `${items.length} ${
@@ -143,7 +143,7 @@ export default async function CollectionPage({
                       href={`/produkt/t-${d.id}`}
                       className="group block overflow-hidden rounded-xl ring-1 ring-border transition-shadow hover:shadow-lg"
                     >
-                      <div className="bg-gradient-to-b from-ivory to-sand p-3">
+                      <div className="bg-gradient-to-b from-ground-paper to-ground-light p-3">
                         <DesignedShirt
                           designId={d.id}
                           colorHex={d.forDark ? "#1B1B1B" : "#E8E8E8"}

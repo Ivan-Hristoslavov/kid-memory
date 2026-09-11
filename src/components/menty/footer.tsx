@@ -43,10 +43,16 @@ export async function MentyFooter() {
   const email = settings.contactEmail || COMPANY.email;
   const phone = settings.contactPhone || COMPANY.phone;
 
+  /* ground-dark/ground-paper, not forest/ivory. `--forest` LIGHTENS to 0.72 in
+     dark mode while `--ivory` stays near-white, which put ivory text on a pale
+     green footer at 2.16:1 — measured, not guessed; scripts/type-audit.ts. The
+     footer is a brand surface like the shirt grounds in the design catalogue,
+     so it takes the tokens that do not move: dark green with ivory on it,
+     13.7:1, in both themes. */
   return (
-    <footer className="bg-forest text-ivory">
+    <footer className="bg-ground-dark text-ground-paper">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <ul className="grid gap-4 border-b border-ivory/15 py-8 sm:grid-cols-3">
+        <ul className="grid gap-4 border-b border-ground-paper/15 py-8 sm:grid-cols-3">
           <Fact icon={Truck} title="Еконт и Спиди">
             До офис, автомат или адрес
           </Fact>
@@ -64,14 +70,14 @@ export async function MentyFooter() {
             <div className="mt-6 space-y-2 text-sm">
               <a
                 href={`mailto:${email}`}
-                className="flex items-center gap-2 text-ivory/75 transition-colors hover:text-ivory"
+                className="flex items-center gap-2 text-ground-paper/75 transition-colors hover:text-ground-paper"
               >
                 <Mail className="size-4" strokeWidth={1.5} /> {email}
               </a>
               {phone && (
                 <a
                   href={`tel:${phone.replace(/\s/g, "")}`}
-                  className="flex items-center gap-2 text-ivory/75 transition-colors hover:text-ivory"
+                  className="flex items-center gap-2 text-ground-paper/75 transition-colors hover:text-ground-paper"
                 >
                   <Phone className="size-4" strokeWidth={1.5} /> {phone}
                 </a>
@@ -90,7 +96,7 @@ export async function MentyFooter() {
           <FooterNav title="Правна информация" links={LEGAL} />
         </div>
 
-        <div className="flex flex-col gap-2 border-t border-ivory/15 py-8 text-xs text-ivory/60 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 border-t border-ground-paper/15 py-8 text-xs text-ground-paper/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
             {COMPANY.legalName} · ЕИК {COMPANY.eik} · {COMPANY.address}
           </p>
@@ -114,10 +120,10 @@ function Fact({
 }) {
   return (
     <li className="flex items-start gap-3">
-      <Icon className="mt-0.5 size-5 shrink-0 text-ivory/70" strokeWidth={1.5} />
+      <Icon className="mt-0.5 size-5 shrink-0 text-ground-paper/70" strokeWidth={1.5} />
       <span>
         <span className="block text-sm font-semibold">{title}</span>
-        <span className="block text-xs text-ivory/60">{children}</span>
+        <span className="block text-xs text-ground-paper/60">{children}</span>
       </span>
     </li>
   );
@@ -138,7 +144,7 @@ function FooterNav({
           <li key={l.href}>
             <Link
               href={l.href}
-              className="text-ivory/70 transition-colors hover:text-ivory"
+              className="text-ground-paper/70 transition-colors hover:text-ground-paper"
             >
               {l.label}
             </Link>

@@ -23,7 +23,7 @@ export function Themes() {
             <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
               Не знаеш какво да подариш?
             </h2>
-            <p className="mt-1.5 text-sm text-muted-foreground">
+            <p className="mt-1.5 text-base text-muted-foreground">
               Започни от това, което човекът обича.
             </p>
           </div>

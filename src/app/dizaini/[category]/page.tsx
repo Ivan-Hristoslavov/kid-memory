@@ -152,7 +152,7 @@ export default async function DesignCategoryPage({
                   href={`/produkt/t-${w.id}`}
                   className="group block overflow-hidden rounded-xl ring-1 ring-border transition-shadow hover:shadow-lg"
                 >
-                  <div className="bg-gradient-to-b from-ivory to-sand p-3">
+                  <div className="bg-gradient-to-b from-ground-paper to-ground-light p-3">
                     <DesignedShirt
                       designId={w.id}
                       colorHex={w.forDark ? "#1B1B1B" : "#E8E8E8"}
@@ -181,7 +181,7 @@ export default async function DesignCategoryPage({
                   href={`/produkt/t-${d.id}`}
                   className="group block overflow-hidden rounded-xl ring-1 ring-border transition-shadow hover:shadow-lg"
                 >
-                  <div className="bg-gradient-to-b from-ivory to-sand p-3">
+                  <div className="bg-gradient-to-b from-ground-paper to-ground-light p-3">
                     <DesignedShirt
                       designId={d.id}
                       colorHex={d.forDark ? "#1B1B1B" : "#E8E8E8"}

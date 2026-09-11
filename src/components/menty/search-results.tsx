@@ -106,7 +106,7 @@ export function SearchResults() {
           <p className="font-semibold text-foreground">
             Нищо за „{initial.trim()}“
           </p>
-          <p className="mt-1.5 text-sm text-muted-foreground">
+          <p className="mt-1.5 text-base text-muted-foreground">
             Опитай с една дума — „кум“, „чаша“, „гейминг“.
           </p>
         </div>
@@ -130,7 +130,7 @@ export function SearchResults() {
                         href={`/produkt/t-${d.id}`}
                         className="group block overflow-hidden rounded-2xl bg-card ring-1 ring-border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-forest/10"
                       >
-                        <span className="block bg-gradient-to-b from-ivory to-sand p-2">
+                        <span className="block bg-gradient-to-b from-ground-paper to-ground-light p-2">
                           <DesignedShirt
                             designId={d.id}
                             colorHex={d.forDark ? "#1B1B1B" : "#E8E8E8"}
