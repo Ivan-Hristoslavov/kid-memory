@@ -46,8 +46,19 @@ export function Logo({
   return (
     <span className={`inline-flex flex-col leading-none ${className}`}>
       <span className="inline-flex items-start gap-[0.12em]">
+        {/* The wordmark is set in the heading face, not a third family.
+            It used to be Nunito while the navigation beside it is Manrope and
+            the headlines are Playfair — three families on one screen, and the
+            two sans faces close enough that the difference read as a mistake
+            rather than a decision. "Almost the same" is the worst of the three
+            options; this takes the other one, and ties the mark to the H1 it
+            sits above.
+
+            Nunito stays loaded for the printed designs, where a rounded sans is
+            one of the three faces a customer can choose. It is simply not the
+            logo any more. */}
         <span
-          className={`font-logo text-[1.6em] font-extrabold tracking-[-0.02em] ${word}`}
+          className={`font-heading text-[1.55em] font-extrabold tracking-[-0.015em] ${word}`}
         >
           {BRAND.name}
         </span>
@@ -72,7 +83,9 @@ export function Logo({
 export function LogoMark({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-start gap-[0.06em] ${className}`}>
-      <span className="font-logo text-[1.5em] font-extrabold leading-none text-forest">
+      {/* The same face as the full wordmark, or the icon and the logo would be
+          two different brands wearing the same name. */}
+      <span className="font-heading text-[1.5em] font-extrabold leading-none text-forest">
         M
       </span>
       <Heart className="mt-[0.16em] size-[0.42em] shrink-0 text-blush" />
