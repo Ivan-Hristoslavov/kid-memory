@@ -9,6 +9,7 @@ import { formatPrice, ADDONS } from "@/lib/catalog";
 import { useCart } from "@/lib/store/cart";
 import { PhotoPlacer } from "./photo-placer";
 import { DesignPicker } from "./design-picker";
+import { SizeChartLink } from "./size-chart";
 import { designById, designImage } from "@/lib/shop/designs";
 import { textDesignById } from "@/lib/shop/text-designs";
 import { TextDesignArt } from "./text-design-art";
@@ -282,8 +283,13 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
             <p className="text-sm font-semibold text-foreground">{axis.label}</p>
             {/* A t-shirt has thirty-nine colours. Naming the chosen one beside
                 the label is what makes a grid of dots readable. */}
-            {axis.swatch && variants[axis.label] && (
-              <p className="text-xs text-muted-foreground">{variants[axis.label]}</p>
+            {axis.swatch ? (
+              variants[axis.label] && (
+                <p className="text-xs text-muted-foreground">{variants[axis.label]}</p>
+              )
+            ) : (
+              /* Beside the size buttons, which is the moment somebody needs it. */
+              <SizeChartLink uid={product.supplierProductCode} />
             )}
           </div>
           <div className="mt-2.5 flex flex-wrap gap-2">

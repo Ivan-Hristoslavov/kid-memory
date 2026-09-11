@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { MentyHeader } from "@/components/menty/header";
 import { MentyFooter } from "@/components/menty/footer";
-import { ProductCard } from "@/components/menty/bestsellers";
+import { ProductBrowser } from "@/components/menty/product-sort";
 import Link from "next/link";
 import { PRODUCT_GROUPS, byGroup } from "@/lib/shop/products";
 import { BRAND } from "@/lib/brand";
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function ProductsPage() {
   const groups = PRODUCT_GROUPS.map((g) => ({
     ...g,
-    items: byGroup(g.id),
+    items: [...byGroup(g.id)],
   })).filter((g) => g.items.length > 0);
 
   return (
@@ -58,25 +58,10 @@ export default function ProductsPage() {
             ))}
           </nav>
 
-          {groups.map((group) => (
-            <section
-              key={group.id}
-              id={group.id.toLowerCase()}
-              className="mt-12 scroll-mt-28 sm:mt-16"
-            >
-              <h2 className="font-heading text-xl font-bold tracking-tight sm:text-2xl">
-                {group.label}
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">{group.blurb}</p>
-              <ul className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-                {group.items.map((p) => (
-                  <li key={p.id}>
-                    <ProductCard product={p} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+          {/* Sorting and a price ceiling. A shopper with a budget cannot use a
+              grouped page — see the component's own note on why sorting
+              flattens the shelves rather than sorting inside them. */}
+          <ProductBrowser groups={groups} />
         </div>
       </main>
       <MentyFooter />

@@ -16,6 +16,7 @@ import { nextTier, quantityDiscount } from "@/lib/shop/quantity";
 import { hasImages, productById, type MentyProduct } from "@/lib/shop/products";
 import { designIdOf } from "@/lib/shop/ready";
 import { DesignedShirt } from "./designed-shirt";
+import { CartCrossSell } from "./cart-cross-sell";
 
 /**
  * The basket.
@@ -77,16 +78,20 @@ export function CartView() {
 
   return (
     <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_20rem] lg:gap-14">
-      <ul className="divide-y divide-border border-y border-border">
-        {lines.map((line) => (
-          <CartRow
-            key={line.key}
-            line={line}
-            onQuantity={(q) => setQuantity(line.key, q)}
-            onRemove={() => remove(line.key)}
-          />
-        ))}
-      </ul>
+      <div>
+        <ul className="divide-y divide-border border-y border-border">
+          {lines.map((line) => (
+            <CartRow
+              key={line.key}
+              line={line}
+              onQuantity={(q) => setQuantity(line.key, q)}
+              onRemove={() => remove(line.key)}
+            />
+          ))}
+        </ul>
+
+        <CartCrossSell inCart={lines.map((l) => l.productId)} />
+      </div>
 
       <aside className="lg:sticky lg:top-28 lg:self-start">
         <div className="rounded-xl bg-sand p-6 ring-1 ring-border">

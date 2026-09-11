@@ -9,6 +9,7 @@ import { designIdOf } from "@/lib/shop/ready";
 import { textDesignById } from "@/lib/shop/text-designs";
 import type { MentyProduct } from "@/lib/shop/products";
 import { DesignedShirt } from "./designed-shirt";
+import { SizeChartLink } from "./size-chart";
 
 /**
  * Buying a ready-made shirt.
@@ -118,7 +119,10 @@ export function ReadyShirtView({ product }: { product: MentyProduct }) {
 
         {sizeAxis && (
           <div className="mt-6">
-            <p className="text-sm font-semibold text-foreground">{sizeAxis.label}</p>
+            <div className="flex items-baseline justify-between gap-3">
+              <p className="text-sm font-semibold text-foreground">{sizeAxis.label}</p>
+              <SizeChartLink uid={product.supplierProductCode} />
+            </div>
             <div className="mt-2.5 flex flex-wrap gap-2">
               {sizeAxis.options.map((opt) => (
                 <button
