@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
 import { ARTICLES } from "@/lib/articles";
-import { ALL_PRODUCTS } from "@/lib/shop/products";
+import { ALL_PRODUCTS, byTag } from "@/lib/shop/products";
 import { readyProducts } from "@/lib/shop/ready";
 import { DESIGN_CATEGORIES } from "@/lib/shop/designs";
 import { GIFT_AUDIENCES, GIFT_OCCASIONS } from "@/lib/brand";
@@ -63,6 +63,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),
+    // Occasion crossed with recipient — "подарък за рожден ден за нея". These
+    // are the pages that match what somebody types, and only combinations with
+    // products in common exist.
+    ...GIFT_OCCASIONS.flatMap((o) =>
+      GIFT_AUDIENCES.filter((a) =>
+        byTag(o.id).some((p) => p.tags.includes(a.id))
+      ).map((a) => ({
+        url: `${SITE_URL}/za-povoda/${o.id}/${a.id}`,
+        lastModified,
+        changeFrequency: "weekly" as const,
+        priority: 0.75,
+      }))
+    ),
     ...ARTICLES.map((a) => ({
       url: `${SITE_URL}/idei/${a.slug}`,
       lastModified: new Date(a.updated),

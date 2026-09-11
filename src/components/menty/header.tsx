@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PRODUCT_GROUPS } from "@/lib/shop/products";
+import { GIFT_AUDIENCES, GIFT_OCCASIONS } from "@/lib/brand";
+import { DESIGN_CATEGORIES } from "@/lib/shop/designs";
 import { ChevronDown, Menu, Search, ShoppingBag, User, Wand2, X } from "lucide-react";
 import { SearchDialog } from "./search-dialog";
 import { ThemeToggle } from "./theme-toggle";
@@ -20,27 +22,36 @@ import { Logo } from "./logo";
  * a hairline — the reference's own treatment.
  */
 /**
- * Four places, in the order somebody decides in.
+ * Three menus and a button, arranged the way the leaders arrange theirs.
  *
- * "Готови тениски" leads because most people do not want to design anything —
- * they want the one that says "Кумът". "Продукти" opens a panel rather than a
- * page: the shop sells twenty-seven things across nine shelves, and a single
- * word gave no hint of that, which is why it read as vague.
+ * Read from Moonpig and Papier rather than invented: occasion leads, because
+ * "it's her birthday on Tuesday" is the thought people arrive with and the
+ * product is a consequence of it. Under each occasion sits the recipient, as a
+ * CHILD of it and not a sibling — that crossing is what the whole catalogue of a
+ * gifting site is built on, and ours had the two as parallel lists that never
+ * met.
+ *
+ * Every column ends with a way to see the rest. A menu that lists eight of forty
+ * things and offers no floor is a dead end inside a dropdown.
  *
  * The editor is not in this list. It is the button beside it, because it is an
- * action rather than a place. See docs/site-structure.md.
+ * action rather than a place. See docs/information-architecture.md.
  */
-const NAV: { href: string; label: string; panel?: boolean }[] = [
-  { href: "/dizaini", label: "Готови тениски" },
-  { href: "/produkti", label: "Продукти", panel: true },
-  { href: "/za-povoda", label: "За повода" },
+export type MenuKind = "occasions" | "shirts" | "products";
+
+const NAV: { href: string; label: string; menu?: MenuKind }[] = [
+  { href: "/za-povoda", label: "Подаръци", menu: "occasions" },
+  { href: "/dizaini", label: "Готови тениски", menu: "shirts" },
+  { href: "/produkti", label: "Продукти", menu: "products" },
   { href: "/prikazka", label: "Детска книжка" },
 ];
 
 export function MentyHeader() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [panel, setPanel] = useState(false);
+  // Which menu is open, if any. One at a time — two dropdowns over each
+  // other is never what anybody meant.
+  const [panel, setPanel] = useState<MenuKind | null>(null);
   const pathname = usePathname();
 
 
@@ -124,7 +135,7 @@ export function MentyHeader() {
                 // appeared dead. Hover is also unavailable on a phone and
                 // awkward on a keyboard. One trigger, one behaviour.
                 onKeyDown={(e) => {
-                  if (e.key === "Escape") setPanel(false);
+                  if (e.key === "Escape") setPanel(null);
                 }}
               >
                 {/* z-50 on the trigger itself, not only on its wrapper. The
@@ -139,7 +150,7 @@ export function MentyHeader() {
                     // Closed on the way out rather than in an effect: the
                     // React Compiler rejects setState during render, and the
                     // click that navigates is the right moment anyway.
-                    onClick={() => setPanel(false)}
+                    onClick={() => setPanel(null)}
                     className={`relative py-2 text-sm transition-colors ${
                       active
                         ? "font-semibold text-foreground"
@@ -158,51 +169,38 @@ export function MentyHeader() {
                       link. Hover alone would have left the panel unreachable by
                       touch and by keyboard, and the link still has to be able
                       to go to the page — one control cannot do both. */}
-                  {l.panel && (
+                  {l.menu && (
                     <button
                       type="button"
-                      onClick={() => setPanel((v) => !v)}
-                      aria-expanded={panel}
+                      onClick={() =>
+                        setPanel((v) => (v === l.menu ? null : l.menu!))
+                      }
+                      aria-expanded={panel === l.menu}
                       aria-label={`${l.label} — категории`}
                       className="grid size-5 place-items-center rounded text-foreground/60 transition-colors hover:text-foreground"
                     >
                       <ChevronDown
-                        className={`size-3.5 transition-transform ${panel ? "rotate-180" : ""}`}
+                        className={`size-3.5 transition-transform ${panel === l.menu ? "rotate-180" : ""}`}
                         strokeWidth={2}
                       />
                     </button>
                   )}
                 </span>
 
-                {l.panel && panel && (
+                {l.menu && panel === l.menu && (
                   <>
                     {/* Anywhere else closes it. A menu that can only be
                         dismissed by finding its own button again is a trap. */}
                     <button
                       type="button"
                       aria-label="Затвори"
-                      onClick={() => setPanel(false)}
+                      onClick={() => setPanel(null)}
                       className="fixed inset-0 z-40 cursor-default"
                     />
-                    <div className="absolute left-1/2 top-full z-50 w-[34rem] -translate-x-1/2 pt-3">
-                    <ul className="grid grid-cols-2 gap-1 rounded-xl border border-border bg-background p-2 shadow-xl">
-                      {PRODUCT_GROUPS.map((g) => (
-                        <li key={g.id}>
-                          <Link
-                            href={`/produkti#${g.id.toLowerCase()}`}
-                            onClick={() => setPanel(false)}
-                            className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-muted"
-                          >
-                            <span className="block text-sm font-semibold text-foreground">
-                              {g.label}
-                            </span>
-                            <span className="block text-xs text-muted-foreground">
-                              {g.blurb}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                      </ul>
+                    <div className="absolute left-1/2 top-full z-50 w-[40rem] -translate-x-1/2 pt-3">
+                      <div className="rounded-xl border border-border bg-background p-4 shadow-xl">
+                        <MenuBody kind={l.menu} onNavigate={() => setPanel(null)} />
+                      </div>
                     </div>
                   </>
                 )}
@@ -280,16 +278,16 @@ export function MentyHeader() {
                 {/* The shelves inline rather than behind a second tap: on a
                     phone a nested menu is a place to get lost, and this list is
                     short enough to simply show. */}
-                {l.panel && (
+                {l.menu && (
                   <ul className="mb-1 ml-2 border-l border-border pl-3">
-                    {PRODUCT_GROUPS.map((g) => (
-                      <li key={g.id}>
+                    {mobileItems(l.menu).map((i) => (
+                      <li key={i.href}>
                         <Link
-                          href={`/produkti#${g.id.toLowerCase()}`}
+                          href={i.href}
                           onClick={() => setOpen(false)}
                           className="block rounded-lg px-2 py-2 text-sm text-foreground/75 transition-colors hover:bg-muted hover:text-foreground"
                         >
-                          {g.label}
+                          {i.label}
                         </Link>
                       </li>
                     ))}
@@ -338,4 +336,197 @@ function IconButton({
       {children}
     </button>
   );
+}
+
+/**
+ * The contents of one dropdown.
+ *
+ * Split out because three menus inline would have buried the header's own
+ * structure, and because each is a different shape: occasions cross with
+ * recipients, shirts are themes, products are shelves.
+ */
+function MenuBody({
+  kind,
+  onNavigate,
+}: {
+  kind: MenuKind;
+  onNavigate: () => void;
+}) {
+  if (kind === "occasions") {
+    return (
+      <div className="grid grid-cols-[1fr_1fr_auto] gap-5">
+        <MenuColumn
+          title="По повод"
+          items={GIFT_OCCASIONS.map((o) => ({
+            href: `/za-povoda/${o.id}`,
+            label: o.label,
+          }))}
+          allHref="/za-povoda"
+          allLabel="Всички поводи"
+          onNavigate={onNavigate}
+        />
+        <MenuColumn
+          title="За кого"
+          items={GIFT_AUDIENCES.map((a) => ({
+            href: `/za-povoda/${a.id}`,
+            label: a.label,
+          }))}
+          allHref="/za-povoda"
+          allLabel="Виж всички"
+          onNavigate={onNavigate}
+        />
+        {/* The crossing, spelled out. It is the sentence people type, and
+            until these pages existed the site had nothing that said it back. */}
+        <MenuColumn
+          title="Най-търсени"
+          items={[
+            { href: "/za-povoda/birthday/for-her", label: "Рожден ден за нея" },
+            { href: "/za-povoda/birthday/for-him", label: "Рожден ден за него" },
+            { href: "/za-povoda/wedding/for-couples", label: "Сватба за двойка" },
+            { href: "/dizaini/bachelor", label: "Ергенско парти" },
+            { href: "/dizaini/hen", label: "Моминско парти" },
+          ]}
+          onNavigate={onNavigate}
+        />
+      </div>
+    );
+  }
+
+  if (kind === "shirts") {
+    const half = Math.ceil(DESIGN_CATEGORIES.length / 2);
+    return (
+      <div className="grid grid-cols-2 gap-5">
+        <MenuColumn
+          title="По тема"
+          items={DESIGN_CATEGORIES.slice(0, half).map((c) => ({
+            href: `/dizaini/${c.id.toLowerCase()}`,
+            label: c.label,
+          }))}
+          onNavigate={onNavigate}
+        />
+        <MenuColumn
+          title="&nbsp;"
+          items={DESIGN_CATEGORIES.slice(half).map((c) => ({
+            href: `/dizaini/${c.id.toLowerCase()}`,
+            label: c.label,
+          }))}
+          allHref="/dizaini"
+          allLabel="Всички готови тениски"
+          onNavigate={onNavigate}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <ul className="grid grid-cols-2 gap-1">
+      {PRODUCT_GROUPS.map((g) => (
+        <li key={g.id}>
+          <Link
+            href={`/produkti#${g.id.toLowerCase()}`}
+            onClick={onNavigate}
+            className="block rounded-lg px-3 py-2.5 transition-colors hover:bg-muted"
+          >
+            <span className="block text-sm font-semibold text-foreground">
+              {g.label}
+            </span>
+            <span className="block text-xs text-muted-foreground">{g.blurb}</span>
+          </Link>
+        </li>
+      ))}
+      <li className="col-span-2 border-t border-border pt-2">
+        <Link
+          href="/produkti"
+          onClick={onNavigate}
+          className="block rounded-lg px-3 py-2 text-sm font-semibold text-forest transition-colors hover:bg-muted"
+        >
+          Всички продукти →
+        </Link>
+      </li>
+    </ul>
+  );
+}
+
+function MenuColumn({
+  title,
+  items,
+  allHref,
+  allLabel,
+  onNavigate,
+}: {
+  title: string;
+  items: { href: string; label: string }[];
+  allHref?: string;
+  allLabel?: string;
+  onNavigate: () => void;
+}) {
+  return (
+    <div>
+      <p
+        className="px-2 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground"
+        dangerouslySetInnerHTML={{ __html: title }}
+      />
+      <ul>
+        {items.map((i) => (
+          <li key={i.href + i.label}>
+            <Link
+              href={i.href}
+              onClick={onNavigate}
+              className="block whitespace-nowrap rounded-lg px-2 py-1.5 text-sm text-foreground/80 transition-colors hover:bg-muted hover:text-foreground"
+            >
+              {i.label}
+            </Link>
+          </li>
+        ))}
+        {allHref && (
+          <li className="mt-1 border-t border-border pt-1">
+            <Link
+              href={allHref}
+              onClick={onNavigate}
+              className="block rounded-lg px-2 py-1.5 text-sm font-semibold text-forest transition-colors hover:bg-muted"
+            >
+              {allLabel} →
+            </Link>
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+}
+
+
+/**
+ * The same menus, flattened for a phone.
+ *
+ * One list rather than columns, and shown inline rather than behind a second
+ * tap: a nested menu on a small screen is a place to get lost. Occasions are
+ * trimmed to the ones with the most behind them, because a phone menu that
+ * scrolls past the fold has stopped being a menu.
+ */
+function mobileItems(kind: MenuKind): { href: string; label: string }[] {
+  if (kind === "occasions") {
+    return [
+      ...GIFT_OCCASIONS.map((o) => ({
+        href: `/za-povoda/${o.id}`,
+        label: o.label,
+      })),
+      { href: "/za-povoda", label: "Всички поводи →" },
+    ];
+  }
+  if (kind === "shirts") {
+    return [
+      ...DESIGN_CATEGORIES.map((c) => ({
+        href: `/dizaini/${c.id.toLowerCase()}`,
+        label: c.label,
+      })),
+      { href: "/dizaini", label: "Всички готови тениски →" },
+    ];
+  }
+  return [
+    ...PRODUCT_GROUPS.map((g) => ({
+      href: `/produkti#${g.id.toLowerCase()}`,
+      label: g.label,
+    })),
+    { href: "/produkti", label: "Всички продукти →" },
+  ];
 }
