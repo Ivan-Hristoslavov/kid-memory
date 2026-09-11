@@ -76,6 +76,17 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
     designId && !textDesign ? designImage(designId) : textDesign ? "" : photoUrl;
 
   const takesPhoto = product.personalization.includes("PHOTO");
+  /**
+   * A ready-made design is offered wherever a design can go — which is not the
+   * same set as "takes a photograph".
+   *
+   * The picker was gated on PHOTO, so every garment marked TEXT + DESIGN — the
+   * hoodies, the polo, the caps, the shorts — advertised designs in the
+   * catalogue and offered none on the page. Uploading stays gated on PHOTO,
+   * because that genuinely is a different capability.
+   */
+  const takesDesign =
+    takesPhoto || product.personalization.includes("DESIGN");
   // EMBROIDERY used to fall through to the same text box, which is how nine
   // products came to advertise stitching and deliver a print.
   const takesText = product.personalization.includes("TEXT");
@@ -144,11 +155,28 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
    * meant text-only products — an embroidered polo, a hoodie with a name — had
    * no preview at all, because the old gate required a photograph.
    */
-  const showPreview = Boolean(product.printArea) && (takesPhoto || takesText);
+  const showPreview =
+    Boolean(product.printArea) && (takesDesign || takesText);
 
   return (
-    <div className="space-y-6">
+    /**
+     * Configurator layout: what you are changing on the left, the controls that
+     * change it on the right, and the preview pinned so it stays in sight while
+     * the options scroll past. That is how every serious customiser is built —
+     * Printful's studio, Custom Ink, Zazzle — and the reason is the same in all
+     * of them: a preview that scrolls away is a preview you stop believing.
+     *
+     * Falls back to one column when there is nothing to preview.
+     */
+    <div
+      className={
+        showPreview
+          ? "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:gap-10"
+          : "space-y-6"
+      }
+    >
       {showPreview && (
+        <div className="lg:sticky lg:top-24 lg:self-start">
         <PhotoPlacer
           product={product}
           photoUrl={artworkUrl || undefined}
@@ -169,8 +197,10 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
           colorHex={selectedHex}
           text={text.trim() || undefined}
         />
+        </div>
       )}
 
+      <div className="space-y-6">
       {/* The set offer, stated where the decision is made. A hen weekend is six
           shirts and the customer does not know we reward that until they see
           it — by the basket it is too late to have changed what they picked. */}
@@ -179,59 +209,7 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
         6 броя −15%, 10 броя −20%. Смесвай размери, цветове и имена.
       </div>
 
-      {product.variants.map((axis) => (
-        <div key={axis.label}>
-          <div className="flex items-baseline justify-between gap-3">
-            <p className="text-sm font-semibold text-foreground">{axis.label}</p>
-            {/* A t-shirt has thirty-nine colours. Naming the chosen one beside
-                the label is what makes a grid of dots readable. */}
-            {axis.swatch && variants[axis.label] && (
-              <p className="text-xs text-muted-foreground">{variants[axis.label]}</p>
-            )}
-          </div>
-          <div className="mt-2.5 flex flex-wrap gap-2">
-            {axis.options.map((opt) => {
-              const active = variants[axis.label] === opt;
-              const hex = axis.swatch?.[opt];
-              if (hex) {
-                return (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => setVariants((v) => ({ ...v, [axis.label]: opt }))}
-                    aria-pressed={active}
-                    aria-label={opt}
-                    title={opt}
-                    className={`size-8 rounded-full ring-1 ring-inset ring-foreground/15 transition-[box-shadow] ${
-                      active
-                        ? "ring-2 ring-offset-2 ring-offset-background ring-foreground"
-                        : "hover:ring-foreground/40"
-                    }`}
-                    style={{ backgroundColor: hex }}
-                  />
-                );
-              }
-              return (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => setVariants((v) => ({ ...v, [axis.label]: opt }))}
-                  aria-pressed={active}
-                  className={`h-10 rounded-lg border px-4 text-sm font-medium transition-colors ${
-                    active
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-border bg-background text-foreground/80 hover:border-foreground/40"
-                  }`}
-                >
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-
-      {takesPhoto && (
+      {takesDesign && (
         <div>
           <div className="flex items-baseline justify-between gap-3">
             <p className="text-sm font-semibold text-foreground">Избери дизайн</p>
@@ -289,6 +267,66 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
         </div>
       )}
 
+
+      {/* Colour before size, and both AFTER the artwork.
+          It used to be the other way round, which asks somebody to pick a
+          garment colour before knowing what goes on it — and the artwork is the
+          decision, the rest are consequences of it. Swatch axes sort first for
+          the same reason: the colour changes how a design reads, a size does
+          not. */}
+      {[...product.variants]
+        .sort((a, b) => Number(Boolean(b.swatch)) - Number(Boolean(a.swatch)))
+        .map((axis) => (
+        <div key={axis.label}>
+          <div className="flex items-baseline justify-between gap-3">
+            <p className="text-sm font-semibold text-foreground">{axis.label}</p>
+            {/* A t-shirt has thirty-nine colours. Naming the chosen one beside
+                the label is what makes a grid of dots readable. */}
+            {axis.swatch && variants[axis.label] && (
+              <p className="text-xs text-muted-foreground">{variants[axis.label]}</p>
+            )}
+          </div>
+          <div className="mt-2.5 flex flex-wrap gap-2">
+            {axis.options.map((opt) => {
+              const active = variants[axis.label] === opt;
+              const hex = axis.swatch?.[opt];
+              if (hex) {
+                return (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setVariants((v) => ({ ...v, [axis.label]: opt }))}
+                    aria-pressed={active}
+                    aria-label={opt}
+                    title={opt}
+                    className={`size-8 rounded-full ring-1 ring-inset ring-foreground/15 transition-[box-shadow] ${
+                      active
+                        ? "ring-2 ring-offset-2 ring-offset-background ring-foreground"
+                        : "hover:ring-foreground/40"
+                    }`}
+                    style={{ backgroundColor: hex }}
+                  />
+                );
+              }
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => setVariants((v) => ({ ...v, [axis.label]: opt }))}
+                  aria-pressed={active}
+                  className={`h-10 rounded-lg border px-4 text-sm font-medium transition-colors ${
+                    active
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border bg-background text-foreground/80 hover:border-foreground/40"
+                  }`}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        ))}
       {takesText && (
         <div>
           <label htmlFor="menty-text" className="text-sm font-semibold text-foreground">
@@ -352,6 +390,7 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
           <ShoppingBag className="size-4" strokeWidth={1.5} />
           Добави в количката
         </button>
+      </div>
       </div>
     </div>
   );

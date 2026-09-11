@@ -57,14 +57,19 @@ export function ReadyShirtView({ product }: { product: MentyProduct }) {
 
   return (
     <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-      <div className="overflow-hidden rounded-xl bg-gradient-to-b from-ivory to-sand p-4 ring-1 ring-border sm:p-6">
-        <div className="mx-auto drop-shadow-[0_18px_28px_rgba(31,47,40,0.13)]">
-          <DesignedShirt
-            designId={designId}
-            colorHex={hex}
-            name={name}
-            priority
-          />
+      {/* White, to match the mock-up's own opaque surround — see the note in
+          photo-placer. Sticky, because the whole point of a configurator is
+          that the thing you are changing stays in sight while you change it. */}
+      <div className="lg:sticky lg:top-24 lg:self-start">
+        <div className="overflow-hidden rounded-xl bg-white p-3 ring-1 ring-border sm:p-5">
+          <div className="mx-auto drop-shadow-[0_10px_24px_rgba(31,47,40,0.10)]">
+            <DesignedShirt
+              designId={designId}
+              colorHex={hex}
+              name={name}
+              priority
+            />
+          </div>
         </div>
       </div>
 

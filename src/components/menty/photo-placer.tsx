@@ -190,14 +190,19 @@ export function PhotoPlacer({
           the same order their editor uses, which is why the print looks like it
           is ON the cloth and why anything spilling past the garment is masked
           by the render's own opaque surround. */}
-      {/* Two boxes, not one. The outer is the stage — a soft ground with the
-          product floating on it, which is how a product is photographed. The
-          inner is the garment itself, and it has to stay a flat rectangle of
-          the chosen colour or the mock-up's shading would be compositing over
-          a gradient and the shirt would look dirty. */}
-      <div className="relative mt-2.5 overflow-hidden rounded-xl bg-gradient-to-b from-ivory to-sand p-4 ring-1 ring-border sm:p-6">
+      {/* The stage is WHITE, and that is not a style choice.
+          Every mock-up is opaque white outside the garment — that surround is
+          what masks the colour behind it. Set the stage in sand and the
+          surround becomes a hard white rectangle sitting inside a cream box,
+          which is what this looked like: a screenshot pasted onto the page.
+          Matching the surround makes it disappear and the garment float.
+
+          Two boxes still, because the inner one has to stay a flat rectangle of
+          the chosen colour — composite the mock-up's shading over a gradient
+          and the shirt comes out dirty. */}
+      <div className="relative mt-2.5 overflow-hidden rounded-xl bg-white p-3 ring-1 ring-border sm:p-5">
         <div
-          className="relative mx-auto w-full drop-shadow-[0_18px_28px_rgba(31,47,40,0.13)]"
+          className="relative mx-auto w-full drop-shadow-[0_10px_24px_rgba(31,47,40,0.10)]"
           style={{
             aspectRatio: mock ? String(mock.aspect) : "1",
             backgroundColor: mock ? (colorHex ?? "#E8E8E8") : undefined,

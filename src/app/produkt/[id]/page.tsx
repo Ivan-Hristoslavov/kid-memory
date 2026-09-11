@@ -136,6 +136,13 @@ export default async function ProductPage({
     (p) => p.id !== product.id && p.family === product.family
   ).slice(0, 4);
 
+  /** Has something to configure, so the panel owns the layout. */
+  const configurable =
+    Boolean(product.printArea) &&
+    (product.personalization.includes("PHOTO") ||
+      product.personalization.includes("DESIGN") ||
+      product.personalization.includes("TEXT"));
+
   const details = [
     {
       title: "Детайли за продукта",
@@ -172,8 +179,18 @@ export default async function ProductPage({
             <span className="text-foreground">{product.title}</span>
           </nav>
 
-          <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-14">
-            <ProductGallery product={product} />
+          {/* A personalisable product gets the configurator full width: the
+              live preview is the hero once somebody is configuring, and a
+              marketing gallery beside it competes with the thing they are
+              actually changing. The gallery still leads for everything else. */}
+          <div
+            className={
+              configurable
+                ? "mt-6"
+                : "mt-6 grid gap-10 lg:grid-cols-2 lg:gap-14"
+            }
+          >
+            {!configurable && <ProductGallery product={product} />}
 
             <div>
               <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
