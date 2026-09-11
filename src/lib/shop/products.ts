@@ -298,11 +298,10 @@ export const PRODUCTS: readonly MentyProduct[] = [
     priceEUR: 16.99,
     priceReferenceBGN: 32.9,
     // Their only picture of it is the plain white mug they use for the ceramic
-    // one — the trick is that it is black until it is hot, and no photograph
-    // they hold shows that. Ours is the same render for now, with the blurb
-    // doing the explaining, because being absent from the catalogue is worse
-    // than being under-photographed. Replace on the first sample order.
-    images: ["/prints/mug.webp", "/supplier/bejdh.webp"],
+    // one, so the two products sat side by side looking identical three euro
+    // apart. Ours shows the thing that makes it worth the difference: black,
+    // with the image surfacing where the heat has reached.
+    images: ["/prints/magic-mug.webp", "/supplier/bejdh.webp"],
     printArea: { x: 0.2367, y: 0.3417, width: 0.5531, height: 0.3417, widthMm: 208, heightMm: 88 },
     tags: ["for-her", "for-him", "birthday", "just-because", "love", "theme-birthday"],
     variants: [{ label: "Цвят", options: ["Черна"], swatch: { "Черна": "#1B1B1B" } }],

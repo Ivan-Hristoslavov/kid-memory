@@ -13,6 +13,13 @@ import { formatPrice, DELIVERY } from "@/lib/catalog";
 import { ALL_PRODUCTS, productById } from "@/lib/shop/products";
 import { designIdOf, readyProducts } from "@/lib/shop/ready";
 import { ReadyShirtView } from "@/components/menty/ready-shirt-view";
+import {
+  MoreFromCategory,
+  SameDesignOn,
+} from "@/components/menty/same-design-on";
+import { designById } from "@/lib/shop/designs";
+import { TEXT_DESIGNS, textDesignById } from "@/lib/shop/text-designs";
+import { designsInCategory } from "@/lib/shop/designs";
 
 /** Every catalogue entry is a known id, so the routes can be prerendered. */
 export function generateStaticParams() {
@@ -107,6 +114,17 @@ export default async function ProductPage({
               <Reassurance icon={Sparkles} title="Печат в България" text="По поръчка" />
               <Reassurance icon={RotateCcw} title="Дефект — подмяна" text="Безплатно" />
             </ul>
+
+            {/* The two rows a card shop cannot offer: the same design somewhere
+                else, and the rest of the set. See the components' own notes. */}
+            <MoreFromCategory
+              designs={siblingDesigns(designIdOf(product.id) ?? "")}
+              exclude={designIdOf(product.id) ?? ""}
+            />
+            <SameDesignOn
+              designId={designIdOf(product.id) ?? ""}
+              exclude={product.id}
+            />
           </div>
         </main>
         <MentyFooter />
@@ -204,6 +222,25 @@ export default async function ProductPage({
       <MentyFooter />
     </>
   );
+}
+
+/**
+ * The other designs in this design's own category.
+ *
+ * Lettering first: somebody looking at "Кумът" is buying for a stag weekend and
+ * the rest of the roles are what they need next.
+ */
+function siblingDesigns(
+  designId: string
+): { id: string; title: string; forDark: boolean }[] {
+  const text = textDesignById(designId);
+  const graphic = designById(designId);
+  const category = text?.category ?? graphic?.category;
+  if (!category) return [];
+  return [
+    ...TEXT_DESIGNS.filter((d) => d.category === category),
+    ...designsInCategory(category as Parameters<typeof designsInCategory>[0]),
+  ].map((d) => ({ id: d.id, title: d.title, forDark: d.forDark }));
 }
 
 function Reassurance({

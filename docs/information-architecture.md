@@ -66,3 +66,24 @@ rather than a ranking.
 
 **A-to-Z of recipients.** Worth having at ten times the catalogue size. At
 twenty-seven products it would list the same items under sixty headings.
+
+
+## Where ours goes further than theirs
+
+Copying an arrangement is the floor, not the ceiling. Two things this shop can
+do that a card shop structurally cannot:
+
+**A design is an attribute, not a product.** On Moonpig a birthday card with a
+dog on it is one SKU; wanting the dog on a mug is a different search and
+probably a different shop. Here a design is an attribute of any of twenty-seven
+products, so every ready-made page carries "Същият дизайн върху" — the same
+artwork on a mug, a tote, a hoodie, a cap, stickers, a poster, cheapest first,
+so one decision ("I like this") becomes a choice of price point rather than a
+dead end. It needs no new routes: `/produkt/<blank>?design=<id>` has worked
+since the design catalogue existed and was simply never surfaced.
+
+**A set is the unit, not the item.** Somebody looking at "Кумът" is buying for a
+stag weekend and needs five more shirts, not one. "За същата компания" shows the
+rest of the roles from the same category, which is also the shortest route to
+the quantity tier. Moonpig sells one card to one person; this market buys six
+shirts at once and the page should behave like it knows that.

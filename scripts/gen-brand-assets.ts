@@ -521,6 +521,15 @@ cream, one corner very slightly lifted to show the paper's thickness. ${PRINTED}
 angle on a seamless warm ivory background, seen from directly above, its cover printed with an \
 illustrated line-drawn mountain range in cream on deep navy. ${PRINTED}`,
   },
+  {
+    id: "print-magic-mug",
+    out: "prints/magic-mug",
+    size: "1024x1024",
+    prompt: `Product photograph of a black glossy ceramic mug standing centred on a seamless \
+warm ivory background, with a lighter panel on its side where a colourful illustrated hot-air \
+balloon has appeared, as if revealed by heat. The rest of the mug stays matte black. Even studio \
+light, gentle contact shadow. ${PRINTED}`,
+  },
 ];
 
 /** gpt-image-1 list price per image, in USD. */
