@@ -12,7 +12,9 @@
      short headlines and quotes, a grotesk for everything the eye has to work
      through. Both are loaded with a Cyrillic subset — the previous pairing was
      chosen for the same reason and this one must not regress on it. */
-  --font-heading: var(--font-playfair), ui-serif, Georgia, serif;
+  /* Spectral, not Playfair: it ships Bulgarian localised forms and Playfair
+     does not. See the note in layout.tsx. */
+  --font-heading: var(--font-spectral), ui-serif, Georgia, serif;
   --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   /* The wordmark only — never body copy. */
   /* Kept as a token because the printed designs offer a rounded face; it is no

@@ -32,7 +32,10 @@ export function MentyHero() {
         </div>
 
         <div className="order-2 lg:order-1">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+          {/* 0.14em, not 0.22. Cyrillic is full of repeated vertical stems —
+              и, н, п, ц, ш, щ — and heavy tracking pulls them apart into a row
+              of unrelated marks. Latin tolerates it; Bulgarian caps do not. */}
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             {BRAND.taglineEn}
           </p>
           <h1 className="mt-5 text-balance font-heading text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">

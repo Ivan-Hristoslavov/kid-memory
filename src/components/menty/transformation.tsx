@@ -41,7 +41,7 @@ export function Transformation() {
     <section className="border-b border-border bg-background py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             От три полета до стената
           </p>
           <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight sm:text-4xl">

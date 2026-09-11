@@ -6,6 +6,7 @@ import {
   Pattaya,
   Playfair_Display,
   Russo_One,
+  Spectral,
 } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/menty/theme-provider";
@@ -18,15 +19,36 @@ import "./globals.css";
 /**
  * Editorial serif for headlines, per the MENTY brand spec.
  *
- * Playfair Display carries Cyrillic and Cyrillic Extended, which is the whole
- * reason it can be used here at all — most display serifs with this contrast
- * either omit Cyrillic or graft it on from Latin shapes, and ъ, щ, я and Ж are
- * where that always shows. It is variable across 400–900.
+ * SPECTRAL, and the reason is Bulgarian letterforms.
  *
- * It is deliberately confined to short strings: headlines and pull quotes. Body
- * copy, navigation, prices and forms all stay on Manrope, because a high-
- * contrast serif at 16px in Bulgarian is tiring to read.
+ * Bulgarian Cyrillic is not Russian Cyrillic. д, и, к, л, п, т, ц, ш and щ have
+ * their own shapes, and a font supplies them through the `locl` feature under
+ * the BGR language system — which the browser applies because `<html lang="bg">`
+ * is set. Manrope declares BGR and has been rendering correct Bulgarian in the
+ * body all along.
+ *
+ * Playfair Display does not. Its GSUB carries no BGR system at all, so every
+ * headline on this site was set in RUSSIAN letterforms sitting directly above
+ * body copy in Bulgarian ones — on the same page, in the same sentence. Side by
+ * side at 52px with lang="ru" and lang="bg", Playfair renders the two
+ * identically and Spectral renders them visibly differently. That is the test.
+ *
+ * Spectral is also the better Cyrillic face for another reason: Playfair is a
+ * high-contrast Didone, and Cyrillic is full of repeated vertical stems — и, н,
+ * п, ц, ш, щ — which at display size behind hairline joins turn into a picket
+ * fence. Spectral's contrast is moderate, so the same word holds together.
+ *
+ * Playfair stays loaded: it is one of the faces a customer can pick for a
+ * printed design, where the Latin-first drawing is not a problem. It is simply
+ * not the site's voice any more.
  */
+const spectral = Spectral({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "600", "700", "800"],
+  variable: "--font-spectral",
+  display: "swap",
+});
+
 const playfair = Playfair_Display({
   subsets: ["latin", "cyrillic"],
   variable: "--font-playfair",
@@ -147,7 +169,7 @@ export default function RootLayout({
   return (
     <html lang="bg" className="h-full" suppressHydrationWarning>
       <body
-        className={`${playfair.variable} ${manrope.variable} ${nunito.variable} ${oswald.variable} ${russo.variable} ${pattaya.variable} grain min-h-full flex flex-col font-sans antialiased`}
+        className={`${spectral.variable} ${playfair.variable} ${manrope.variable} ${nunito.variable} ${oswald.variable} ${russo.variable} ${pattaya.variable} grain min-h-full flex flex-col font-sans antialiased`}
       >
         <ThemeProvider>
           {children}

@@ -17,7 +17,7 @@ export function PersonalizeBanner() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-stretch gap-0 overflow-hidden rounded-xl bg-sand ring-1 ring-border lg:grid-cols-2">
           <div className="flex flex-col justify-center p-8 sm:p-10 lg:p-14">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               Персонализирано
             </p>
             <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight sm:text-4xl">

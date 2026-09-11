@@ -110,7 +110,7 @@ export default async function CollectionPage({
           />
           <div className="absolute inset-0 -z-10 bg-gradient-to-r from-forest/90 via-forest/70 to-forest/20" />
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ivory/70">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ivory/70">
               Подаръци за повода
             </p>
             <h1 className="mt-3 max-w-2xl font-heading text-4xl font-bold tracking-tight text-ivory sm:text-5xl">

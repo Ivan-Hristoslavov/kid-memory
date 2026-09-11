@@ -45,7 +45,7 @@ export default async function BookPage({
       <main className="flex-1">
         <section className="border-b border-border bg-sand">
           <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               <BookOpen className="size-4" strokeWidth={1.5} /> Твоята приказка
             </p>
             <h1 className="mt-4 font-heading text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
