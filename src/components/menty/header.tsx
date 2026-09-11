@@ -187,23 +187,6 @@ export function MentyHeader() {
                   )}
                 </span>
 
-                {l.menu && panel === l.menu && (
-                  <>
-                    {/* Anywhere else closes it. A menu that can only be
-                        dismissed by finding its own button again is a trap. */}
-                    <button
-                      type="button"
-                      aria-label="Затвори"
-                      onClick={() => setPanel(null)}
-                      className="fixed inset-0 z-40 cursor-default"
-                    />
-                    <div className="absolute left-1/2 top-full z-50 w-[40rem] -translate-x-1/2 pt-3">
-                      <div className="rounded-xl border border-border bg-background p-4 shadow-xl">
-                        <MenuBody kind={l.menu} onNavigate={() => setPanel(null)} />
-                      </div>
-                    </div>
-                  </>
-                )}
               </div>
             );
           })}
@@ -257,6 +240,28 @@ export function MentyHeader() {
           </button>
         </div>
       </div>
+
+      {/* The dropdown spans the header, not the button that opened it.
+          Anchored to a nav item it was centred on that item, and "Подаръци" is
+          the leftmost — so half a 40rem panel hung off the left edge of the
+          page and the first column was cut in two. Anchored to the bar, the
+          columns lay out inside the page's own container and nothing can
+          overflow, whichever menu is open. It is also what a mega-menu is. */}
+      {panel && (
+        <>
+          <button
+            type="button"
+            aria-label="Затвори"
+            onClick={() => setPanel(null)}
+            className="fixed inset-0 z-30 hidden cursor-default lg:block"
+          />
+          <div className="relative z-40 hidden border-t border-border bg-background shadow-xl lg:block">
+            <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
+              <MenuBody kind={panel} onNavigate={() => setPanel(null)} />
+            </div>
+          </div>
+        </>
+      )}
 
       {open && (
         <nav className="border-t border-border bg-background lg:hidden">
@@ -354,7 +359,7 @@ function MenuBody({
 }) {
   if (kind === "occasions") {
     return (
-      <div className="grid grid-cols-[1fr_1fr_auto] gap-5">
+      <div className="grid grid-cols-4 gap-8">
         <MenuColumn
           title="По повод"
           items={GIFT_OCCASIONS.map((o) => ({
@@ -393,25 +398,32 @@ function MenuBody({
   }
 
   if (kind === "shirts") {
-    const half = Math.ceil(DESIGN_CATEGORIES.length / 2);
+    // Three columns rather than two: with the panel spanning the header there
+    // is room, and sixteen categories in two columns is a tall wall of text.
+    const per = Math.ceil(DESIGN_CATEGORIES.length / 3);
     return (
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-4 gap-8">
+        {[0, 1, 2].map((col) => (
+          <MenuColumn
+            key={col}
+            title={col === 0 ? "По тема" : "&nbsp;"}
+            items={DESIGN_CATEGORIES.slice(col * per, (col + 1) * per).map((c) => ({
+              href: `/dizaini/${c.id.toLowerCase()}`,
+              label: c.label,
+            }))}
+            allHref={col === 2 ? "/dizaini" : undefined}
+            allLabel="Всички готови тениски"
+            onNavigate={onNavigate}
+          />
+        ))}
         <MenuColumn
-          title="По тема"
-          items={DESIGN_CATEGORIES.slice(0, half).map((c) => ({
-            href: `/dizaini/${c.id.toLowerCase()}`,
-            label: c.label,
-          }))}
-          onNavigate={onNavigate}
-        />
-        <MenuColumn
-          title="&nbsp;"
-          items={DESIGN_CATEGORIES.slice(half).map((c) => ({
-            href: `/dizaini/${c.id.toLowerCase()}`,
-            label: c.label,
-          }))}
-          allHref="/dizaini"
-          allLabel="Всички готови тениски"
+          title="Най-продавани"
+          items={[
+            { href: "/dizaini/bachelor", label: "Ергенско парти" },
+            { href: "/dizaini/hen", label: "Моминско парти" },
+            { href: "/dizaini/gaming", label: "Гейминг" },
+            { href: "/dizaini/embroidery", label: "Бродерия" },
+          ]}
           onNavigate={onNavigate}
         />
       </div>
@@ -419,7 +431,7 @@ function MenuBody({
   }
 
   return (
-    <ul className="grid grid-cols-2 gap-1">
+    <ul className="grid grid-cols-3 gap-x-6 gap-y-1">
       {PRODUCT_GROUPS.map((g) => (
         <li key={g.id}>
           <Link
@@ -434,7 +446,7 @@ function MenuBody({
           </Link>
         </li>
       ))}
-      <li className="col-span-2 border-t border-border pt-2">
+      <li className="col-span-3 mt-1 border-t border-border pt-2">
         <Link
           href="/produkti"
           onClick={onNavigate}
