@@ -232,9 +232,12 @@ no notebook and no book.
 
 That matters for two products this shop already sells or plans to:
 
-- **The illustrated poster** is printed by us. No partner is configured and none
-  could be: they do not print on paper.
-- **The children's book** will need a third supplier entirely — A5, twenty-odd
+- **The illustrated poster** is printed by us. printondemand.bg could never do
+  it — but PrintFactory can, and does: "Дом и интериор" carries posters glossy
+  and matte, framed, with oak batten hangers, or loose, plus boxes sized for a
+  framed print. That is why the shop keeps two suppliers rather than finishing
+  the migration.
+- **The children's book** still needs a third supplier entirely — A5, twenty-odd
   pages, saddle-stitched or perfect-bound. Nobody in the first two binds
   signatures, so the software can produce a print-ready PDF and still have
   nowhere to send it. Find the printer before building the rest.
@@ -245,3 +248,27 @@ mug and a poster is two jobs, two couriers and two parcels — and the customer
 paid delivery once, which on a 9.99 mug beside a 17.90 poster is most of the
 margin. The admin says so on the order rather than leaving it to be discovered
 at the end of a month.
+
+
+## PrintFactory, re-checked
+
+Their catalogue is over a hundred items across categories printondemand.bg does
+not have at all:
+
+| Category | What is in it |
+| --- | --- |
+| **Дом и интериор** | Posters — glossy and matte, framed, on oak batten hangers, or loose — and a hardcover notebook. This is the paper printondemand.bg has none of. |
+| **Аксесоари** | Winter hats, a beanie with a pompom, a backpack, socks, two belt bags, more caps |
+| **Кутии** | Ten box formats including two sized for a framed picture, a courier envelope, a window box |
+| **Лазерно гравиране** | A whole process the other supplier does not offer |
+| **Аксесоари за домашни любимци** | Pet products |
+| Metal badges, linen-effect cards | Neither exists at printondemand.bg |
+
+Prices are behind a customer login and could not be read, so the four products
+added from this range carry provisional prices set against the shop's existing
+poster pricing. One number each to correct from their panel.
+
+There is still no API. Their endpoints were never discoverable and the
+documentation sits behind the same login, so `PrintFactoryProvider.configured()`
+is false and their jobs are placed by hand — which the routing layer now makes
+explicit on the order rather than leaving to be remembered.

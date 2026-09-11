@@ -487,6 +487,40 @@ with a friendly illustrated dinosaur in soft green and warm yellow. ${LOOK}`,
 oak desk beside a closed linen notebook, a natural cotton tote bag folded flat, and three small \
 die-cut stickers. Soft morning light from a window on the left. ${LOOK}`,
   },
+  // ── PrintFactory's range: paper, which the textile printer cannot do ─────
+  {
+    id: "print-poster-framed",
+    out: "prints/poster-framed",
+    size: "1024x1024",
+    prompt: `A slim natural oak picture frame standing upright on a seamless warm ivory \
+background, seen face-on, holding a matte print of an illustrated mountain landscape at sunrise \
+in terracotta and cream, with a wide white mat around it. Even studio light, gentle contact \
+shadow. ${PRINTED}`,
+  },
+  {
+    id: "print-poster-hangers",
+    out: "prints/poster-hangers",
+    size: "1024x1024",
+    prompt: `A portrait paper print hanging from two slim oak batten hangers with a cord at the \
+top, against a seamless warm ivory background, seen face-on. The print shows an illustrated \
+botanical branch in sage green. Even studio light, soft shadow behind the paper. ${PRINTED}`,
+  },
+  {
+    id: "print-poster-paper",
+    out: "prints/poster-paper",
+    size: "1024x1024",
+    prompt: `A single sheet of matte art paper lying flat on a seamless warm ivory background, \
+seen from directly above, printed with an illustrated sun and desert horizon in burnt orange and \
+cream, one corner very slightly lifted to show the paper's thickness. ${PRINTED}`,
+  },
+  {
+    id: "print-notebook",
+    out: "prints/notebook",
+    size: "1024x1024",
+    prompt: `A closed hardcover notebook with an elastic closure band, lying flat at a slight \
+angle on a seamless warm ivory background, seen from directly above, its cover printed with an \
+illustrated line-drawn mountain range in cream on deep navy. ${PRINTED}`,
+  },
 ];
 
 /** gpt-image-1 list price per image, in USD. */

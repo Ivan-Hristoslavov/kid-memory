@@ -79,6 +79,7 @@ export type ProductGroup =
   | "BAGS"
   | "STICKERS"
   | "PACKAGING"
+  | "WALL"
   | "OWN";
 
 export const PRODUCT_GROUPS: readonly {
@@ -93,6 +94,7 @@ export const PRODUCT_GROUPS: readonly {
   { id: "DRINKWARE", label: "Чаши и бутилки", blurb: "Керамика, емайл, алуминий." },
   { id: "BAGS", label: "Чанти", blurb: "Памучни торби за всеки ден." },
   { id: "STICKERS", label: "Стикери", blurb: "Водоустойчиви, в три размера." },
+  { id: "WALL", label: "За стената", blurb: "Постери по твоя снимка, с рамка или без." },
   { id: "PACKAGING", label: "Опаковка", blurb: "Подаръчни кутии с печат." },
   { id: "OWN", label: "Наши изработки", blurb: "Постери и книжки, които правим сами." },
 ];
@@ -1027,6 +1029,94 @@ export const PRODUCTS: readonly MentyProduct[] = [
     printArea: { x: 0.1, y: 0.1, width: 0.8, height: 0.8, widthMm: 105, heightMm: 105 },
     tags: ["for-kids", "for-her", "for-him", "just-because", "best-friend", "theme-kids", "theme-gaming", "theme-birthday"],
     variants: [{ label: "Размер", options: ["5 × 5 см", "7 × 7 см", "10 × 10 см"] }],
+    personalization: ["PHOTO", "TEXT", "DESIGN"],
+  },
+
+
+  // ── За стената — печата се от PrintFactory ────────────────────────────
+  // printondemand.bg does not print on paper at all: twenty garments, four
+  // vessels, stickers and a box. PrintFactory does — posters glossy and matte,
+  // framed, with hangers or loose — which is why the shop keeps two suppliers
+  // and `lib/pod/routing.ts` decides per line which one a job goes to.
+  //
+  // PRICES ARE PROVISIONAL. Their wholesale list is behind a customer login and
+  // could not be read; these follow the shop's existing poster pricing, which
+  // was set against a known cost. One number each to correct from their panel.
+  {
+    id: "photo-poster-framed-a4",
+    title: "Постер по снимка в рамка A4",
+    blurb: "Твоята снимка, отпечатана на матова хартия и рамкирана. Готов за стената.",
+    family: "WALL",
+    group: "WALL",
+    supplier: "PRINTFACTORY",
+    supplierProductCode: null,
+    supplierUrl: "https://printfactory.bg/index.php?route=product/category&path=226",
+    priceEUR: 29.99,
+    priceReferenceBGN: 58.9,
+    images: ["/prints/poster-framed.webp"],
+    printArea: { x: 0.12, y: 0.1, width: 0.76, height: 0.8, widthMm: 210, heightMm: 297 },
+    tags: ["for-her", "for-him", "for-parents", "for-couples", "anniversary", "love", "thank-you", "wedding"],
+    variants: [
+      { label: "Размер", options: ["A4", "A3"] },
+      { label: "Хартия", options: ["Матова", "Гланцирана"] },
+    ],
+    personalization: ["PHOTO", "TEXT"],
+  },
+  {
+    id: "photo-poster-hangers",
+    title: "Постер с дървени държачи",
+    blurb: "Без рамка и без пирони — окачва се на дървени летви и връв.",
+    family: "WALL",
+    group: "WALL",
+    supplier: "PRINTFACTORY",
+    supplierProductCode: null,
+    supplierUrl: "https://printfactory.bg/index.php?route=product/category&path=226",
+    priceEUR: 24.99,
+    priceReferenceBGN: 48.9,
+    images: ["/prints/poster-hangers.webp"],
+    printArea: { x: 0.1, y: 0.08, width: 0.8, height: 0.84, widthMm: 210, heightMm: 297 },
+    tags: ["for-her", "for-him", "for-kids", "just-because", "birthday"],
+    variants: [
+      { label: "Размер", options: ["A4", "A3"] },
+      { label: "Хартия", options: ["Матова", "Гланцирана"] },
+    ],
+    personalization: ["PHOTO", "TEXT"],
+  },
+  {
+    id: "photo-poster-paper",
+    title: "Постер по снимка",
+    blurb: "Само отпечатъкът — рамкирай го както си искаш.",
+    family: "WALL",
+    group: "WALL",
+    supplier: "PRINTFACTORY",
+    supplierProductCode: null,
+    supplierUrl: "https://printfactory.bg/index.php?route=product/category&path=226",
+    priceEUR: 14.99,
+    priceReferenceBGN: 29.9,
+    images: ["/prints/poster-paper.webp"],
+    printArea: { x: 0.06, y: 0.05, width: 0.88, height: 0.9, widthMm: 210, heightMm: 297 },
+    tags: ["for-her", "for-him", "for-parents", "just-because", "thank-you"],
+    variants: [
+      { label: "Размер", options: ["A4", "A3"] },
+      { label: "Хартия", options: ["Матова", "Гланцирана"] },
+    ],
+    personalization: ["PHOTO", "TEXT"],
+  },
+  {
+    id: "hardcover-notebook",
+    title: "Тефтер с твърди корици",
+    blurb: "Корица по твой дизайн. За бележки, за подарък, за фирмата.",
+    family: "HOME",
+    group: "WALL",
+    supplier: "PRINTFACTORY",
+    supplierProductCode: null,
+    supplierUrl: "https://printfactory.bg/index.php?route=product/category&path=226",
+    priceEUR: 19.99,
+    priceReferenceBGN: 38.9,
+    images: ["/prints/notebook.webp"],
+    printArea: { x: 0.14, y: 0.12, width: 0.72, height: 0.76, widthMm: 140, heightMm: 200 },
+    tags: ["for-her", "for-him", "thank-you", "just-because"],
+    variants: [{ label: "Цвят", options: ["Черен", "Син", "Бордо"] }],
     personalization: ["PHOTO", "TEXT", "DESIGN"],
   },
 
