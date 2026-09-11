@@ -132,6 +132,21 @@ export function SearchDialog({ open, onClose }: { open: boolean; onClose: () => 
               ))}
             </ul>
           )}
+
+          {/* Out of the dialog and onto a page with a URL. The dialog shows
+              eight products; the page searches the designs too, which on a shop
+              whose range is mostly designs is where most queries belong. */}
+          {query.trim().length >= 2 && (
+            <div className="border-t border-border p-3">
+              <Link
+                href={`/tarsene?q=${encodeURIComponent(query.trim())}`}
+                onClick={onClose}
+                className="block rounded-lg px-3 py-2 text-sm font-semibold text-forest transition-colors hover:bg-muted"
+              >
+                Виж всички резултати за „{query.trim()}“ →
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

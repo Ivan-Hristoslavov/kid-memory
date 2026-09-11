@@ -37,9 +37,25 @@ function addWorkingDays(from: Date, days: number): Date {
   return d;
 }
 
+const MONTHS = [
+  "януари", "февруари", "март", "април", "май", "юни",
+  "юли", "август", "септември", "октомври", "ноември", "декември",
+] as const;
+
 export interface DeliveryEstimate {
-  /** "четвъртък" — what the page shows. */
+  /** "четвъртък" — what the homepage shows. */
   weekday: string;
+  /**
+   * "четвъртък, 17 септември" — what a product page shows.
+   *
+   * A weekday alone is enough on the homepage, where the point is that a gift
+   * arrives soon. On a product page the question is sharper — "will it be here
+   * for Saturday" — and a date answers it where a weekday leaves the reader
+   * counting which week is meant.
+   */
+  label: string;
+  /** ISO date, for a <time> element. */
+  iso: string;
   /** True when the arrival is more than a week out, so copy can soften. */
   distant: boolean;
 }
@@ -57,5 +73,10 @@ export function deliveryEstimate(now: Date = new Date()): DeliveryEstimate {
   const daysOut = Math.round(
     (arrival.getTime() - now.getTime()) / (24 * 60 * 60 * 1000)
   );
-  return { weekday: WEEKDAYS[arrival.getDay()], distant: daysOut > 7 };
+  return {
+    weekday: WEEKDAYS[arrival.getDay()],
+    label: `${WEEKDAYS[arrival.getDay()]}, ${arrival.getDate()} ${MONTHS[arrival.getMonth()]}`,
+    iso: `${arrival.getFullYear()}-${String(arrival.getMonth() + 1).padStart(2, "0")}-${String(arrival.getDate()).padStart(2, "0")}`,
+    distant: daysOut > 7,
+  };
 }

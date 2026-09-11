@@ -13,6 +13,7 @@ import { formatPrice, DELIVERY } from "@/lib/catalog";
 import { ALL_PRODUCTS, productById } from "@/lib/shop/products";
 import { designIdOf, readyProducts } from "@/lib/shop/ready";
 import { ReadyShirtView } from "@/components/menty/ready-shirt-view";
+import { DeliveryPromise } from "@/components/menty/delivery-promise";
 import {
   MoreFromCategory,
   SameDesignOn,
@@ -110,7 +111,11 @@ export default async function ProductPage({
             </div>
 
             <ul className="mt-10 grid gap-3 sm:grid-cols-3">
-              <Reassurance icon={Truck} title="Доставка 1–3 дни" text="Еконт и Спиди" />
+              <Reassurance
+                icon={Truck}
+                title={<>Доставка <DeliveryPromise /></>}
+                text="Еконт и Спиди"
+              />
               <Reassurance icon={Sparkles} title="Печат в България" text="По поръчка" />
               <Reassurance icon={RotateCcw} title="Дефект — подмяна" text="Безплатно" />
             </ul>
@@ -211,7 +216,11 @@ export default async function ProductPage({
               </div>
 
               <ul className="mt-8 grid gap-3 sm:grid-cols-3">
-                <Reassurance icon={Truck} title="Доставка 1–3 дни" text="Еконт и Спиди" />
+                <Reassurance
+                icon={Truck}
+                title={<>Доставка <DeliveryPromise /></>}
+                text="Еконт и Спиди"
+              />
                 <Reassurance icon={Sparkles} title="Печат в България" text="По поръчка" />
                 <Reassurance icon={RotateCcw} title="Дефект — подмяна" text="Безплатно" />
               </ul>
@@ -266,7 +275,8 @@ function Reassurance({
   text,
 }: {
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
-  title: string;
+  /** A node, so the delivery date can be live while the rest stays static. */
+  title: React.ReactNode;
   text: string;
 }) {
   return (

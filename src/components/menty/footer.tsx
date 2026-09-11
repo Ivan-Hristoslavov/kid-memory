@@ -14,6 +14,7 @@ const SHOP = [
   { href: "/prikazka", label: "Детска книжка" },
   { href: "/personalizirani", label: "Как работи" },
   { href: "/biznes-podaratsi", label: "Бизнес подаръци" },
+  { href: "/tarsene", label: "Търсене" },
   { href: "/proverka", label: "Провери поръчка" },
   { href: "/otzivi", label: "Отзиви" },
 ];
