@@ -177,7 +177,12 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
       }
     >
       {showPreview && (
-        <div className="lg:sticky lg:top-24 lg:self-start">
+        // `min-w-0` is load-bearing on a phone. A grid item defaults to
+        // min-width:auto, which means it refuses to shrink below its content's
+        // intrinsic minimum — and on a 390px screen this column measured 1469px
+        // and pushed the whole page into a horizontal scroll. The lg track
+        // already says minmax(0,…); the single-column case had nothing.
+        <div className="min-w-0 lg:sticky lg:top-24 lg:self-start">
         <PhotoPlacer
           product={product}
           photoUrl={artworkUrl || undefined}
@@ -201,7 +206,7 @@ export function ProductPanel({ product }: { product: MentyProduct }) {
         </div>
       )}
 
-      <div className="space-y-6">
+      <div className="min-w-0 space-y-6">
       {/* The set offer, stated where the decision is made. A hen weekend is six
           shirts and the customer does not know we reward that until they see
           it — by the basket it is too late to have changed what they picked. */}
