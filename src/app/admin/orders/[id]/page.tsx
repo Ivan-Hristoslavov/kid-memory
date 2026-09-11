@@ -10,6 +10,8 @@ import { StatusBadge } from "@/components/admin/status-badge";
 import { OrderActions } from "@/components/admin/order-actions";
 import { CopyButton } from "@/components/admin/copy-button";
 import { ContactActions } from "@/components/admin/contact-actions";
+import { productById } from "@/lib/shop/products";
+import { splitByFulfilment, targetLabel } from "@/lib/pod/routing";
 import { QuickStatus } from "@/components/admin/quick-status";
 
 export const metadata: Metadata = {
@@ -34,6 +36,24 @@ export default async function AdminOrderPage({
   // A catalogue order has lines; a poster order has none. That is the whole
   // discriminator — see the `lines` comment on the Order model.
   const isShopOrder = order.lines.length > 0;
+
+  /**
+   * One job per supplier.
+   *
+   * Built from the catalogue rather than the stored line, so a product that
+   * moves between printers is picked up by every open order rather than only
+   * by new ones. A line whose product has left the catalogue is dropped from
+   * the split and stays visible in the list below, which is where an operator
+   * should notice it.
+   */
+  const jobs = splitByFulfilment(
+    order.lines.flatMap((l) => {
+      const product = productById(l.productId);
+      return product
+        ? [{ id: l.id, product, quantity: l.quantity, title: l.title }]
+        : [];
+    })
+  );
 
   // Batched, like the orders table: signing one key per line one at a time
   // would be a round trip per item on an order that may have a dozen.
@@ -137,6 +157,29 @@ export default async function AdminOrderPage({
                   </span>
                 </div>
 
+                {/* Where each line has to be sent. A basket can cross
+                    suppliers — printondemand.bg makes nothing on paper — and an
+                    order handed whole to one printer that cannot make half of
+                    it is the worst outcome available. */}
+                {jobs.length > 1 && (
+                  <div className="mt-4 rounded-2xl bg-amber-500/10 p-4 text-sm">
+                    <p className="font-semibold">
+                      Поръчката се разделя на {jobs.length} заявки
+                    </p>
+                    <ul className="mt-1.5 space-y-0.5 text-muted-foreground">
+                      {jobs.map((j) => (
+                        <li key={j.target}>
+                          <strong>{j.label}</strong> —{" "}
+                          {j.lines.map((l) => `${l.quantity} × ${l.title}`).join(", ")}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-2 text-muted-foreground">
+                      Два куриера, две пратки. Доставката е платена веднъж.
+                    </p>
+                  </div>
+                )}
+
                 <ul className="mt-4 divide-y divide-border">
                   {order.lines.map((line) => {
                     const photo = line.photoKey ? linePhotoUrls[line.photoKey] : null;
@@ -168,6 +211,12 @@ export default async function AdminOrderPage({
                           </p>
                           <p className="text-muted-foreground">
                             <span className="font-mono text-xs">{line.productId}</span>
+                            {" · "}
+                            <span className="font-semibold">
+                              {targetLabel(
+                                productById(line.productId)?.supplier ?? "OWN"
+                              )}
+                            </span>
                             {variants.length > 0 && (
                               <>
                                 {" · "}

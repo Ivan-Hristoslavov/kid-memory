@@ -4,6 +4,7 @@ import { PrintOnDemandProvider } from "./printondemand";
 import type { PodProvider, PodSupplierId } from "./types";
 
 export * from "./types";
+export * from "./routing";
 
 const providers: Record<PodSupplierId, PodProvider> = {
   PRINTFACTORY: new PrintFactoryProvider(),
@@ -16,11 +17,15 @@ export function podProvider(id: PodSupplierId): PodProvider {
 }
 
 /**
- * The supplier new orders go to.
+ * The supplier new orders go to, when an order has only one.
  *
- * Chosen by configuration rather than hardcoded, so moving printers is an
- * environment change. POD_SUPPLIER names it; otherwise the first configured one
- * wins, which makes a fresh deployment work without another variable to forget.
+ * Kept for the single-supplier case and for a default. It is NOT how a basket
+ * is routed: a basket crosses suppliers — printondemand.bg makes nothing on
+ * paper — and `splitByFulfilment` in ./routing is what decides where each line
+ * goes, from the catalogue entry rather than from configuration.
+ *
+ * POD_SUPPLIER names it; otherwise the first configured one wins, which makes a
+ * fresh deployment work without another variable to forget.
  */
 export function activePodProvider(): PodProvider | null {
   const named = process.env.POD_SUPPLIER as PodSupplierId | undefined;

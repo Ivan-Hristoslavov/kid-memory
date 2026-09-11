@@ -221,3 +221,27 @@ something a competitor buying from the same printer gets for free:
   their customers' shops do not.
 - **Party pricing** — a quantity tier that counts units across the basket, for
   the six-shirt order that is this market's largest.
+
+
+## They print textiles, not paper
+
+Their whole catalogue is twenty garments, four drinking vessels, a tote, three
+sticker sizes and one cardboard box — plus two rolls of print media sold by the
+square metre. There is no poster, no canvas, no frame, no puzzle, no calendar,
+no notebook and no book.
+
+That matters for two products this shop already sells or plans to:
+
+- **The illustrated poster** is printed by us. No partner is configured and none
+  could be: they do not print on paper.
+- **The children's book** will need a third supplier entirely — A5, twenty-odd
+  pages, saddle-stitched or perfect-bound. Nobody in the first two binds
+  signatures, so the software can produce a print-ready PDF and still have
+  nowhere to send it. Find the printer before building the rest.
+
+`lib/pod/routing.ts` splits an order accordingly: one fulfilment job per
+supplier, declared on the catalogue entry rather than inferred. A basket with a
+mug and a poster is two jobs, two couriers and two parcels — and the customer
+paid delivery once, which on a 9.99 mug beside a 17.90 poster is most of the
+margin. The admin says so on the order rather than leaving it to be discovered
+at the end of a month.
