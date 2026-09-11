@@ -93,23 +93,36 @@ export default async function CollectionPage({
     <>
       <MentyHeader />
       <main className="flex-1">
-        <section className="border-b border-border bg-sand">
-          <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-            <span className="relative hidden size-24 shrink-0 overflow-hidden rounded-full ring-1 ring-border sm:block">
-              <Image src={collection.image} alt="" fill sizes="96px" className="object-cover" />
-            </span>
-            <div>
-              <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
-                Подаръци {collection.label.toLowerCase()}
-              </h1>
-              <p className="mt-2 text-muted-foreground">
-                {shirts.length > 0
-                  ? `${shirts.length} готови тениски и ${items.length} продукта за персонализиране.`
-                  : `${items.length} ${
-                      items.length === 1 ? "продукт" : "продукта"
-                    }, всеки от които може да носи снимка, име или послание.`}
-              </p>
-            </div>
+        {/* An editorial band rather than a heading on a coloured strip.
+            Moonpig and Papier both arrange a catalogue well and neither looks
+            like anything; a collection page that opens with a photograph and
+            lets the type sit inside it is the difference between a catalogue
+            and a shop worth buying from. The scrim is a gradient rather than a
+            flat overlay so the image stays an image. */}
+        <section className="relative isolate overflow-hidden border-b border-border">
+          <Image
+            src={collection.image}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="-z-10 object-cover"
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-forest/90 via-forest/70 to-forest/20" />
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-ivory/70">
+              Подаръци за повода
+            </p>
+            <h1 className="mt-3 max-w-2xl font-heading text-4xl font-bold tracking-tight text-ivory sm:text-5xl">
+              {collection.label}
+            </h1>
+            <p className="mt-3 max-w-xl text-ivory/85">
+              {shirts.length > 0
+                ? `${shirts.length} готови тениски и ${items.length} продукта за персонализиране.`
+                : `${items.length} ${
+                    items.length === 1 ? "продукт" : "продукта"
+                  }, всеки от които може да носи снимка, име или послание.`}
+            </p>
           </div>
         </section>
 

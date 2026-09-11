@@ -48,16 +48,19 @@ export function ProductCard({ product }: { product: MentyProduct }) {
   return (
     <Link
       href={`/produkt/${product.id}`}
-      className="group flex h-full flex-col overflow-hidden rounded-xl bg-card ring-1 ring-border transition-shadow hover:shadow-lg hover:shadow-foreground/5"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl bg-card ring-1 ring-border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-forest/10 hover:ring-foreground/20"
     >
-      <span className="relative block aspect-square overflow-hidden bg-sand">
+      {/* A soft ground rather than flat sand, and the product contained rather
+          than cropped. The studio shots are square but the supplier's are
+          portrait, and `cover` was filling cards with a slice of a sleeve. */}
+      <span className="relative block aspect-square overflow-hidden bg-gradient-to-b from-ivory to-sand">
         {hasImages(product) ? (
           <Image
             src={product.images[0]}
             alt={product.title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 250px"
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            className="object-contain p-2 transition-transform duration-500 group-hover:scale-[1.05]"
           />
         ) : (
           /* No grey box: a labelled, on-brand frame instead, so a missing
@@ -70,7 +73,7 @@ export function ProductCard({ product }: { product: MentyProduct }) {
           </span>
         )}
         {personalizable && (
-          <span className="absolute left-2 top-2 rounded-md bg-background/90 px-2 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-forest">
+          <span className="absolute left-2.5 top-2.5 rounded-full bg-background/85 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-forest shadow-sm backdrop-blur-sm">
             Персонализируемо
           </span>
         )}

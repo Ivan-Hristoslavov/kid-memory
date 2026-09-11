@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
@@ -103,13 +104,32 @@ export default async function CrossPage({
             <span className="text-foreground">{who.label}</span>
           </nav>
 
-          <h1 className="mt-6 font-heading text-3xl font-bold tracking-tight sm:text-4xl">
-            Подаръци {occasion.label.toLowerCase()} {who.label.toLowerCase()}
-          </h1>
-          <p className="mt-2 text-muted-foreground">
-            {items.length} {items.length === 1 ? "продукт" : "продукта"} — със
-            снимка, име или послание.
-          </p>
+          {/* Two photographs, the occasion's and the recipient's, so a crossed
+              page looks like the crossing rather than like a filtered list. */}
+          <div className="mt-6 flex items-center gap-5">
+            <span className="relative hidden h-24 w-40 shrink-0 overflow-hidden rounded-xl ring-1 ring-border sm:block">
+              <Image
+                src={occasion.image}
+                alt=""
+                fill
+                priority
+                sizes="160px"
+                className="object-cover"
+              />
+              <span className="absolute inset-y-0 right-0 w-1/2">
+                <Image src={who.image} alt="" fill sizes="80px" className="object-cover" />
+              </span>
+            </span>
+            <div>
+              <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+                Подаръци {occasion.label.toLowerCase()} {who.label.toLowerCase()}
+              </h1>
+              <p className="mt-2 text-muted-foreground">
+                {items.length} {items.length === 1 ? "продукт" : "продукта"} — със
+                снимка, име или послание.
+              </p>
+            </div>
+          </div>
 
           <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {items.map((p) => (
